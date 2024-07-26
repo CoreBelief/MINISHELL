@@ -1,6 +1,29 @@
-// src/memory.c
-#include "memory.h"
+#include "minishell.h"
+#include <stdlib.h>
 
-void free_command(command_t *cmd) {
-    // Free dynamically allocated memory for command
+void free_command(t_command *cmd)
+{
+    int i;
+
+    if (!cmd)
+        return;
+
+    if (cmd->path)
+        free(cmd->path);
+    
+    if (cmd->argv)
+    {
+        for (i = 0; cmd->argv[i]; i++)
+            free(cmd->argv[i]);
+        free(cmd->argv);
+    }
+
+    if (cmd->redirects)
+    {
+        for (i = 0; i < cmd->redirect_count; i++)
+            free(cmd->redirects[i].file);
+        free(cmd->redirects);
+    }
+
+    free(cmd);
 }

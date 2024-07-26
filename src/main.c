@@ -3,9 +3,18 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <sys/wait.h>
 
 // Global variable to store the exit status
 int g_exit_status = 0;
+
+void update_exit_status(int status)
+{
+    if (WIFEXITED(status))
+        g_exit_status = WEXITSTATUS(status);
+    else if (WIFSIGNALED(status))
+        g_exit_status = 128 + WTERMSIG(status);
+}
 
 void minishell_loop(void)
 {

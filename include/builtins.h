@@ -1,16 +1,17 @@
-// include/builtins.h
 #ifndef BUILTINS_H
-#define BUILTINS_H
+# define BUILTINS_H
 
-void builtin_cd(char **args);
-void builtin_exit(char **args);
-void builtin_pwd(char **args);
-void builtin_echo(char **args);
-void builtin_export(char **args);
-void builtin_unset(char **args);
-void builtin_env(char **args);
+# include "minishell.h"
 
-int is_builtin(char *command);
-void execute_builtin(char **args);
+// Builtin function prototypes
+int         is_builtin(char *command);
+void        execute_builtin(t_command *cmd);
+void        builtin_echo(t_command *cmd);
+void        builtin_cd(t_command *cmd);
+void        builtin_pwd(void);
+void        builtin_export(t_command *cmd);
+void        builtin_unset(t_command *cmd);
+void        builtin_env(void);
+void        builtin_exit(t_command *cmd);
 
 #endif
