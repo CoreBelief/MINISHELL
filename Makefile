@@ -1,50 +1,32 @@
-# Minishell Makefile
-
 NAME = minishell
-CC = cc
+CC = gcc
 # CFLAGS = -Wall -Wextra -Werror
+INCLUDES = -Iinclude -Isrc/lib_FT
 LDFLAGS = -lreadline
+LIBFT = src/lib_FT/libft.a
 
-# Libft
-LIBFT_DIR = src/lib_FT
-LIBFT = $(LIBFT_DIR)/libft.a
-LIBFT_INC = -I$(LIBFT_DIR)
+SRCS = src/main.c src/executor.c src/tokenizer.c src/signals.c
+OBJS = $(SRCS:.c=.o)
 
-# Minishell source files
-SRC_DIR = src
-SRC = main.c executor.c tokenizer.c
-
-# Object files
-OBJ_DIR = obj
-OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
-
-# Include directories
-INC_DIR = include
-INC = -I$(INC_DIR) $(LIBFT_INC)
-
-.PHONY: all clean fclean re bonus
-
-all: $(NAME)
-
-$(NAME): $(LIBFT) $(OBJ)
-	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS) -L$(LIBFT_DIR) -lft
+all: $(LIBFT) $(NAME)
 
 $(LIBFT):
-	@$(MAKE) -C $(LIBFT_DIR)
+	$(MAKE) -C src/lib_FT
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
+$(NAME): $(OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) $(LDFLAGS)
 
-bonus: all
+%.o: %.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	$(MAKE) -C $(LIBFT_DIR) clean
-	rm -rf $(OBJ_DIR)
+	$(MAKE) -C src/lib_FT clean
+	$(RM) $(OBJS)
 
 fclean: clean
-	$(MAKE) -C $(LIBFT_DIR) fclean
-	rm -f $(NAME)
-	find . -name "*.o" -type f -delete
+	$(MAKE) -C src/lib_FT fclean
+	$(RM) $(NAME)
 
 re: fclean all
+
+.PHONY: all clean fclean re

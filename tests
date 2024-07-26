@@ -1,0 +1,77 @@
+#!/bin/sh
+
+# Function to print colored output
+print_color() {
+    case $2 in
+        "green") printf "\033[0;32m%s\033[0m\n" "$1" ;;
+        "red") printf "\033[0;31m%s\033[0m\n" "$1" ;;
+        "yellow") printf "\033[0;33m%s\033[0m\n" "$1" ;;
+        *) echo "$1" ;;
+    esac
+}
+
+# Function to run a test and check its result
+run_test() {
+    description="$1"
+    command="$2"
+    expected_output="$3"
+    expected_exit_status="$4"
+
+    print_color "Testing: $description" "yellow"
+    printf "Command: %s\n" "$command"
+    
+    output=$(eval "$command" 2>&1)
+    exit_status=$?
+
+    printf "Output: %s\n" "$output"
+    printf "Exit status: %d\n" "$exit_status"
+
+    if echo "$output" | grep -q "$expected_output" && [ $exit_status -eq "$expected_exit_status" ]; then
+        print_color "Test passed!" "green"
+    else
+        print_color "Test failed." "red"
+        printf "Expected output to contain: %s\n" "$expected_output"
+        printf "Expected exit status: %d\n" "$expected_exit_status"
+    fi
+    echo
+}
+
+# Start of tests
+print_color "Starting Minishell Functionality Tests" "yellow"
+echo
+
+# Test 1: Basic command execution
+run_test "Basic command execution" "echo Hello, World!" "Hello, World!" 0
+
+# Test 2: Command not found
+run_test "Command not found" "nonexistentcommand" "not found" 127
+
+# Test 3: Simple pipe
+run_test "Simple pipe" "echo Hello | cat" "Hello" 0
+
+# Test 4: Multiple pipes
+run_test "Multiple pipes" "echo Hello | rev | tr a-z A-Z" "OLLEH" 0
+
+# Test 5: Input/Output redirection
+run_test "Input/Output redirection" "echo Test > test.txt && cat < test.txt && rm test.txt" "Test" 0
+
+# Test 6: Environment variables
+run_test "Environment variables" "TEST=value && echo \$TEST" "value" 0
+
+# Test 7: Builtin command: cd
+run_test "Builtin command: cd" "cd /tmp && pwd" "/tmp" 0
+
+# Test 8: Builtin command: echo with option
+run_test "Builtin command: echo with option" "echo -n Hello" "Hello" 0
+
+# Test 9: Quoting
+run_test "Quoting" "echo \"Hello 'World'\"" "Hello 'World'" 0
+
+# Test 10: Error redirection
+run_test "Error redirection" "ls nonexistentfile 2>&1" "No such file or directory" 2
+
+print_color "All automated tests completed." "yellow"
+print_color "Manual tests for signal handling:" "yellow"
+print_color "1. Run 'sleep 5' and press Ctrl+C after 2 seconds. It should interrupt the command." "yellow"
+print_color "2. Run 'sleep 5' and press Ctrl+\ after 2 seconds. It should do nothing." "yellow"
+print_color "3. Press Ctrl+D at an empty prompt. It should exit the shell." "yellow"
