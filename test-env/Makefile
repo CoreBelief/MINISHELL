@@ -6,12 +6,11 @@ CC = cc
 LDFLAGS = -lreadline
 
 # Libft
-LIBFT_DIR = src/lib_FT
+LIBFT_DIR = lib_FT
 LIBFT = $(LIBFT_DIR)/libft.a
 LIBFT_INC = -I$(LIBFT_DIR)
 
 # Minishell source files
-SRC_DIR = src
 SRC = main.c executor.c tokenizer.c
 
 # Object files
@@ -19,7 +18,7 @@ OBJ_DIR = obj
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
 # Include directories
-INC_DIR = include
+INC_DIR = .
 INC = -I$(INC_DIR) $(LIBFT_INC)
 
 .PHONY: all clean fclean re bonus
@@ -27,14 +26,14 @@ INC = -I$(INC_DIR) $(LIBFT_INC)
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJ)
-	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS) -L$(LIBFT_DIR) -lft
+	$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LDFLAGS) -L$(LIBFT_DIR) -lft
 
 $(LIBFT):
-	@$(MAKE) -C $(LIBFT_DIR)
+	$(MAKE) -C $(LIBFT_DIR)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(OBJ_DIR)
-	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 bonus: all
 

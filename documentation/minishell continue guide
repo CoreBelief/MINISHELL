@@ -1,0 +1,64 @@
+Based on the current state of your project, here are the key points to focus on next:
+
+• Implement signal handling:
+  - Set up handlers for SIGINT (Ctrl-C), SIGQUIT (Ctrl-\), and EOF (Ctrl-D)
+  - Ensure proper behavior in interactive mode as specified in the subject
+
+• Expand the tokenizer:
+  - Handle quotes (single and double) correctly
+  - Implement environment variable expansion ($VAR and $?)
+  - Handle redirections (<, >, <<, >>)
+  - Implement pipe handling (|)
+
+• Implement built-in commands:
+  - echo (with -n option)
+  - cd
+  - pwd
+  - export
+  - unset
+  - env
+  - exit
+
+• Enhance command execution:
+  - Implement proper PATH searching for executables
+  - Handle relative and absolute paths
+
+• Implement input/output redirection:
+  - Set up file descriptors for redirections
+  - Handle heredocs (<<)
+
+• Implement piping:
+  - Create pipes between commands
+  - Manage multiple processes for piped commands
+
+• Environment variable handling:
+  - Implement functions to get, set, and unset environment variables
+
+• Error handling:
+  - Implement comprehensive error checking and reporting
+  - Set appropriate exit statuses
+
+• Memory management:
+  - Ensure all allocated memory is properly freed
+  - Check for and fix any memory leaks
+
+• Expand the main loop:
+  - Implement proper command line parsing
+  - Handle multi-command input (separated by semicolons, if required)
+
+• Makefile:
+  - Ensure it compiles the project correctly with required flags
+  - Include rules for clean, fclean, re, and bonus (if implementing bonus features)
+
+• Norm compliance:
+  - Ensure all code adheres to the 42 Norm rules
+  - Check function lengths, variable naming, and overall structure
+
+• Testing:
+  - Develop a comprehensive test suite to cover all features and edge cases
+
+• Documentation:
+  - Add comments to explain complex parts of the code
+  - Ensure function prototypes are properly documented in header files
+
+Remember to continually test your implementation against the behavior of bash, as it's your reference for correct functionality. Tackle these points incrementally, ensuring each feature works correctly before moving on to the next.
