@@ -32,41 +32,60 @@ char **tokenize_command(char *command)
 }
 
 
-t_token *tokenizer(char *input)
+int	is_whitespace(char c)
 {
-    t_token *head;
-    int     i;
+	if ((c >= 9 && c <= 13) || c == 32)
+		return (0);
+	return (1);
+}
 
-    head = NULL;
-    i = 0;
-    while (input[i])
-    {
-/* quotes, double quotes, redirections, greater that, smallaer than, text
-skipping whitespace
-*/
-    }
-    return (head);
+t_token	*tokenizer(char *input)
+{
+	t_token	*head;
+	int		i;
+
+	printf("entered tokenizer\n");
+	head = NULL;
+	i = 0;
+	while (input[i])
+	{
+		if (input[i] == '|')
+			add_token(&head, strdup("|"), TOKEN_PIPE);
+		else if (input[i] == '<' || input[i] == '>')
+			handle_redirection(input, &i, &head);
+		else if (input[i] == '\'')
+			handle_single(&input[i], &i, &head);
+		else if (input[i] == '"')
+			handle_double(&input[i], &i, &head);
+		else if (is_whitespace(input[i]))
+			i++;
+		else
+			handle_word(&input[i], &i, &head);
+		printf("index in tokenizer %i\n", i);
+	}
+	return (head);
 }
 
 
-t_token *add_token(t_token **head, char *content, token_type type)
+t_token	*add_token(t_token **head, char *content, t_token_type type)
 {
-    t_token *new_token;
-    
-    new_token = malloc(sizeof(t_token));
-    if (!new_token)
-        return NULL;
-    new_token->content = content;
-    new_token->type = type;
-    new_token->next = NULL;
-    if (*head == NULL)
-        *head = new_token;
-    else
-    {
-        t_token *current = *head;
-        while (current->next)
-            current = current->next;
-        current->next = new_token;
-    }
-    return new_token;
+	t_token	*new_token;
+	t_token	*current;
+
+	new_token = malloc(sizeof(t_token));
+	if (!new_token)
+		return (NULL);
+	new_token->content = content;
+	new_token->type = type;
+	new_token->next = NULL;
+	if (*head == NULL)
+		*head = new_token;
+	else
+	{
+		current = *head;
+		while (current->next)
+			current = current->next;
+		current->next = new_token;
+	}
+	return (new_token);
 }
