@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/25 15:31:46 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/07/25 15:45:35 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/07/25 19:29:09 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	minishell_loop(void)
 	line = NULL;
 	while (1)
 	{
-		line = readline("something: ");
+		line = readline("minishell> ");
 	}
 }
 
