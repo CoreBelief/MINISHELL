@@ -19,6 +19,7 @@ void update_exit_status(int status)
 void minishell_loop(void)
 {
     char *line;
+    t_token *tokens;
 
     printf("DEBUG: Entering minishell loop\n");
     
@@ -47,6 +48,11 @@ void minishell_loop(void)
             // Add input to history
             add_history(line);
             printf("DEBUG: Added to history\n");
+
+            //tokenize
+            tokens = tokenizer(line);
+
+            //parse
             
             // Execute the command
             execute_command(line);

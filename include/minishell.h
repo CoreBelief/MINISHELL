@@ -33,6 +33,7 @@ typedef struct s_command
 
 // Include builtins.h after struct definitions
 # include "builtins.h"
+# include "tokenizer.h"
 
 // Global variables
 extern int g_exit_status;

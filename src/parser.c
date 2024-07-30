@@ -7,7 +7,7 @@ char *find_command_path(char *command)
 {
     char *path = getenv("PATH");
     char *path_copy = strdup(path);
-    char *dir = strtok(path_copy, ":");
+    char *dir = (path_copy, ":");
     char *full_path = NULL;
 
     while (dir != NULL) {

@@ -30,3 +30,43 @@ char **tokenize_command(char *command)
 
     return args;
 }
+
+
+t_token *tokenizer(char *input)
+{
+    t_token *head;
+    int     i;
+
+    head = NULL;
+    i = 0;
+    while (input[i])
+    {
+/* quotes, double quotes, redirections, greater that, smallaer than, text
+skipping whitespace
+*/
+    }
+    return (head);
+}
+
+
+t_token *add_token(t_token **head, char *content, token_type type)
+{
+    t_token *new_token;
+    
+    new_token = malloc(sizeof(t_token));
+    if (!new_token)
+        return NULL;
+    new_token->content = content;
+    new_token->type = type;
+    new_token->next = NULL;
+    if (*head == NULL)
+        *head = new_token;
+    else
+    {
+        t_token *current = *head;
+        while (current->next)
+            current = current->next;
+        current->next = new_token;
+    }
+    return new_token;
+}
