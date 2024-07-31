@@ -1,0 +1,85 @@
+Parsing in the context of a shell involves taking the tokenized input and organizing it 
+into a structure that represents the command(s) to be executed. 
+This structure should contain all the information needed for the execution stage 
+to properly run the commands.
+
+
+Command Structure:
+- Identify the main command and its arguments
+- Separate multiple commands if they're present (e.g., command1 ; command2)
+
+
+Redirections:
+Identify input redirections (<, <<)
+Identify output redirections (>, >>)
+Note the files or here-documents associated with these redirections
+
+
+Pipes:
+Identify pipe characters (|) that separate commands in a pipeline
+
+
+Variable Expansion:
+Expand environment variables (unless they're in single quotes)
+Handle the $? special variable
+
+
+Quote Handling:
+Remove quotes but remember what was quoted (for word splitting purposes)
+Handle different behaviors of single and double quotes
+
+
+Command Type:
+Determine if it's a builtin command or an external command
+
+
+
+What the EXECUTION stage typically NEEDS:
+
+Command Information:
+The command name
+An array of arguments (including the command as the first argument)
+
+
+Redirection Information:
+Type of each redirection (input, output, append)
+File name or file descriptor for each redirection
+For here-documents (<<), the content to be used as input
+
+
+Pipeline Information:
+Which commands are part of a pipeline
+The order of commands in the pipeline
+
+
+Environment:
+Any modifications to the environment variables
+
+
+Execution Context:
+Whether it's a foreground or background process
+Job control information (if implementing job control)
+
+
+The PARSING PROCESS would involve:
+
+Iterating through your token list
+Building these structures based on the tokens
+Handling special cases like variable expansion and quote removal
+Organizing commands into pipelines and sequences
+
+
+For execution, you would then:
+
+Iterate through the pipelines
+For each pipeline, set up the necessary pipes
+For each command in a pipeline:
+
+Fork a new process
+Set up redirections
+Execute the command (using execve for external commands or calling the appropriate function for builtins)
+
+
+
+Remember to handle error cases throughout this process, such as syntax errors during parsing or execution errors like command not found.
+This structure allows for handling complex command lines with multiple piped commands, redirections, and even sequences of commands (if you implement command sequencing with ;).

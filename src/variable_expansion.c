@@ -6,13 +6,13 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/31 15:18:34 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/07/31 15:23:19 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/07/31 15:45:51 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	expand_var(char *input)
-{
+// void	expand_var(char *input)
+// {
 	
-}
+// }
