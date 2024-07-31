@@ -1,15 +1,4 @@
-    /* ************************************************************************** */
-    /*                                                                            */
-    /*                                                        :::      ::::::::   */
-    /*   signals.c                                          :+:      :+:    :+:   */
-    /*                                                    +:+ +:+         +:+     */
-    /*   By: [Your Username] <[your@email.com]>          +#+  +:+       +#+        */
-    /*                                                +#+#+#+#+#+   +#+           */
-    /*   Created: [Current Date] by [Your Username]      #+#    #+#             */
-    /*   Updated: [Current Date] by [Your Username]     ###   ########.fr       */
-    /*                                                                            */
-    /* ************************************************************************** */
-
+#define _POSIX_C_SOURCE 200809L
     #include "minishell.h"
     #include <stdio.h>
     #include <readline/readline.h>
