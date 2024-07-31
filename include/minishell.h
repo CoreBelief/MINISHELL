@@ -54,11 +54,7 @@ void        add_redirection(t_command *cmd, char *type, char *file);
 void        execute_command(char *command);
 void        update_exit_status(int status);
 
-// Signal handling
-void        setup_signals(void);
-void        handle_sigint(int sig);
-void        handle_sigquit(int sig);
-
+void	setup_signals(void);
 // Environment variables
 char        *expand_variables(char *str);
 
