@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   tokenizer.h                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/07/31 15:19:49 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/07/31 15:19:57 by eeklund       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef TOKENIZER_H
 # define TOKENIZER_H
 
@@ -28,12 +40,12 @@ typedef struct s_token
 t_token	*tokenizer(char *input);
 t_token	*add_token(t_token **head, char *content, t_token_type type);
 int		is_whitespace(char c);
+void	free_tokens(t_token **head);
 
 /* tokenizer_utils */
 void	handle_redirection(char *input, int *i, t_token **head);
 void	handle_single(char *input, int *i, t_token **head);
 void	handle_double(char *input, int *i, t_token **head);
-// void	handle_dollar();
 void	handle_word(char *input, int *i, t_token **head);
 void	skip_whitespace(char *input, int *i);
 void	print_token_list(t_token *head);

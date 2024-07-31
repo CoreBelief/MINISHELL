@@ -50,6 +50,7 @@ void minishell_loop(void)
             printf("DEBUG: Added to history\n");
 
 			//variable expansion 
+			//expand_var(line);
 
             //tokenize
             tokens = tokenizer(line);
@@ -76,24 +77,24 @@ void minishell_loop(void)
 int main(void)
 {
     printf("DEBUG: Starting minishell\n");
-	t_token *tokens;
-	char *line;
+	// t_token *tokens;
+	// char *line;
 
-	line = readline("minishell> ");
+	// line = readline("minishell> ");
 
 	// Check if EOF (Ctrl+D) was encountered
-	if (!line)
-	{
-		printf("DEBUG: EOF detected, exiting shell\n");
-		printf("exit\n");
-	}
-	tokens = tokenizer(line);
-	print_token_list(tokens);
+	// if (!line)
+	// {
+	// 	printf("DEBUG: EOF detected, exiting shell\n");
+	// 	printf("exit\n");
+	// }
+	// tokens = tokenizer(line);
+	// print_token_list(tokens);
     // Run the main shell loop
-    // minishell_loop();
+    minishell_loop();
     
-    // printf("DEBUG: Minishell loop exited\n");
-    // printf("DEBUG: Final exit status: %d\n", g_exit_status);
+    printf("DEBUG: Minishell loop exited\n");
+    printf("DEBUG: Final exit status: %d\n", g_exit_status);
     
     return (g_exit_status);
 }

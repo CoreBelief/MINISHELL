@@ -35,8 +35,8 @@ char **tokenize_command(char *command)
 int	is_whitespace(char c)
 {
 	if ((c >= 9 && c <= 13) || c == 32)
-		return (0);
-	return (1);
+		return (1);
+	return (0);
 }
 
 t_token	*tokenizer(char *input)
@@ -44,24 +44,27 @@ t_token	*tokenizer(char *input)
 	t_token	*head;
 	int		i;
 
-	printf("entered tokenizer\n");
+	printf("entered tokenizer and input line is:%s\n", input);
 	head = NULL;
 	i = 0;
 	while (input[i])
 	{
+		printf("cURRENT index: %i\n", i);
 		if (input[i] == '|')
+		{
 			add_token(&head, strdup("|"), TOKEN_PIPE);
+			i++;
+		}
 		else if (input[i] == '<' || input[i] == '>')
 			handle_redirection(input, &i, &head);
 		else if (input[i] == '\'')
-			handle_single(&input[i], &i, &head);
+			handle_single(input, &i, &head);
 		else if (input[i] == '"')
-			handle_double(&input[i], &i, &head);
+			handle_double(input, &i, &head);
 		else if (is_whitespace(input[i]))
 			i++;
 		else
-			handle_word(&input[i], &i, &head);
-		printf("index in tokenizer %i\n", i);
+			handle_word(input, &i, &head);
 	}
 	return (head);
 }
@@ -88,4 +91,20 @@ t_token	*add_token(t_token **head, char *content, t_token_type type)
 		current->next = new_token;
 	}
 	return (new_token);
+}
+
+
+
+void	free_tokens(t_token **head)
+{
+	t_token	*temp;
+
+	if (!head)
+		return ;
+	while (*head)
+	{
+		temp = *head;
+		*head = (*head)->next;
+		free(temp);
+	}
 }
