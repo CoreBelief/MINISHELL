@@ -72,4 +72,12 @@ void        free_command(t_command *cmd);
 // Error handling
 void        print_error(char *msg);
 
+// environment setup
+char *get_env(const char *name);
+int set_env(const char *name, const char *value);
+int unset_env(const char *name);
+
+//utils
+// char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
+
 #endif

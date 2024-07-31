@@ -4,76 +4,63 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <sys/wait.h>
+#include "environ.h"
 
-// Global variable to store the exit status
 int g_exit_status = 0;
 
 void update_exit_status(int status)
 {
+    printf("DEBUG: Updating exit status\n");
     if (WIFEXITED(status))
+    {
         g_exit_status = WEXITSTATUS(status);
+        printf("DEBUG: Process exited normally with status %d\n", g_exit_status);
+    }
     else if (WIFSIGNALED(status))
+    {
         g_exit_status = 128 + WTERMSIG(status);
+        printf("DEBUG: Process terminated by signal %d\n", WTERMSIG(status));
+    }
 }
 
 void minishell_loop(void)
 {
     char *line;
 
-    printf("DEBUG: Entering minishell loop\n");
-    
-    // Set up signal handlers
+    printf("DEBUG: Setting up signals\n");
     setup_signals();
-    printf("DEBUG: Signals set up\n");
 
     while (1)
     {
-        // Display prompt and read input
+        printf("DEBUG: Minishell PID: %d\n", getpid());
         line = readline("minishell> ");
-        
-        // Check if EOF (Ctrl+D) was encountered
         if (!line)
         {
-            printf("DEBUG: EOF detected, exiting shell\n");
+            printf("DEBUG: EOF detected, exiting\n");
             printf("exit\n");
             break;
         }
 
-        // Process non-empty input
         if (*line)
         {
-            printf("DEBUG: Processing input: '%s'\n", line);
-            
-            // Add input to history
+            printf("DEBUG: Adding command to history: %s\n", line);
             add_history(line);
-            printf("DEBUG: Added to history\n");
-            
-            // Execute the command
+            printf("DEBUG: Executing command: %s\n", line);
             execute_command(line);
-            printf("DEBUG: Command execution completed\n");
-        }
-        else
-        {
-            printf("DEBUG: Empty input, continuing\n");
         }
 
-        // Free the allocated memory for the input line
         free(line);
-        printf("DEBUG: Freed input line\n");
+        printf("DEBUG: Command execution complete\n");
     }
-
-    printf("DEBUG: Exiting minishell loop\n");
 }
 
 int main(void)
 {
-    printf("DEBUG: Starting minishell\n");
+    printf("DEBUG: Starting Minishell\n");
     
-    // Run the main shell loop
+    printf("DEBUG: Entering main shell loop\n");
     minishell_loop();
     
-    printf("DEBUG: Minishell loop exited\n");
-    printf("DEBUG: Final exit status: %d\n", g_exit_status);
-    
+    printf("DEBUG: Exiting Minishell with status: %d\n", g_exit_status);
     return (g_exit_status);
 }
