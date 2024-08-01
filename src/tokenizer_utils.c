@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/07/31 14:39:47 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/08/01 01:37:20 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,9 @@ void	handle_double(char *input, int *i, t_token **head)
 	// else its a wrong input??
 }
 
-void	skip_whitespace(char *input, int *i)
+bool is_special_token(char c)
 {
-	while (is_whitespace(input[*i]))
-		(*i)++;
+    return (c == '|' || c == '<' || c == '>');
 }
 
 void	handle_word(char *input, int *i, t_token **head)
@@ -97,19 +96,14 @@ void	handle_word(char *input, int *i, t_token **head)
 	start = *i;
 	content = NULL;
 	// printf("entered handle_word & index is %i\n", *i);
-	while (!is_whitespace(input[*i]) && input[*i])
+	while (input[*i] && !is_whitespace(input[*i]) && !is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
 		(*i)++;
 	// printf("index in handle word %i\n", *i);
-	// if (input[*i])
-	// {
-	// 	if (is_whitespace(input[*i]))
-	// 	{
-			content = strndup(&input[start], *i - start);
-			// printf("word:%s\n", content);
-			add_token(head, content, TOKEN_WORD);
-			(*i)++;
-	// 	}
-	// }
+	content = strndup(&input[start], *i - start);
+	// printf("word:%s\n", content);
+	add_token(head, content, TOKEN_WORD);
+	if (!is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
+		(*i)++;
 }
 
 void	print_token_list(t_token *head)
@@ -121,7 +115,7 @@ void	print_token_list(t_token *head)
 	{
 		temp = head;
 		head = head->next;
-		printf("token: content->%s type->%i, ", temp->content, temp->type);
+		printf("TOKEN-> '%s' type:%i\n", temp->content, temp->type);
 	}
 	printf("\n");
 }

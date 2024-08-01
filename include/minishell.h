@@ -11,6 +11,7 @@
 # include <readline/history.h>
 # include <fcntl.h>
 # include <sys/types.h>
+# include <stdbool.h>
 
 # define MAX_ARGS 1024
 

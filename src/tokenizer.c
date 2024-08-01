@@ -44,12 +44,12 @@ t_token	*tokenizer(char *input)
 	t_token	*head;
 	int		i;
 
-	printf("entered tokenizer and input line is:%s\n", input);
+	// printf("Entered tokenizer and input line is: %s\n", input);
 	head = NULL;
 	i = 0;
 	while (input[i])
 	{
-		printf("cURRENT index: %i\n", i);
+		// printf("cURRENT index: %i\n", i);
 		if (input[i] == '|')
 		{
 			add_token(&head, strdup("|"), TOKEN_PIPE);

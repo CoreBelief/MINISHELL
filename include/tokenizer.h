@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/31 15:19:49 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/07/31 15:19:57 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/08/01 01:24:40 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ typedef enum e_token_type
 	TOKEN_SINGLE_QUOTE,
 	TOKEN_DOUBLE_QUOTE,
 	// TOKEN_DOLLAR,
-	TOKEN_NEWLINE
+	// TOKEN_NEWLINE
 }	t_token_type;
 
 typedef struct s_token
