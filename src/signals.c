@@ -1,6 +1,15 @@
 #include "minishell.h"
 #include <stdio.h>
 #include <readline/readline.h>
+#include <readline/history.h>
+
+// void custom_rl_replace_line(const char *text, int clear_undo)
+// {
+//     (void)clear_undo;  // Unused parameter
+//     rl_delete_text(0, rl_end);
+//     rl_point = 0;
+//     rl_insert_text(text);
+// }
 
 void handle_sigint(int sig)
 {
@@ -8,7 +17,7 @@ void handle_sigint(int sig)
     printf("DEBUG: SIGINT received\n");
     write(STDOUT_FILENO, "\n", 1);
     rl_on_new_line();
-    rl_replace_line("", 0);
+    // custom_rl_replace_line("", 0);
     rl_redisplay();
     g_exit_status = 1;
     printf("DEBUG: SIGINT handler completed\n");

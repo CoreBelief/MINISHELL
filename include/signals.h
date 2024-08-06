@@ -5,5 +5,6 @@
 void setup_signal_handlers(void);
 void handle_sigint(int sig);
 void handle_sigquit(int sig);
+// void custom_rl_replace_line(const char *text, int clear_undo);
 
 #endif

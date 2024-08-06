@@ -1,7 +1,10 @@
 NAME = minishell
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror -Iinclude -Isrc/libft
-LIBS = -lreadline
+READLINE_DIR = /usr/local/opt/readline
+CFLAGS += -I$(READLINE_DIR)/include
+LIBS = -L$(READLINE_DIR)/lib -lreadline
+CFLAGS += -Wno-deprecated-declarations
 
 SRCS = src/main.c src/executor.c src/tokenizer.c src/variable_expansion.c src/tokenizer_utils.c src/signals.c src/parser.c src/redirections.c src/memory.c src/builtins/builtins.c
 OBJS = $(SRCS:.c=.o)
