@@ -1,6 +1,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
+#include "utils.h"
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -11,6 +11,9 @@
 # include <readline/history.h>
 # include <fcntl.h>
 # include <sys/types.h>
+#include "libft.h"
+#include "tokenizer.h"
+
 
 # define MAX_ARGS 1024
 

@@ -1,17 +1,19 @@
 #include "minishell.h"
 #include <stdlib.h>
 #include <unistd.h>
+#include "tokenizer.h"
 
 
 char *find_command_path(char *command)
 {
     char *path = getenv("PATH");
-    char *path_copy = strdup(path);
+    char *path_copy = ft_strdup(path);
+    //illeagal strtok!!!
     char *dir = strtok(path_copy, ":");
     char *full_path = NULL;
 
     while (dir != NULL) {
-        full_path = malloc(strlen(dir) + strlen(command) + 2);
+        full_path = malloc(strlen(dir) + ft_strlen(command) + 2);
         sprintf(full_path, "%s/%s", dir, command);
         
         if (access(full_path, X_OK) == 0) {
@@ -24,13 +26,16 @@ char *find_command_path(char *command)
     }
 
     free(path_copy);
-    return strdup(command);  // Return the command as-is if not found in PATH
+    return ft_strdup(command);  // Return the command as-is if not found in PATH
 }
+
 
 t_command *parse_command(char *input)
 {
     t_command *cmd;
-    char **tokens;
+    t_token *tokens;
+    int argc = 0;
+    int i;
 
     cmd = malloc(sizeof(t_command));
     if (!cmd)
@@ -44,15 +49,44 @@ t_command *parse_command(char *input)
     cmd->pipe_in = STDIN_FILENO;
     cmd->pipe_out = STDOUT_FILENO;
 
-    tokens = tokenize_command(input);
+    tokens = tokenizer(input);
     if (!tokens)
     {
         free(cmd);
         return NULL;
     }
+    print_token_list(tokens);
+    // Count the number of word tokens to determine argc
+    for (t_token *t = tokens; t != NULL; t = t->next)
+    {
+        if (t->type == TOKEN_WORD)
+            argc++;
+    }
 
-    cmd->path = find_command_path(tokens[0]);
-    cmd->argv = tokens;
+    cmd->argv = malloc(sizeof(char *) * (argc + 1));
+    if (!cmd->argv)
+    {
+        free(cmd);
+        free_tokens(&tokens);
+        return NULL;
+    }
 
+    // Fill argv array
+    i = 0;
+    for (t_token *t = tokens; t != NULL; t = t->next)
+    {
+        if (t->type == TOKEN_WORD)
+        {
+            cmd->argv[i] = ft_strdup(t->content);
+            i++;
+        }
+        // Here you can handle redirections and other token types
+    }
+    cmd->argv[i] = NULL;
+
+    if (argc > 0)
+        cmd->path = find_command_path(cmd->argv[0]);
+
+    free_tokens(&tokens);
     return cmd;
 }

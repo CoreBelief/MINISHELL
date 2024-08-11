@@ -28,7 +28,7 @@ static void	print_sorted_env(void)
 		j = i;
 		while (++j < env_size)
 		{
-			if (strcmp(sorted_env[i], sorted_env[j]) > 0)
+			if (ft_strcmp(sorted_env[i], sorted_env[j]) > 0)
 			{
 				temp = sorted_env[i];
 				sorted_env[i] = sorted_env[j];
@@ -55,7 +55,7 @@ void	builtin_export(char **args)
 	i = 1;
 	while (args[i])
 	{
-		equal_sign = strchr(args[i], '=');
+		equal_sign = ft_strchr(args[i], '=');
 		if (equal_sign)
 		{
 			*equal_sign = '\0';

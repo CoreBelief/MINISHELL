@@ -12,7 +12,7 @@ void	builtin_unset(char **args)
 	i = 1;
 	while (args[i])
 	{
-		if (strchr(args[i], '='))
+		if (ft_strchr(args[i], '='))
 		{
 			fprintf(stderr, "minishell: unset: `%s': not a valid identifier\n", args[i]);
 		}

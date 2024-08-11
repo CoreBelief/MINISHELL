@@ -13,7 +13,7 @@ void builtin_echo(char **args)
     bool newline = true;
 
     // Handle multiple -n flags
-    while (args[i] && strcmp(args[i], "-n") == 0)
+    while (args[i] && ft_strcmp(args[i], "-n") == 0)
     {
         newline = false;
         i++;

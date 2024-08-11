@@ -14,7 +14,7 @@ void	builtin_cd(char **args)
 	oldpwd = getcwd(NULL, 0);
 	if (!args[1] || strcmp(args[1], "~") == 0)
 		path = getenv("HOME");
-	else if (strcmp(args[1], "-") == 0)
+	else if (ft_strcmp(args[1], "-") == 0)
 		path = getenv("OLDPWD");
 	else
 		path = args[1];

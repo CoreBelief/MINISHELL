@@ -27,17 +27,17 @@ static char *get_current_dir(void)
 {
     char *cwd = getcwd(NULL, 0);
     if (!cwd)
-        return strdup("unknown");
+        return ft_strdup("unknown");
 
     char *home = getenv("HOME");
-    if (home && strncmp(cwd, home, strlen(home)) == 0)
+    if (home && ft_strncmp(cwd, home, ft_strlen(home)) == 0)
     {
-        char *relative_path = cwd + strlen(home);
-        char *result = malloc(strlen(relative_path) + 2);
+        char *relative_path = cwd + ft_strlen(home);
+        char *result = malloc(ft_strlen(relative_path) + 2);
         if (result)
         {
             result[0] = '~';
-            strcpy(result + 1, relative_path);
+            ft_strcpy(result + 1, relative_path);
             free(cwd);
             return result;
         }
@@ -53,17 +53,17 @@ static char *create_prompt(void)
     char *prompt;
 
     if (gethostname(hostname, sizeof(hostname)) != 0)
-        strcpy(hostname, "unknown");
+        ft_strcpy(hostname, "unknown");
     
     struct passwd *pw = getpwuid(getuid());
     if (pw)
-        strncpy(username, pw->pw_name, sizeof(username) - 1);
+        ft_strncpy(username, pw->pw_name, sizeof(username) - 1);
     else
-        strcpy(username, "user");
+        ft_strcpy(username, "user");
 
     cwd = get_current_dir();
 
-    size_t prompt_size = strlen(username) + strlen(hostname) + strlen(cwd) + 50;
+    size_t prompt_size = ft_strlen(username) + ft_strlen(hostname) + ft_strlen(cwd) + 50;
     prompt = malloc(prompt_size);
     if (prompt)
         snprintf(prompt, prompt_size, "\001\033[1;32m\002%s@%s\001\033[0m\002:\001\033[1;34m\002%s\001\033[0m\002$ ", username, hostname, cwd);
@@ -99,6 +99,7 @@ void minishell_loop(void)
             printf("exit\n");
             break;
         }
+        printf("input: %s\n", line);
         process_input(line);
         free(line);
     }

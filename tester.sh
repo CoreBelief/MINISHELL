@@ -21,7 +21,8 @@ run_test() {
     EXPECTED_EXIT_CODE=$4
 
     echo "${YELLOW}Running test: $TEST_NAME${NC}"
-    ACTUAL_OUTPUT=$(echo "$COMMAND" | $MINISHELL 2>&1 | sed '/minishell>/d; /exit/d')
+    # Capture output and exit code, removing the input line and prompt
+    ACTUAL_OUTPUT=$(echo "$COMMAND" | $MINISHELL 2>&1 | sed '1d; /minishell>/d; /exit/d')
     ACTUAL_EXIT_CODE=$?
 
     if [ "$ACTUAL_OUTPUT" = "$EXPECTED_OUTPUT" ] && [ $ACTUAL_EXIT_CODE -eq $EXPECTED_EXIT_CODE ]; then
@@ -29,15 +30,16 @@ run_test() {
         PASSED=$(($PASSED + 1))
     else
         echo "${RED}Test failed${NC}"
-        echo "Expected output:\n$EXPECTED_OUTPUT"
-        echo "Actual output:\n$ACTUAL_OUTPUT"
+        echo "Expected output:"
+        echo "$EXPECTED_OUTPUT"
+        echo "Actual output:"
+        echo "$ACTUAL_OUTPUT"
         echo "Expected exit code: $EXPECTED_EXIT_CODE"
         echo "Actual exit code: $ACTUAL_EXIT_CODE"
         FAILED=$(($FAILED + 1))
     fi
     echo
 }
-
 # ... (keep the rest of the script unchanged)
 
 # Basic shell functionality
