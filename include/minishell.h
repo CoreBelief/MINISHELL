@@ -32,7 +32,14 @@ typedef struct s_command
     int         redirect_count;
     int         pipe_in;
     int         pipe_out;
+    struct s_command    *next;
 } t_command;
+
+typedef struct s_parsed_line
+{
+    t_command    *command;
+    char         **env_vars;
+} t_parsed_line;
 
 // Include builtins.h after struct definitions
 # include "builtins.h"

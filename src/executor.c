@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+void	print_cmd_list(t_command *head);
 
 t_command *parse_command_from_tokens(t_token *tokens);
 // char *find_executable(char *command)
@@ -166,6 +167,7 @@ void execute_command(char *command)
         free_tokens(&tokens);
         return;
     }
+    // print_cmd_list(cmd);
 
     if (is_builtin(cmd->argv[0]))
     {
@@ -228,4 +230,23 @@ t_command *parse_command_from_tokens(t_token *tokens)
     cmd->pipe_out = STDOUT_FILENO;
 
     return cmd;
+}
+
+void	print_cmd_list(t_command *head)
+{
+	t_command	*temp;
+
+	printf("inside print cmd_lst\n");
+	while (head)
+	{
+		temp = head;
+		head = head->next;
+		printf("command path-> '%s' redir count:%i\n", temp->path, temp->redirect_count);
+        while (temp->argv && *temp->argv)
+        {
+            printf("arg: %s\n", *temp->argv);
+            temp->argv++;
+        }
+	}
+	printf("\n");
 }
