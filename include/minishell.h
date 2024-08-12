@@ -16,6 +16,7 @@
 
 
 # define MAX_ARGS 1024
+# define MAX_REDIRECTS 10
 
 // Structs
 typedef struct s_redirect

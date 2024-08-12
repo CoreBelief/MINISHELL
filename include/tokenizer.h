@@ -20,11 +20,12 @@ typedef enum {
     TOKEN_DOUBLE_QUOTE
 } t_token_type;
 
-typedef struct s_token {
-    char *content;
-    t_token_type type;
-    struct s_token *next;
-} t_token;
+typedef struct s_token
+{
+	char			*content;
+	t_token_type	type;
+	struct s_token	*next;
+}	t_token;
 
 t_token *tokenizer(char *input);
 t_token *add_token(t_token **head, char *content, t_token_type type);
