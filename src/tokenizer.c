@@ -12,37 +12,37 @@ int	is_whitespace(char c)
 }
 
 
-t_token *tokenizer(char *input)
+t_token	*tokenizer(char *input)
 {
-    t_token *head;
-    int i;
-	int	len;
+	t_token	*head;
+	int		i;
+	int		len;
 
-    head = NULL;
-    i = 0;
+	head = NULL;
+	i = 0;
 	len = ft_strlen(input);
-    while (input[i]!='\0' && i < len)
-    {
-		printf("entered and index is==%i and it is ==%s  input[i]==%c\n", i, input, input[i]);
-        while (is_whitespace(input[i]))
-            i++;
-        if (input[i] == '\0')
-            break;
-        if (input[i] == '|')
+	while (input[i] != '\0' && i < len)
+	{
+		// printf("entered and index is==%i and it is ==%s  input[i]==%c\n", i, input, input[i]);
+		while (is_whitespace(input[i]))
+			i++;
+		if (input[i] == '\0')
+			break ;
+		if (input[i] == '|')
 		{
-            add_token(&head, ft_strdup("|"), TOKEN_PIPE);
+			add_token(&head, ft_strdup("|"), TOKEN_PIPE);
 			i++;
 		}
-        else if (input[i] == '<' || input[i] == '>')
-            handle_redirection(input, &i, &head);
-        else if (input[i] == '\'')
-            handle_single(input, &i, &head);
-        else if (input[i] == '"')
-            handle_double(input, &i, &head);
-        else
-            handle_word(input, &i, &head);
-    }
-    return head;
+		else if (input[i] == '<' || input[i] == '>')
+			handle_redirection(input, &i, &head);
+		else if (input[i] == '\'')
+			handle_single(input, &i, &head);
+		else if (input[i] == '"')
+			handle_double(input, &i, &head);
+		else
+			handle_word(input, &i, &head);
+	}
+	return (head);
 }
 
 t_token	*add_token(t_token **head, char *content, t_token_type type)
