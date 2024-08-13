@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   minishell.h                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/08/13 18:31:18 by eeklund       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
-#include "utils.h"
+# include "utils.h"
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -11,8 +23,7 @@
 # include <readline/history.h>
 # include <fcntl.h>
 # include <sys/types.h>
-#include "libft.h"
-#include "tokenizer.h"
+# include "libft.h"
 
 
 # define MAX_ARGS 1024
@@ -42,8 +53,28 @@ typedef struct s_parsed_line
     char         **env_vars;
 } t_parsed_line;
 
+typedef enum {
+    TOKEN_WORD,
+    TOKEN_PIPE,
+    TOKEN_REDIRECT_IN,
+    TOKEN_REDIRECT_OUT,
+    TOKEN_REDIRECT_APPEND,
+    TOKEN_HEREDOC,
+    TOKEN_SINGLE_QUOTE,
+    TOKEN_DOUBLE_QUOTE
+} t_token_type;
+
+typedef struct s_token
+{
+	char			*content;
+	t_token_type	type;
+	struct s_token	*next;
+}	t_token;
+
 // Include builtins.h after struct definitions
 # include "builtins.h"
+# include "parser.h"
+# include "tokenizer.h"
 
 // Global variables
 extern int g_exit_status;

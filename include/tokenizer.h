@@ -9,23 +9,6 @@
 
 #define MAX_ARGS 1024
 
-typedef enum {
-    TOKEN_WORD,
-    TOKEN_PIPE,
-    TOKEN_REDIRECT_IN,
-    TOKEN_REDIRECT_OUT,
-    TOKEN_REDIRECT_APPEND,
-    TOKEN_HEREDOC,
-    TOKEN_SINGLE_QUOTE,
-    TOKEN_DOUBLE_QUOTE
-} t_token_type;
-
-typedef struct s_token
-{
-	char			*content;
-	t_token_type	type;
-	struct s_token	*next;
-}	t_token;
 
 t_token *tokenizer(char *input);
 t_token *add_token(t_token **head, char *content, t_token_type type);
