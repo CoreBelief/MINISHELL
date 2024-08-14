@@ -66,14 +66,19 @@ t_command *parse_command_from_tokens(t_token *tokens)
 		return (NULL);
 	cur_cmd = head;
 	i = 0;
+	// printf("inside parse_command_from_tokens\n");
 	while (tokens && i < MAX_ARGS)
 	{
-		if (tokens->type == TOKEN_WORD)
+	// printf("inside parse_command_from_tokens loop\n");
+
+		if (!is_redirect_token(tokens->type) && tokens->type != TOKEN_PIPE)
 		{
 			cur_cmd->argv[i] = ft_strdup(tokens->content);
 			if (!cur_cmd->argv[i])
 				return (NULL);
 			i++;
+	// printf("inside parse_command_from_tokens loop inner\n");
+
 		}
 		else if (is_redirect_token(tokens->type))
 		{
@@ -81,6 +86,8 @@ t_command *parse_command_from_tokens(t_token *tokens)
 				return (NULL); //implement error handling
 			if (!handle_redirection_parsing(cur_cmd, &tokens))
 				return (NULL); // handle error
+	// printf("inside parse_command_from_tokens if\n");
+
 		}
 		else if (tokens->type == TOKEN_PIPE)
 		{
@@ -94,6 +101,7 @@ t_command *parse_command_from_tokens(t_token *tokens)
 			i = 0;
 		}
 		tokens = tokens->next;
+	// printf("inside parse_command_from_tokens elif\n");
 	}
 	cur_cmd->argv[i] = NULL;
 	cur_cmd = head;
@@ -103,6 +111,8 @@ t_command *parse_command_from_tokens(t_token *tokens)
 		if (!cur_cmd->path)
 			return (NULL);
 		cur_cmd = cur_cmd->next;
+	// printf("inside parse_command_from_tokens last loop\n");
+
 	}
 	return (head);
 }

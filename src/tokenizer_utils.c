@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/11 17:38:30 by rdl           ########   odam.nl         */
+/*   Updated: 2024/08/14 18:18:55 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,10 +97,10 @@ void	handle_word(char *input, int *i, t_token **head)
 
 	start = *i;
 	content = NULL;
-	printf("entered handle_word, word is==%s & index is ==%i\n", input, *i);
+	// printf("entered handle_word, word is==%s & index is ==%i\n", input, *i);
 	while (input[*i] && !is_whitespace(input[*i]) && !is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
 		(*i)++;
-	printf("index afterrr in handle word %i\n", *i);
+	// printf("index afterrr in handle word %i\n", *i);
 	content = ft_strndup(&input[start], *i - start);
 	// printf("word:%s\n", content);
 	add_token(head, content, TOKEN_WORD);	

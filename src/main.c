@@ -66,7 +66,7 @@ static char *create_prompt(void)
     size_t prompt_size = ft_strlen(username) + ft_strlen(hostname) + ft_strlen(cwd) + 50;
     prompt = malloc(prompt_size);
     if (prompt)
-        snprintf(prompt, prompt_size, "\001\033[1;32m\002%s@%s\001\033[0m\002:\001\033[1;34m\002%s\001\033[0m\002$ ", username, hostname, cwd);
+snprintf(prompt, prompt_size, "\001\033[1;35m\002%s@%s\001\033[0m\002:\001\033[1;33m\002%s\001\033[0m\002$ ", username, hostname, cwd);
 
     free(cwd);
     return prompt;
