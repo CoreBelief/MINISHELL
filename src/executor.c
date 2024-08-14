@@ -6,11 +6,13 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/13 18:58:11 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/08/14 18:22:56 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+ void	print_sorted_env(void);
 
 // char *find_executable(char *command)
 // {
@@ -161,7 +163,6 @@ void execute_command(char *command)
     int status;
     printf("command: %s\n", command);
     tokens = tokenizer(command);
-    print_token_list(tokens);
     if (!tokens)
         return;
 
@@ -171,7 +172,7 @@ void execute_command(char *command)
         free_tokens(&tokens);
         return;
     }
-    print_cmd_list(cmd);
+    // print_cmd_list(cmd);
     if (is_builtin(cmd->argv[0]))
     {
         execute_builtin(cmd);
@@ -186,8 +187,19 @@ void execute_command(char *command)
         else if (pid == 0)
         {
             setup_redirections(cmd);
-            execvp(cmd->argv[0], cmd->argv);
-            perror("minishell: execvp failed");
+            // printf("Executing external command: %s\n", cmd->argv[0]);
+            // execvp(cmd->argv[0], cmd->argv);
+            printf("execve\n");
+            // print_sorted_env();
+            int i = 0;
+            while (environ && environ[i])
+            {
+                printf("%s\n", environ[i]);
+                i++;
+            }
+            // printf("%s\n%s\n%s", cmd->argv[0], cmd->argv[1], cmd->argv[2]);
+            execve(cmd->argv[0], cmd->argv, environ);
+            perror("minishell: execvp failed\n");
             exit(EXIT_FAILURE);
         }
         else

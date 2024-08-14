@@ -6,7 +6,7 @@
 
 extern char **environ;
 
-static void	print_sorted_env(void)
+ void	print_sorted_env(void)
 {
 	char	**sorted_env;
 	int		env_size;
