@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/14 18:22:56 by rdl           ########   odam.nl         */
+/*   Updated: 2024/08/19 19:25:52 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,10 +155,22 @@ char *find_executable(char *command)
 
 //     free_command(cmd);
 // }
+
+// char *find_command_path(char *cmd_name)
+// {
+// 	char	*path;
+
+// 	path = getenv("PATH");
+// 	if (!path)
+// 		return (NULL);
+	
+// }
+
 void execute_command(char *command)
 {
     t_token *tokens;
     t_command *cmd;
+	char	*path;
     pid_t pid;
     int status;
     printf("command: %s\n", command);
@@ -172,7 +184,7 @@ void execute_command(char *command)
         free_tokens(&tokens);
         return;
     }
-    // print_cmd_list(cmd);
+    print_cmd_list(cmd);
     if (is_builtin(cmd->argv[0]))
     {
         execute_builtin(cmd);
@@ -190,15 +202,8 @@ void execute_command(char *command)
             // printf("Executing external command: %s\n", cmd->argv[0]);
             // execvp(cmd->argv[0], cmd->argv);
             printf("execve\n");
-            // print_sorted_env();
-            int i = 0;
-            while (environ && environ[i])
-            {
-                printf("%s\n", environ[i]);
-                i++;
-            }
-            // printf("%s\n%s\n%s", cmd->argv[0], cmd->argv[1], cmd->argv[2]);
-            execve(cmd->argv[0], cmd->argv, environ);
+			path = find_executable(cmd->argv[0]);
+            execve(path, cmd->argv, environ);
             perror("minishell: execvp failed\n");
             exit(EXIT_FAILURE);
         }
