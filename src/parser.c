@@ -53,6 +53,118 @@ int	handle_redirection_parsing(t_command *cmd, t_token **token)
 	return (0);
 }
 
+int	is_var_char(char c)
+{
+	return (ft_isalnum(c) || c == '_');
+}
+
+int	find_var_len(char *var)
+{
+	int	i;
+
+	i = 0;
+	while (var[i] && is_var_char(var[i]))
+		i++;
+	return (i);
+}
+
+void	variable_exp_dollar(t_token *token, char *str)
+{
+	int		i;
+	int		len;
+	char	*expansion;
+	char	*new_str;
+	char	*var;
+
+	i = 0;
+	expansion = NULL;
+	new_str = ft_strdup("");
+	//error handling
+	if (str[i] == '$' && str[i + 1])
+	{
+		i++;
+		len = find_var_len(&str[i]);
+		var = ft_strndup(&str[i], len);
+		//error handling
+		expansion = getenv(var);
+		free (var);
+		if (!expansion)
+		{
+			printf("expansion variable not found\n");
+			free (token->content);
+			token->content = "";
+			return ;
+		}
+		new_str = ft_strjoin(new_str, expansion);
+		if (!new_str)
+			return ;
+		i += len;
+		len = ft_strlen(&str[i]);
+		new_str = ft_strjoin(new_str, &str[i]);
+		if (!new_str)
+			return ;
+		token->content = new_str;
+		free (str);
+	}
+}
+
+int	until_dollar(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] && str[i] != '$')
+		i++;
+	return (i);
+}
+
+void	variable_exp_double(t_token *token, char *str)
+{
+	int		i;
+	int		len;
+	char	*expansion;
+	char	*new_str;
+	char	*var;
+
+	i = 0;
+	expansion = NULL;
+	new_str = ft_strdup("");
+	//error handling
+	while (str[i])
+	{
+		if (str[i] == '$' && ft_isalnum(str[i + 1]))
+		{
+			i++;
+			len = find_var_len(&str[i]);
+			var = ft_strndup(&str[i], len);
+			//error handling
+			expansion = getenv(var);
+			free (var);
+			if (!expansion)
+			{
+				printf("expansion variable not found\n");
+				free (token->content);
+				token->content = "";
+				return ;
+			}
+			new_str = ft_strjoin(new_str, expansion);
+			if (!new_str)
+				return ;
+			i += len;
+			len = until_dollar(&str[i]);
+			char *middle = ft_strndup(&str[i], len);
+			new_str = ft_strjoin(new_str, middle);
+			if (!new_str)
+				return ;
+			free (middle);
+			i += len;
+			token->content = new_str;
+		}
+		else
+			i++;
+	}
+}
+
 t_command *parse_command_from_tokens(t_token *tokens)
 {
 	t_command	*head;
@@ -73,6 +185,10 @@ t_command *parse_command_from_tokens(t_token *tokens)
 
 		if (!is_redirect_token(tokens->type) && tokens->type != TOKEN_PIPE)
 		{
+			if (tokens->type == TOKEN_DOUBLE_QUOTE)
+				variable_exp_double(tokens, tokens->content);
+			else if (tokens->content[0] == '$')
+				variable_exp_dollar(tokens, tokens->content);
 			cur_cmd->argv[i] = ft_strdup(tokens->content);
 			if (!cur_cmd->argv[i])
 				return (NULL);
@@ -148,6 +264,7 @@ void	print_cmd_list(t_command *head)
 	}
 	printf("\n");
 }
+/*---------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 // char *find_command_path(char *command)
 // {
