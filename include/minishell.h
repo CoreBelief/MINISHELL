@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/19 16:58:33 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/08/21 10:48:41 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,13 @@ typedef struct s_token
 	t_token_type	type;
 	struct s_token	*next;
 }	t_token;
+
+//struct for everything???????????
+// typedef struct s_gen
+// {
+// 	t_command	*commands;
+
+// }	t_gen;
 
 // Include builtins.h after struct definitions
 # include "builtins.h"

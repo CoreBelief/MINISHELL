@@ -5,7 +5,7 @@
 
 // Array of builtin command names
 static const char *builtin_commands[] = {
-    "echo", "cd", "pwd", "export", "unset", "env", "exit", "bye", NULL
+    "cd", "pwd", "export", "unset", "env", "exit", "bye", NULL
 };
 
 
