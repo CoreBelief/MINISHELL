@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/23 15:54:32 by rdl           ########   odam.nl         */
+/*   Updated: 2024/08/23 18:16:30 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void execute_command(char *command)
 	pid_t		pid;
 	int			status;
 
-	printf("command: %s\n", command);
+	// printf("command: %s\n", command);
 	tokens = tokenizer(command);
 	if (!tokens)
 		return ;
@@ -56,8 +56,8 @@ void execute_command(char *command)
 		return ;
 	}
 	// print_cmd_list(cmd);
-	if (is_parent_command(cmd->argv[0]))
-		execute_parent(cmd);
+	if (is_builtin_parent(cmd->argv[0]))
+		execute_builtin(cmd);
 	// if (is_builtin(cmd->argv[0])
 	// 	execute_builtin(cmd);
 	else
@@ -75,11 +75,19 @@ void execute_command(char *command)
 			// 	// printf("DEBUG: Executing 'echo' builtin\n");
 			// 	builtin_echo(cmd->argv);
 			// }
-			path = find_executable(cmd->argv[0]);
-			printf("external command: %s\n", path);
-			execve(path, cmd->argv, environ);
-			perror("minishell: execve failed\n");
-			exit(EXIT_FAILURE);
+			if (is_builtin(cmd->argv[0]))
+			{
+				execute_builtin(cmd);
+				exit(EXIT_SUCCESS);
+			}
+			else
+			{
+				path = find_executable(cmd->argv[0]);
+				// printf("external command: %s\n", path);
+				execve(path, cmd->argv, environ);
+				perror("minishell: execve failed\n");
+				exit(EXIT_FAILURE);
+			}
 		}
 		else
 		{
