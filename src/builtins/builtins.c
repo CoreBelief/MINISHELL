@@ -22,10 +22,6 @@
 
 char *find_executable(char *command);
 
-static const char *parent_commands[] = {
-    "cd", "export", "unset", "exit", "source", ".", "alias", "unalias", "set", "jobs", "fg", "bg", NULL
-};
-
 static const char *builtin_parent_commands[] = {
     "cd", "export", "unset", "exit", NULL
 };
@@ -37,24 +33,6 @@ static const char *builtin_commands[] = {
 // static const char *builtin_child_commands[] = {
 //     "pwd", "echo", "env", NULL
 // };
-
-int is_parent_command(char *command)
-{
-    // printf("DEBUG: Checking if '%s' is a builtin command\n", command);
-    int i = 0;
-    while (parent_commands[i])
-    {
-        // printf("DEBUG: Comparing '%s' with '%s'\n", command, builtin_commands[i]);
-        if (ft_strcmp(command, parent_commands[i]) == 0)
-        {
-            // printf("DEBUG: Found builtin command '%s'\n", command);
-            return 1;
-        }
-        i++;
-    }
-    // printf("DEBUG: '%s' is not a builtin command\n", command);
-    return 0;
-}
 
 int    is_builtin_parent(char *command)
 {
@@ -83,17 +61,6 @@ void    execute_external(t_command *cmd)
     execve(path, cmd->argv, environ);
     perror("minishell: execve failed\n");
     exit(EXIT_FAILURE);
-}
-void execute_parent(t_command *cmd)
-{
-    if (is_builtin_parent(cmd->argv[0]))
-    {
-        execute_builtin(cmd);
-    }
-    else
-    {
-        execute_external(cmd);
-    }
 }
 
 int is_builtin(char *command)

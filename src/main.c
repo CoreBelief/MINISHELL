@@ -99,7 +99,7 @@ void minishell_loop(void)
             printf("exit\n");
             break;
         }
-        printf("input: %s\n", line);
+        // printf("input: %s\n", line);
         process_input(line);
         free(line);
     }
