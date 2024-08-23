@@ -1,0 +1,2 @@
+external command: /usr/bin/echo
+hello
