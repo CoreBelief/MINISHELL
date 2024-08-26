@@ -1,16 +1,12 @@
 #include "tokenizer.h"
 #include "libft.h"
 
-
-
-
 int	is_whitespace(char c)
 {
 	if ((c >= 9 && c <= 13) || c == 32)
 		return (1);
 	return (0);
 }
-
 
 t_token	*tokenizer(char *input)
 {
@@ -67,8 +63,6 @@ t_token	*add_token(t_token **head, char *content, t_token_type type)
 	}
 	return (new_token);
 }
-
-
 
 void	free_tokens(t_token **head)
 {
