@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/23 16:21:43 by rdl           ########   odam.nl         */
+/*   Updated: 2024/08/27 15:09:33 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct s_command
 {
     char        *path;
     char        **argv;
-    t_redirect  *redirects;
+    t_redirect  *redir;
     int         redirect_count;
     int         pipe_in;
     int         pipe_out;
@@ -100,7 +100,7 @@ int         is_redirection(char *token);
 void        add_redirection(t_command *cmd, char *type, char *file);
 
 // Command execution
-void        execute_command(char *command);
+void        execute_command(t_command *cmd);
 void        update_exit_status(int status);
 
 void	setup_signals(void);
