@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   parser_utils.c                                     :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: elleneklund <elleneklund@student.codam.      +#+                     */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/08/25 16:20:47 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/08/27 14:11:06 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ int	is_redirect_token(int token_type)
 
 int	handle_redirection_parsing(t_command *cmd, t_token **token)
 {
-	cmd->redirects[cmd->redirect_count].type = (*token)->type;
+	cmd->redir[cmd->redirect_count].type = (*token)->type;
 	(*token) = (*token)->next;
 	if (token && (*token)->type == TOKEN_WORD)
 	{
-		cmd->redirects[cmd->redirect_count].file = ft_strdup((*token)->content);
-		if (!cmd->redirects[cmd->redirect_count].file)
+		cmd->redir[cmd->redirect_count].file = ft_strdup((*token)->content);
+		if (!cmd->redir[cmd->redirect_count].file)
 			return (0);
 		cmd->redirect_count++;
 		return (1);
@@ -35,7 +35,7 @@ int	handle_redirection_parsing(t_command *cmd, t_token **token)
 	return (0);
 }
 
-int	handle_arg_parsing(t_command *cmd, t_token **tokens, int *i)
+int	handle_arg_parsing_2nd(t_command *cmd, t_token **tokens, int *i)
 {
 	if ((*tokens)->type == TOKEN_DOUBLE_QUOTE)
 		variable_exp_double(*tokens, (*tokens)->content);
@@ -48,30 +48,44 @@ int	handle_arg_parsing(t_command *cmd, t_token **tokens, int *i)
 	return (1);
 }
 
+// int	handle_arg_parsing(t_command *cmd, t_token *tokens, int *i)
+// {
+// 	if (tokens->type == TOKEN_DOUBLE_QUOTE)
+// 		variable_exp_double(tokens, tokens->content);
+// 	else if (tokens->content[0] == '$')
+// 		variable_exp_dollar(tokens, tokens->content);
+// 	cmd->argv[*i] = ft_strdup(tokens->content);
+// 	if (!cmd->argv[*i])
+// 		return (0);
+// 	(*i)++;
+// 	return (1);
+// }
+
 t_command	*handle_pipe_parsing(t_command *cmd, int *i)
 {
-	t_command *new_cmd;
+	t_command	*new_cmd;
 
 	new_cmd = init_cmd();
-    if (!new_cmd)
-        return (NULL); // Handle error
-    cmd->argv[*i] = NULL;
-    cmd->pipe_out = 1;
-    cmd->next = new_cmd;
-    *i = 0;
-    return new_cmd;
-
+	if (!new_cmd)
+		return (NULL); // Handle error
+	cmd->argv[*i] = NULL;
+	cmd->pipe_out = PIPE_OUT; // 
+	cmd->next = new_cmd;
+	if (new_cmd)
+		new_cmd->pipe_in = PIPE_IN;
+	*i = 0;
+	return (new_cmd);
 }
 
-void set_command_paths(t_command *cur_cmd)
+void	set_command_paths(t_command *cur_cmd)
 {
-    while (cur_cmd)
-    {
-        cur_cmd->path = ft_strdup(cur_cmd->argv[0]);
-        if (!cur_cmd->path)
-            return ; // Handle error
-        cur_cmd = cur_cmd->next;
-    }
+	while (cur_cmd)
+	{
+		cur_cmd->path = ft_strdup(cur_cmd->argv[0]);
+		if (!cur_cmd->path)
+			return ; // Handle error
+		cur_cmd = cur_cmd->next;
+	}
 }
 
 
@@ -96,13 +110,13 @@ void	print_cmd_list(t_command *head)
 		}
 		if (head->redirect_count != 0)
 		{
-			printf("redirecttype == %i target file == %s\n", head->redirects->type, head->redirects->file);
+			printf("redirecttype == %i target file == %s\n", head->redir->type, head->redir->file);
 		}
 	    printf("  Pipe In: %d, Pipe Out: %d\n", head->pipe_in, head->pipe_out);
 		j = 0;
         for (j = 0; j < head->redirect_count; j++)
         {
-            printf("  Redirect[%d] Type: %d, File: %s\n", j, head->redirects[j].type, head->redirects[j].file);
+            printf("  Redirect[%d] Type: %d, File: %s\n", j, head->redir[j].type, head->redir[j].file);
         }
 		head = head->next;
 	}

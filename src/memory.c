@@ -18,11 +18,11 @@ void free_command(t_command *cmd)
         free(cmd->argv);
     }
 
-    if (cmd->redirects)
+    if (cmd->redir)
     {
         for (i = 0; i < cmd->redirect_count; i++)
-            free(cmd->redirects[i].file);
-        free(cmd->redirects);
+            free(cmd->redir[i].file);
+        free(cmd->redir);
     }
 
     free(cmd);

@@ -72,14 +72,29 @@ snprintf(prompt, prompt_size, "\001\033[1;35m\002%s@%s\001\033[0m\002:\001\033[1
     return prompt;
 }
 
-static void process_input(char *line)
+static void	process_input(char *line)
 {
-    if (line && *line)
-    {
-        add_history(line);
-        execute_command(line);
-        update_exit_status(g_exit_status);
-    }
+	t_token		*tokens;
+	t_command	*cmd;
+
+	if (line && *line)
+	{
+		add_history(line);
+		tokens = tokenizer(line);
+		if (!tokens)
+			return ;
+		// print_token_list(tokens);
+		cmd = parse_command_from_tokens(tokens);
+		if (!cmd)
+		{
+			free_tokens(&tokens);
+			return ;
+		}
+		// print_cmd_list(cmd);
+		free_tokens(&tokens);
+		execute_command(cmd);
+		update_exit_status(g_exit_status);
+	}
 }
 
 void minishell_loop(void)

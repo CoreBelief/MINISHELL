@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/25 16:03:20 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/08/27 15:32:03 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,65 +36,139 @@ char *find_executable(char *command)
     return ft_strdup(command);  // Return the command as-is if not found in PATH
 }
 
-void execute_command(char *command)
+
+void execute_command(t_command *cmd)
 {
-	t_token		*tokens;
-	t_command	*cmd;
 	char		*path;
 	pid_t		pid;
 	int			status;
+	int			pipe_fds[2];
+	t_command	*cur_cmd;
+	int			prev_pipe_read;
 
-	// printf("command: %s\n", command);
-	tokens = tokenizer(command);
-	if (!tokens)
-		return ;
-
-	cmd = parse_command_from_tokens(tokens);
-	if (!cmd)
+	prev_pipe_read = -1;
+	cur_cmd = cmd;
+	while (cur_cmd)
 	{
-		free_tokens(&tokens);
-		return ;
-	}
-	// print_cmd_list(cmd);
-	if (is_builtin_parent(cmd->argv[0]))
-		execute_builtin(cmd);
-	// if (is_builtin(cmd->argv[0])
-	// 	execute_builtin(cmd);
-	else
-	{
-		pid = fork();
-		if (pid == -1)
+		printf("cur cmd %s\n", cur_cmd->argv[0]);
+		printf("fd %i\n", prev_pipe_read);
+		if (cur_cmd->pipe_out == PIPE_OUT)
 		{
-			perror("minishell: fork");
-		}
-		else if (pid == 0)
-		{
-			setup_redirections(cmd);
-			// if (ft_strcmp(cmd->argv[0], "echo") == 0)
-			// {
-			// 	// printf("DEBUG: Executing 'echo' builtin\n");
-			// 	builtin_echo(cmd->argv);
-			// }
-			if (is_builtin(cmd->argv[0]))
+			if (pipe(pipe_fds) == -1)
 			{
-				execute_builtin(cmd);
-				exit(EXIT_SUCCESS);
-			}
-			else
-			{
-				path = find_executable(cmd->argv[0]);
-				// printf("external command: %s\n", path);
-				execve(path, cmd->argv, environ);
-				perror("minishell: execve failed\n");
+				perror("minishell: pipe");
 				exit(EXIT_FAILURE);
 			}
 		}
+		if (is_builtin_parent(cmd->argv[0]))
+		{
+			execute_builtin(cmd);
+			//implent some sort of pipe thingyyy
+		}
 		else
 		{
-			waitpid(pid, &status, 0);
-			update_exit_status(status);
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("minishell: fork");
+			}
+			else if (pid == 0)
+			{
+				//in child
+				setup_redirections(cmd);
+				if (prev_pipe_read != -1)
+				{
+					dup2(prev_pipe_read, STDIN_FILENO);
+					close(prev_pipe_read);
+				}
+				if (cur_cmd->pipe_out)
+				{
+					close(pipe_fds[0]);
+					dup2(pipe_fds[1], STDOUT_FILENO);
+					close(pipe_fds[1]);
+				}
+				if (is_builtin(cmd->argv[0]))
+				{
+					execute_builtin(cmd);
+					exit(EXIT_SUCCESS);
+				}
+				else
+				{
+					path = find_executable(cmd->argv[0]);
+					printf("command: %s\n", path);
+					execve(path, cmd->argv, environ);
+					perror("minishell: execve failed\n");
+					exit(EXIT_FAILURE);
+				}
+			}
+			else
+			{
+				//in parent!
+				if (prev_pipe_read != -1)
+					close(prev_pipe_read);
+				if (cur_cmd->pipe_out == PIPE_OUT)
+				{
+					close(pipe_fds[1]);
+					prev_pipe_read = pipe_fds[0];
+				}
+				else
+					prev_pipe_read = -1;
+			}
 		}
+		cur_cmd = cur_cmd->next;
 	}
+	while (wait(&status) > 0)
+		;
+	update_exit_status(status);
 	free_command(cmd);
-	free_tokens(&tokens);
 }
+
+
+// OLD WORKING EXECUTOR
+// void execute_command(t_command *cmd)
+// {
+// 	char		*path;
+// 	pid_t		pid;
+// 	int			status;
+
+// 	if (is_builtin_parent(cmd->argv[0]))
+// 		execute_builtin(cmd);
+// 	// if (is_builtin(cmd->argv[0])
+// 	// 	execute_builtin(cmd);
+// 	else
+// 	{
+// 		pid = fork();
+// 		if (pid == -1)
+// 		{
+// 			perror("minishell: fork");
+// 		}
+// 		else if (pid == 0)
+// 		{
+// 			setup_redirections(cmd);
+// 			// if (ft_strcmp(cmd->argv[0], "echo") == 0)
+// 			// {
+// 			// 	// printf("DEBUG: Executing 'echo' builtin\n");
+// 			// 	builtin_echo(cmd->argv);
+// 			// }
+// 			if (is_builtin(cmd->argv[0]))
+// 			{
+// 				execute_builtin(cmd);
+// 				exit(EXIT_SUCCESS);
+// 			}
+// 			else
+// 			{
+// 				path = find_executable(cmd->argv[0]);
+// 				// printf("external command: %s\n", path);
+// 				execve(path, cmd->argv, environ);
+// 				perror("minishell: execve failed\n");
+// 				exit(EXIT_FAILURE);
+// 			}
+// 		}
+// 		else
+// 		{
+// 			waitpid(pid, &status, 0);
+// 			update_exit_status(status);
+// 		}
+// 	}
+// 	free_command(cmd);
+// }
