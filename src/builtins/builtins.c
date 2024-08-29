@@ -57,7 +57,7 @@ void    execute_external(t_command *cmd)
     char *path;
 
     path = find_executable(cmd->argv[0]);
-    printf("external command: %s\n", path);
+    // printf("external command: %s\n", path);
     execve(path, cmd->argv, environ);
     perror("minishell: execve failed\n");
     exit(EXIT_FAILURE);

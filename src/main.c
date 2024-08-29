@@ -125,3 +125,4 @@ int main(void)
     minishell_loop();
     return (g_exit_status);
 }
+

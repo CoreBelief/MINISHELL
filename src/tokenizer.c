@@ -7,7 +7,7 @@ int	is_whitespace(char c)
 		return (1);
 	return (0);
 }
-
+// have to fix if there are 2 consecutive commands in handle_word function
 t_token	*tokenizer(char *input)
 {
 	t_token	*head;
