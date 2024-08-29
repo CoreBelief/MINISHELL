@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/19 16:58:18 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/08/29 16:34:07 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ bool is_special_token(char c)
 {
     return (c == '|' || c == '<' || c == '>');
 }
-
+//the special token thing fucks it up if there are 2 consecutive commands
 void	handle_word(char *input, int *i, t_token **head)
 {
 	int		start;

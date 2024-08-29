@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/21 11:00:43 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/27 12:55:41 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/08/29 15:03:34 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	setup_redirections(t_command *cmd)
 	while (cur < cmd->redirect_count)
 	{
 		if (cmd->redir[cur].type == TOKEN_REDIRECT_OUT)
-			fd = open(cmd->redir[cur].file, O_WRONLY | O_CREAT | O_TRUNC, 420);
+			fd = open(cmd->redir[cur].file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		else if (cmd->redir[cur].type == TOKEN_REDIRECT_APPEND)
 			fd = open(cmd->redir[cur].file, O_WRONLY | O_CREAT | O_APPEND, 420);
 		else if (cmd->redir[cur].type == TOKEN_REDIRECT_IN)
