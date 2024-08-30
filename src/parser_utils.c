@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/08/29 14:59:56 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/08/30 10:54:46 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,12 @@ t_command	*handle_pipe_parsing(t_command *cmd, int *i)
 	cmd->argv[*i] = NULL;
 	cmd->pipe_out = PIPE_OUT; // 
 	cmd->next = new_cmd;
-	if (new_cmd)
-		new_cmd->pipe_in = PIPE_IN;
+	new_cmd->pipe_in = PIPE_IN;
 	*i = 0;
 	return (new_cmd);
 }
-
+// gives seg fault if the input ends with a pipe, it tires to access cur_cmd->argv[0] which doesnt exists
+// i think if itends with a pipe it is waiting for that command from stdin. 
 void	set_command_paths(t_command *cur_cmd)
 {
 	while (cur_cmd)
