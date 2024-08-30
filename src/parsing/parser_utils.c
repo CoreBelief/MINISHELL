@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/08/30 16:30:17 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/08/30 18:22:19 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	is_redirect_token(int token_type)
 		token_type == TOKEN_REDIRECT_APPEND || \
 		token_type == TOKEN_HEREDOC);
 }
-
+//need special handling for heredoc
 int	handle_redirection_parsing(t_command *cmd, t_token **token)
 {
 	cmd->redir[cmd->redirect_count].type = (*token)->type;

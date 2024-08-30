@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/30 16:24:21 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/08/30 18:18:44 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,29 +17,22 @@
 void	tokenize_redirection(char *input, int *i, t_token **head)
 {
 	// printf("entered handle_redirection\n");
-	if (input[*i] == '>')
+	if (input[*i] == '>' || input[*i] == '<')
 	{
-		if (input[*i + 1] == '>')
+		if (input[*i + 1] == input[*i])
 		{
-			add_token(head, ft_strdup(">>"), TOKEN_REDIRECT_APPEND);
+			if (input[*i] == '>')
+				add_token(head, ft_strdup(">>"), TOKEN_REDIRECT_APPEND);
+			else
+				add_token(head, ft_strdup("<<"), TOKEN_HEREDOC);
 			(*i) = (*i) + 2;
 		}
 		else
 		{
-			add_token(head, ft_strdup(">"), TOKEN_REDIRECT_OUT);
-			(*i)++;
-		}
-	}
-	else if (input[*i] == '<')
-	{
-		if (input[*i + 1] == '<')
-		{
-			add_token(head, ft_strdup("<<"), TOKEN_HEREDOC);
-			(*i) = (*i) + 2;
-		}
-		else
-		{
-			add_token(head, ft_strdup("<"), TOKEN_REDIRECT_IN);
+			if (input[*i] == '>')
+				add_token(head, ft_strdup(">"), TOKEN_REDIRECT_OUT);
+			else
+				add_token(head, ft_strdup("<"), TOKEN_REDIRECT_IN);
 			(*i)++;
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/30 16:45:03 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/08/30 18:23:37 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,17 +47,6 @@ extern char **environ;
 
 // Main loop
 void    minishell_loop(void);
-
-// Parsing and tokenization
-t_command   *parse_command(char *input);
-// char        **tokenize_command(char *command);
-char        *find_command_path(char *command);
-int         is_redirection(char *token);
-void        add_redirection(t_command *cmd, char *type, char *file);
-
-// Command execution
-// void        execute_command(t_command *cmd);
-// void        update_exit_status(int status);
 
 void	setup_signals(void);
 // Environment variables

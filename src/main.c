@@ -91,7 +91,7 @@ static void	process_input(char *line)
 			free_tokens(&tokens);
 			return ;
 		}
-		print_cmd_list(cmd);
+		// print_cmd_list(cmd);
 		free_tokens(&tokens);
 		execute_command(cmd);
         free_command_list(&cmd);
