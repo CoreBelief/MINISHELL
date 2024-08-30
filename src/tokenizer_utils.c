@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/30 11:19:02 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/08/30 16:24:21 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "libft.h"
 
 
-void	handle_redirection(char *input, int *i, t_token **head)
+void	tokenize_redirection(char *input, int *i, t_token **head)
 {
 	// printf("entered handle_redirection\n");
 	if (input[*i] == '>')
@@ -45,7 +45,7 @@ void	handle_redirection(char *input, int *i, t_token **head)
 	}
 }
 
-void	handle_single(char *input, int *i, t_token **head)
+void	tokenize_single(char *input, int *i, t_token **head)
 {
 	int		start;
 	char	*content;
@@ -65,7 +65,7 @@ void	handle_single(char *input, int *i, t_token **head)
 	// else its a wrong input??
 }
 
-void	handle_double(char *input, int *i, t_token **head)
+void	tokenize_double(char *input, int *i, t_token **head)
 {
 	int		start;
 	char	*content;
@@ -91,7 +91,7 @@ bool is_special_token(char c)
 }
 //the special token thing fucks it up if there are 2 consecutive commands or not????
 //smth weird might not be here 
-void	handle_word(char *input, int *i, t_token **head)
+void	tokenize_word(char *input, int *i, t_token **head)
 {
 	int		start;
 	char	*content;

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/30 10:08:16 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/08/30 15:12:21 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ t_command	*init_cmd(void)
 	cmd->path = NULL;
 	return (cmd);
 }
-
-// void	free_command_list(t_command *head)
 
 static int	handle_token(t_token **tokens, t_command **cur_cmd, int *i)
 {

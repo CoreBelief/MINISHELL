@@ -6,12 +6,13 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/29 14:47:31 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/08/30 16:45:03 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
+
 # include "utils.h"
 # include <unistd.h>
 # include <stdio.h>
@@ -23,65 +24,20 @@
 # include <readline/history.h>
 # include <fcntl.h>
 # include <sys/types.h>
+# include <stdbool.h>
+
 # include "libft.h"
-
-
-# define MAX_ARGS 1024
-# define MAX_REDIRECTS 10
-
-// Structs
-typedef struct s_redirect
-{
-	int		type;  // 0: input, 1: output, 2: append, 3: heredoc
-	char	*file;
-}	t_redirect;
-
-typedef struct s_command
-{
-	char				*path;
-	char				**argv;
-	t_redirect			*redir;
-	int					redirect_count;
-	int					pipe_in;
-	int					pipe_out;
-	struct s_command	*next;
-}	t_command;
-
-typedef struct s_parsed_line
-{
-	t_command	*command;
-	char		**env_vars;
-}	t_parsed_line;
-
-typedef enum {
-	TOKEN_WORD,
-	TOKEN_PIPE,
-	TOKEN_REDIRECT_IN,
-	TOKEN_REDIRECT_OUT,
-	TOKEN_REDIRECT_APPEND,
-	TOKEN_HEREDOC,
-	TOKEN_SINGLE_QUOTE,
-	TOKEN_DOUBLE_QUOTE
-} t_token_type;
-
-typedef struct s_token
-{
-	char			*content;
-	t_token_type	type;
-	struct s_token	*next;
-}	t_token;
-
-//struct for everything???????????
-// typedef struct s_gen
-// {
-// 	t_command	*commands;
-
-// }	t_gen;
-
-// Include builtins.h after struct definitions
+# include "structs.h"
 # include "builtins.h"
 # include "parser.h"
 # include "tokenizer.h"
+# include "memory.h"
+# include "executor.h"
+# include "var_exp.h"
+# include "environ.h"
+
+# define MAX_ARGS 1024
+# define MAX_REDIRECTS 10
 
 // Global variables
 extern int g_exit_status;
@@ -94,14 +50,14 @@ void    minishell_loop(void);
 
 // Parsing and tokenization
 t_command   *parse_command(char *input);
-char        **tokenize_command(char *command);
+// char        **tokenize_command(char *command);
 char        *find_command_path(char *command);
 int         is_redirection(char *token);
 void        add_redirection(t_command *cmd, char *type, char *file);
 
 // Command execution
-void        execute_command(t_command *cmd);
-void        update_exit_status(int status);
+// void        execute_command(t_command *cmd);
+// void        update_exit_status(int status);
 
 void	setup_signals(void);
 // Environment variables
@@ -112,7 +68,7 @@ void        setup_redirections(t_command *cmd);
 void        handle_pipes(t_command *cmd1, t_command *cmd2);
 
 // Memory management
-void        free_command(t_command *cmd);
+// void        free_command(t_command *cmd);
 
 // Error handling
 void        print_error(char *msg);

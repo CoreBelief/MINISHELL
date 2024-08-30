@@ -27,3 +27,17 @@ void free_command(t_command *cmd)
 
     free(cmd);
 }
+
+void	free_command_list(t_command **head)
+{
+	t_command	*tmp;
+
+	if (!head || !*head)
+		return ;
+	while (*head)
+	{
+		tmp = *head;
+		free_command(tmp);
+		*head = (*head)->next;
+	}
+}
