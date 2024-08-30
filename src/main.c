@@ -84,6 +84,7 @@ static void	process_input(char *line)
 		if (!tokens)
 			return ;
 		// print_token_list(tokens);
+        // free(line); // free it here maybe because we dont use it anymore?
 		cmd = parse_command_from_tokens(tokens);
 		if (!cmd)
 		{
@@ -93,6 +94,7 @@ static void	process_input(char *line)
 		print_cmd_list(cmd);
 		free_tokens(&tokens);
 		execute_command(cmd);
+        free_command_list(&cmd);
 		update_exit_status(g_exit_status);
 	}
 }
@@ -108,7 +110,6 @@ void minishell_loop(void)
         prompt = create_prompt();
         line = readline(prompt);
         free(prompt);
-
         if (!line)
         {
             printf("exit\n");

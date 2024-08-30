@@ -30,13 +30,13 @@ t_token	*tokenizer(char *input)
 			i++;
 		}
 		else if (input[i] == '<' || input[i] == '>')
-			handle_redirection(input, &i, &head);
+			tokenize_redirection(input, &i, &head);
 		else if (input[i] == '\'')
-			handle_single(input, &i, &head);
+			tokenize_single(input, &i, &head);
 		else if (input[i] == '"')
-			handle_double(input, &i, &head);
+			tokenize_double(input, &i, &head);
 		else
-			handle_word(input, &i, &head);
+			tokenize_word(input, &i, &head);
 	}
 	return (head);
 }

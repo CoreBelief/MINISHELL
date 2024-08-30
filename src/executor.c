@@ -6,12 +6,12 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/29 17:12:46 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/08/30 15:27:02 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "builtins.h"
+#include "executor.h"
 
  void	print_sorted_env(void);
 
@@ -125,7 +125,7 @@ void execute_command(t_command *cmd)
 	update_exit_status(status);
 	// waitpid(pid, &status, 0);
 	// update_exit_status(status);
-	free_command(cmd);
+	// free_command(cmd);
 }
 
 

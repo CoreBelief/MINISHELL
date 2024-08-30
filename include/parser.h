@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:19:51 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/29 14:59:07 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/08/30 16:40:22 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 # define PARSER_H
 
 # include "minishell.h"
-# include "tokenizer.h"
-# include "var_exp.h"
 
 # define PIPE_IN 50
 # define PIPE_OUT 100

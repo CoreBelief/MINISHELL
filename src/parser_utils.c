@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/08/30 10:54:46 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/08/30 16:30:17 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ t_command	*handle_pipe_parsing(t_command *cmd, int *i)
 	return (new_cmd);
 }
 // gives seg fault if the input ends with a pipe, it tires to access cur_cmd->argv[0] which doesnt exists
-// i think if itends with a pipe it is waiting for that command from stdin. 
+// i think if it ends with a pipe it is waiting for that command from stdin. 
 void	set_command_paths(t_command *cur_cmd)
 {
 	while (cur_cmd)
@@ -93,12 +93,10 @@ void	set_command_paths(t_command *cur_cmd)
 //DEUG FUNCTION
 void	print_cmd_list(t_command *head)
 {
-	// t_command	*temp;
 	int			i;
 	int			j;
 
 	printf("inside print cmd_lst\n");
-	// temp = head;
 	while (head)
 	{
 		printf("command path-> '%s' redir count:%i\n", head->path, head->redirect_count);
