@@ -36,6 +36,8 @@ typedef struct s_command
 	char				**argv;
 	t_redirect			*redir;
 	int					redirect_count;
+	int					input;
+	int					output;
 	int					pipe_in;
 	int					pipe_out;
 	struct s_command	*next;

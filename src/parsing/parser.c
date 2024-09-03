@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/30 15:12:21 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/03 16:43:53 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ t_command	*init_cmd(void)
 	cmd->redirect_count = 0;
 	cmd->pipe_in = STDIN_FILENO;
 	cmd->pipe_out = STDOUT_FILENO;
+	cmd->input = -1;
+	cmd->output = -1;
 	cmd->next = NULL;
 	cmd->path = NULL;
 	return (cmd);
