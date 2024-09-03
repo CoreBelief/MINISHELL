@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/30 15:27:02 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/03 18:14:51 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char *find_executable(char *command)
     return ft_strdup(command);  // Return the command as-is if not found in PATH
 }
 
-// downst work with redirections, maybe somthing about trying to dup2() from stdout after a redirection?
+// shoudlent pipe it if there are redirections, then they will redirict, echo "input" > txt > test | cat txt soesnt work for example, i still need to fix how the stream goes.
 void execute_command(t_command *cmd)
 {
 	// char		*path;
@@ -76,25 +76,27 @@ void execute_command(t_command *cmd)
 			else if (pid == 0)
 			{
 				//in child
-				// printf("created fork\n");
-				// printf("Current command: %s\n", cur_cmd->argv[0]);
-				if (prev_pipe_read != -1)
+				printf("created fork\n");
+				if (cur_cmd->redirect_count)
+					setup_redirections(cur_cmd);
+				printf("Current command: %s and cur_cmd->output == %i\n", cur_cmd->argv[0], cur_cmd->output);
+				fflush(stdout);
+				if (prev_pipe_read != -1 && cur_cmd->output == -1)
 				{
-					// printf("read from prev_pipe_read == %i instead of stdin\n", prev_pipe_read);
+					printf("cmd: %s, read from prev_pipe_read == %i instead of stdin\n", cur_cmd->argv[0], prev_pipe_read);
 					dup2(prev_pipe_read, STDIN_FILENO);
 					close(prev_pipe_read);
 				}
-				if (cur_cmd->pipe_out == PIPE_OUT)
+				if (cur_cmd->pipe_out == PIPE_OUT && cur_cmd->output == -1)
 				{
-					// printf("piping from stdout to pipe_fds[1] == %i\n", pipe_fds[1]);
+					printf("piping from stdout to pipe_fds[1] == %i\n", pipe_fds[1]);
 					dup2(pipe_fds[1], STDOUT_FILENO);
 					close(pipe_fds[1]);
 				}
-				setup_redirections(cmd);
 				close(pipe_fds[0]);
 				if (is_builtin(cmd->argv[0]))
 				{
-					// printf("execute builtin\n");
+					printf("execute builtin\n");
 					execute_builtin(cmd);
 					exit(EXIT_SUCCESS);
 				}
@@ -104,11 +106,12 @@ void execute_command(t_command *cmd)
 			else
 			{
 				//in parent!
+				printf("cur_cmd: %s, cur_cmd->output == %i\n", cur_cmd->argv[0], cur_cmd->output);
 				if (prev_pipe_read != -1)
 					close(prev_pipe_read);
-				if (cur_cmd->pipe_out == PIPE_OUT)
+				if (cur_cmd->pipe_out == PIPE_OUT && cur_cmd->output == -1)
 				{
-					// printf("setting prev_pipe_read from pipe_fds[0] == %i\n", pipe_fds[0]);
+					printf("cur_cmd: %s, setting prev_pipe_read from pipe_fds[0] == %i\n", cur_cmd->argv[0], pipe_fds[0]);
 					close(pipe_fds[1]);
 					prev_pipe_read = pipe_fds[0];
 				}
