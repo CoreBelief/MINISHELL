@@ -6,12 +6,15 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/21 11:00:43 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/03 17:58:03 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/04 15:42:18 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// NEEDS TO BE FIXED
+// flow of input/output, what should be redirected, also maybe not use dup here but wait til later
+// redircetions in combination with pipes is still fucked
 void	setup_redirections(t_command *cmd)
 {
 	// int	fd;
