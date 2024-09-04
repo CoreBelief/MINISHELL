@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:19:51 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/08/30 16:40:22 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/04 15:34:40 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 # define PARSER_H
 
 # include "minishell.h"
-
-# define PIPE_IN 50
-# define PIPE_OUT 100
 
 t_command	*init_cmd(void);
 int			is_redirect_token(int token_type);
