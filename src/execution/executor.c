@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/04 15:39:29 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/05 16:03:58 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,11 @@ void	setup_pipes(t_command *cmd, int pipe_fds[2])
 
 void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read)
 {
-	// this needs to be fixed! ex. cat < txt | cat -e or ls | cat -e > txt doesnt work. 
-	// have to implent good system for how the input/output should flow
 	if (cmd->redirect_count)
 		setup_redirections(cmd);
 	// printf("Current command: %s and cmd->output == %i\n", cmd->argv[0], cmd->output);
 	// fflush(stdout);
-	if (prev_pipe_read != -1 && cmd->output == -1)
+	if (prev_pipe_read != -1 && cmd->input == -1)
 	{
 		// printf("cmd: %s, read from prev_pipe_read == %i instead of stdin\n", cmd->argv[0], prev_pipe_read);
 		dup2(prev_pipe_read, STDIN_FILENO);
@@ -76,10 +74,7 @@ void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read)
 		exit(EXIT_SUCCESS);
 	}
 	else
-	{
-		// printf("executing external\n");
 		execute_external(cmd);
-	}
 }
 
 void	handle_parent_process(t_command *cmd, int pipe_fds[2], int *prev_pipe_read)
