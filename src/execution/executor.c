@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/05 17:30:54 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/06 17:10:23 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,24 +52,19 @@ void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read)
 {
 	if (cmd->redirect_count)
 		setup_redirections(cmd);
-	// printf("Current command: %s and cmd->output == %i\n", cmd->argv[0], cmd->output);
-	// fflush(stdout);
 	if (prev_pipe_read != -1 && cmd->input == -1)
 	{
-		// printf("cmd: %s, read from prev_pipe_read == %i instead of stdin\n", cmd->argv[0], prev_pipe_read);
 		dup2(prev_pipe_read, STDIN_FILENO);
 		close(prev_pipe_read);
 	}
 	if (cmd->pipe_out == 1 && cmd->output == -1)
 	{
-		// printf("piping from stdout to pipe_fds[1] == %i\n", pipe_fds[1]);
 		dup2(pipe_fds[1], STDOUT_FILENO);
 		close(pipe_fds[1]);
 	}
 	close(pipe_fds[0]);
 	if (is_builtin(cmd->argv[0]))
 	{
-		// printf("execute builtin\n");
 		execute_builtin(cmd);
 		exit(EXIT_SUCCESS);
 	}
@@ -83,7 +78,6 @@ void	handle_parent_process(t_command *cmd, int pipe_fds[2], int *prev_pipe_read)
 		close(*prev_pipe_read);
 	if (cmd->pipe_out == 1 && cmd->output == -1)
 	{
-		// printf("cur_cmd: %s, setting prev_pipe_read from pipe_fds[0] == %i\n", cur_cmd->argv[0], pipe_fds[0]);
 		close(pipe_fds[1]);
 		*prev_pipe_read = pipe_fds[0];
 	}

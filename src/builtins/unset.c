@@ -18,7 +18,7 @@ void	builtin_unset(char **args)
 		}
 		else
 		{
-			unsetenv(args[i]);
+			ft_unset_env(args[i]);
 		}
 		i++;
 	}
