@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+//this is a global variable that is defined in the main.c file, so its forbidden!!
 extern char **environ;
 
  void	print_sorted_env(void)
@@ -42,28 +43,54 @@ extern char **environ;
 	free(sorted_env);
 }
 
-void	builtin_export(char **args)
-{
-	int		i;
-	char	*equal_sign;
+// void	builtin_export(char **args)
+// {
+// 	int		i;
+// 	char	*equal_sign;
 
-	if (!args[1])
-	{
-		print_sorted_env();
-		return ;
-	}
-	i = 1;
-	while (args[i])
-	{
-		equal_sign = ft_strchr(args[i], '=');
-		if (equal_sign)
-		{
-			*equal_sign = '\0';
-			setenv(args[i], equal_sign + 1, 1);
-			*equal_sign = '=';
-		}
-		else
-			setenv(args[i], "", 1);
-		i++;
-	}
+// 	if (!args[1])
+// 	{
+// 		print_sorted_env();
+// 		return ;
+// 	}
+// 	i = 1;
+// 	while (args[i])
+// 	{
+// 		equal_sign = ft_strchr(args[i], '=');
+// 		if (equal_sign)
+// 		{
+// 			*equal_sign = '\0';
+// 			ft_set_env(args[i], equal_sign + 1, 1);
+// 			*equal_sign = '=';
+// 		}
+// 		else
+// 			setenv(args[i], "", 1);
+// 		i++;
+// 	}
+// }
+
+void    builtin_export(char **args)
+{
+    int     i;
+    char    *equal_sign;
+
+    if (!args[1])
+    {
+        print_sorted_env();
+        return ;
+    }
+    i = 1;
+    while (args[i])
+    {
+        equal_sign = ft_strchr(args[i], '=');
+        if (equal_sign)
+        {
+            *equal_sign = '\0';
+            ft_set_env(args[i], equal_sign + 1);
+            *equal_sign = '=';
+        }
+        else
+            ft_set_env(args[i], "");
+        i++;
+    }
 }

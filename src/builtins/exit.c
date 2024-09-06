@@ -13,7 +13,7 @@ void	builtin_exit(char **args)
 	{
 		exit(0);
 	}
-	exit_status = atoi(args[1]);
+	exit_status = ft_atoi(args[1]);
 	if (args[2])
 	{
 		fprintf(stderr, "minishell: exit: too many arguments\n");

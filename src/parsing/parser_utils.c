@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/04 15:34:36 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/06 17:12:02 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,19 +48,6 @@ int	handle_arg_parsing_2nd(t_command *cmd, t_token **tokens, int *i)
 	return (1);
 }
 
-// int	handle_arg_parsing(t_command *cmd, t_token *tokens, int *i)
-// {
-// 	if (tokens->type == TOKEN_DOUBLE_QUOTE)
-// 		variable_exp_double(tokens, tokens->content);
-// 	else if (tokens->content[0] == '$')
-// 		variable_exp_dollar(tokens, tokens->content);
-// 	cmd->argv[*i] = ft_strdup(tokens->content);
-// 	if (!cmd->argv[*i])
-// 		return (0);
-// 	(*i)++;
-// 	return (1);
-// }
-
 t_command	*handle_pipe_parsing(t_command *cmd, int *i)
 {
 	t_command	*new_cmd;
@@ -87,7 +74,6 @@ void	set_command_paths(t_command *cur_cmd)
 		cur_cmd = cur_cmd->next;
 	}
 }
-
 
 
 //DEUG FUNCTION
