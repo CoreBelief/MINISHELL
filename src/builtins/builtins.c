@@ -30,12 +30,12 @@ int	is_builtin_parent(char *command)
 	return 0;
 }
 
-void    execute_external(t_command *cmd)
+void    execute_external(t_command *cmd, t_shell *shell)
 {
 	char	*path;
 
 	path = find_executable(cmd->argv[0]);
-	execve(path, cmd->argv, environ);
+	execve(path, cmd->argv, shell->env);
 	perror("minishell: execve failed\n");
 	exit(EXIT_FAILURE);
 }

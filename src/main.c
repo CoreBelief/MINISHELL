@@ -15,12 +15,13 @@
 
 int g_exit_status = 0;
 
-void update_exit_status(int status)
+void update_exit_status(int status, t_shell *shell)
 {
+	printf("exit_status: %i\n", shell->last_exit_status);
     if (WIFEXITED(status))
-        g_exit_status = WEXITSTATUS(status);
+        shell->last_exit_status = WEXITSTATUS(status);
     else if (WIFSIGNALED(status))
-        g_exit_status = 128 + WTERMSIG(status);
+        shell->last_exit_status = 128 + WTERMSIG(status);
 }
 
 static char *get_current_dir(void)
@@ -72,11 +73,19 @@ snprintf(prompt, prompt_size, "\001\033[1;35m\002%s@%s\001\033[0m\002:\001\033[1
     return prompt;
 }
 
-static void	process_input(char *line)
+void	init_shell(t_shell *shell)
+{
+	shell->commands = NULL;
+	shell->last_exit_status = 0;
+	shell->env = NULL;	
+}
+
+static void	process_input(char *line, t_shell *shell)
 {
 	t_token		*tokens;
-	t_command	*cmd;
+	// t_command	*cmd;
 
+	init_shell(shell);
 	if (line && *line)
 	{
 		add_history(line);
@@ -85,21 +94,21 @@ static void	process_input(char *line)
 			return ;
 		// print_token_list(tokens);
         // free(line); // free it here maybe because we dont use it anymore?
-		cmd = parse_command_from_tokens(tokens);
-		if (!cmd)
+		shell->commands = parse_command_from_tokens(tokens);
+		if (!shell->commands)
 		{
 			free_tokens(&tokens);
 			return ;
 		}
 		// print_cmd_list(cmd);
 		free_tokens(&tokens);
-		execute_command(cmd);
-        free_command_list(&cmd);
-		update_exit_status(g_exit_status);
+		execute_command(shell);
+        free_command_list(&shell->commands);
+		update_exit_status(shell->last_exit_status, shell); // this feels wrong
 	}
 }
 
-void minishell_loop(void)
+void minishell_loop(t_shell *shell)
 {
     char *line;
     char *prompt;
@@ -116,14 +125,16 @@ void minishell_loop(void)
             break;
         }
         // printf("input: %s\n", line);
-        process_input(line);
+        process_input(line, shell);
         free(line);
     }
 }
 
 int main(void)
 {
-    minishell_loop();
+	t_shell	shell;
+
+    minishell_loop(&shell);
     return (g_exit_status);
 }
 

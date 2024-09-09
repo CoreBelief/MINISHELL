@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/06 17:10:23 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/09 17:03:28 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	setup_pipes(t_command *cmd, int pipe_fds[2])
 	}
 }
 
-void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read)
+void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read, t_shell *shell)
 {
 	if (cmd->redirect_count)
 		setup_redirections(cmd);
@@ -69,7 +69,7 @@ void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read)
 		exit(EXIT_SUCCESS);
 	}
 	else
-		execute_external(cmd);
+		execute_external(cmd, shell);
 }
 
 void	handle_parent_process(t_command *cmd, int pipe_fds[2], int *prev_pipe_read)
@@ -85,7 +85,7 @@ void	handle_parent_process(t_command *cmd, int pipe_fds[2], int *prev_pipe_read)
 		*prev_pipe_read = -1;
 }
 
-void	execute_single_command(t_command *cmd, int *prev_pipe_read)
+void	execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell)
 {
 	int			pipe_fds[2];
 	pid_t		pid;
@@ -102,26 +102,26 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read)
 			exit(EXIT_FAILURE);
 		}
 		else if (pid == 0)
-			handle_child_process(cmd, pipe_fds, *prev_pipe_read);
+			handle_child_process(cmd, pipe_fds, *prev_pipe_read, shell);
 		else
 			handle_parent_process(cmd, pipe_fds, prev_pipe_read);
 	}
 }
 
-void	execute_command(t_command *cmd)
+void	execute_command(t_shell *shell)
 {
 	t_command	*cur_cmd;
 	int			prev_pipe_read;
-	int			status;
+	int			status; //could this be the shell-struct member last_exit_status?
 
-	cur_cmd = cmd;
+	cur_cmd = shell->commands;
 	prev_pipe_read = -1;
 	while (cur_cmd)
 	{
-		execute_single_command(cur_cmd, &prev_pipe_read);
+		execute_single_command(cur_cmd, &prev_pipe_read, shell);
 		cur_cmd = cur_cmd->next;
 	}
 	while (wait(&status) > 0)
 		;
-	update_exit_status(status);
+	update_exit_status(status, shell);
 }

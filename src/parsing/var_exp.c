@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/09 15:17:22 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/09 16:20:18 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ char	*append_str(char *og, char *to_append)
 		return (NULL);
 	return (str);
 }
-
+// HANDLE $? (!!!!!!!!!!!!!!)
 void	variable_exp_dollar(t_token *token, char *str)
 {
 	int		i;

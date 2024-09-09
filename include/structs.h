@@ -49,4 +49,11 @@ typedef struct s_parsed_line
 	char		**env_vars;
 }	t_parsed_line;
 
+typedef struct s_shell
+{
+	t_command	*commands;
+	int			last_exit_status;
+	char		**env;
+}	t_shell;
+
 #endif
