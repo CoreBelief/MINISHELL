@@ -2,6 +2,7 @@
 #include "libft.h"
 #include "utils.h"
 #include <stdlib.h>
+#include "minishell.h"
 
 static char **g_env = NULL;
 
@@ -31,25 +32,6 @@ int ft_init_env(char **envp)
     return (1);
 }
 
-char *ft_get_env(const char *name)
-{
-    int i;
-    size_t len;
-
-    if (!name) // Check if name is NULL
-        return (NULL);
-    
-    i = 0;
-    len = ft_strlen(name);
-    while (g_env && g_env[i]) // Ensure g_env is not NULL
-    {
-        if (ft_strncmp(g_env[i], name, len) == 0 && g_env[i][len] == '=')
-            return (g_env[i] + len + 1);
-        i++;
-    }
-    return (NULL);
-}
-
 static int ft_add_env(char *new_var)
 {
     int i;
@@ -59,21 +41,21 @@ static int ft_add_env(char *new_var)
         return (0);
 
     i = 0;
-    while (g_env && g_env[i])
+    while (environ && environ[i])
         i++;
     new_env = (char **)malloc(sizeof(char *) * (i + 2));
     if (!new_env)
         return (0);
     i = 0;
-    while (g_env && g_env[i])
+    while (environ && environ[i])
     {
-        new_env[i] = g_env[i];
+        new_env[i] = environ[i];
         i++;
     }
     new_env[i] = new_var;
     new_env[i + 1] = NULL;
-    free(g_env); // Free the old environment
-    g_env = new_env;
+    free(environ); // Free the old environment
+    environ = new_env;
     return (1);
 }
 
@@ -89,13 +71,13 @@ int ft_set_env(const char *name, const char *value)
     if (!new_var)
         return (0);
     i = 0;
-    while (g_env && g_env[i])
+    while (environ && environ[i])
     {
-        if (ft_strncmp(g_env[i], name, ft_strlen(name)) == 0
-            && g_env[i][ft_strlen(name)] == '=')
+        if (ft_strncmp(environ[i], name, ft_strlen(name)) == 0
+            && environ[i][ft_strlen(name)] == '=')
         {
-            free(g_env[i]); // Free the old variable
-            g_env[i] = new_var;
+            free(environ[i]); // Free the old variable
+            environ[i] = new_var;
             return (1);
         }
         i++;
@@ -112,16 +94,16 @@ int ft_unset_env(const char *name)
         return (0);
 
     i = 0;
-    while (g_env && g_env[i])
+    while (environ && environ[i])
     {
-        if (ft_strncmp(g_env[i], name, ft_strlen(name)) == 0
-            && g_env[i][ft_strlen(name)] == '=')
+        if (ft_strncmp(environ[i], name, ft_strlen(name)) == 0
+            && environ[i][ft_strlen(name)] == '=')
         {
-            free(g_env[i]); // Free the variable to be unset
+            free(environ[i]); // Free the variable to be unset
             j = i;
-            while (g_env[j])
+            while (environ[j])
             {
-                g_env[j] = g_env[j + 1];
+                environ[j] = environ[j + 1];
                 j++;
             }
             return (1);

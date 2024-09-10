@@ -1,15 +1,20 @@
-export append edgecase +=
-and export variable edgecases
-rm dir in dir fix
-error handlin+ unset path etc handling
+export append edgecase += (strjoin)
+and export variable edgecases (ellen thinks its somethig w numbers)
+rm dir in dir fix ( setting path if unknown, using loop to go dit up until path is found) (ask claudia)
+
+error handlin+ unset path etc handling (rdl@rtx:~/server/MINISHELL/MINISHELL$ unset PATH
+[3]    19836 segmentation fault  ./minishell)
+
 exit should be fully numerical, should  exit with exitcode 2 when alphanumerical
+
 finalize signals ctrl \ 
-variable expansion ?
+only 1 global for signals
+
+variable expansion $?
 add specific exit codes everywhere
 add multiple same flags execution
 HEREDOC
 minishellception
-only 1 global for signals
 fix: Set the $PATH to a multiple directory value (directory1:directory2) and ensure that directories are checked in order from left to right.
 fix: Execute commands that should not work like 'dsbksdgbksdghsd'. Ensure minishell doesn't crash and prints an error. print if command not found and exit w 127
 do: Try to execute a long command with a ton of arguments.

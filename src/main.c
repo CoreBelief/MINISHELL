@@ -8,12 +8,12 @@
 #include <readline/history.h>
 #include <sys/wait.h>
 #include "environ.h"
+#include "signal.h"
 
 #define MAX_HOSTNAME 256
 #define MAX_USERNAME 256
 #define MAX_PATH 1024
 
-int g_exit_status = 0;
 
 void update_exit_status(int status)
 {
@@ -83,15 +83,12 @@ static void	process_input(char *line)
 		tokens = tokenizer(line);
 		if (!tokens)
 			return ;
-		// print_token_list(tokens);
-        // free(line); // free it here maybe because we dont use it anymore?
 		cmd = parse_command_from_tokens(tokens);
 		if (!cmd)
 		{
 			free_tokens(&tokens);
 			return ;
 		}
-		// print_cmd_list(cmd);
 		free_tokens(&tokens);
 		execute_command(cmd);
         free_command_list(&cmd);
@@ -104,22 +101,37 @@ void minishell_loop(void)
     char *line;
     char *prompt;
 
-    setup_signals();
+    setup_signals_shell();
+
     while (1)
     {
         prompt = create_prompt();
+        if (!prompt)
+        {
+            fprintf(stderr, "Error: Failed to create prompt\n");
+            break;
+        }
         line = readline(prompt);
         free(prompt);
+        
         if (!line)
         {
             printf("exit\n");
             break;
         }
-        // printf("input: %s\n", line);
+        
+        if (ft_strcmp(line, "exit") == 0)
+        {
+            free(line);
+            break;
+        }
+        
         process_input(line);
         free(line);
+        reset_signals(); // Reset signals after each command
     }
 }
+
 
 int main(void)
 {

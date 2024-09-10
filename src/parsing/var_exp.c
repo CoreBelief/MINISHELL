@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/06 17:15:57 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/10 17:45:59 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char	*variable_exp(char *str, int *i)
 	len = find_var_len(&str[*i]);
 	var = ft_strndup(&str[*i], len);
 	//error handling
-	expansion = ft_get_env(var);
+	expansion = getenv(var);
 	free (var);
 	*i += len;
 	return (expansion);
