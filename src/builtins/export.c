@@ -69,28 +69,59 @@ extern char **environ;
 // 	}
 // }
 
-void    builtin_export(char **args)
-{
-    int     i;
-    char    *equal_sign;
+// void    builtin_export(char **args)
+// {
+//     int     i;
+//     char    *equal_sign;
 
-    if (!args[1])
-    {
-        print_sorted_env();
-        return ;
-    }
-    i = 1;
+//     if (!args[1])
+//     {
+//         print_sorted_env();
+//         return ;
+//     }
+//     i = 1;
+//     while (args[i])
+//     {
+//         equal_sign = ft_strchr(args[i], '=');
+//         if (equal_sign)
+//         {
+//             *equal_sign = '\0';
+//             ft_set_env(args[i], equal_sign + 1);
+//             *equal_sign = '=';
+//         }
+//         else
+//             ft_set_env(args[i], "");
+//         i++;
+//     }
+// }
+
+void builtin_export(char **args)
+{
+    int i = 1;
     while (args[i])
     {
-        equal_sign = ft_strchr(args[i], '=');
+        char *arg = args[i];
+        char *equal_sign = ft_strchr(arg, '=');
         if (equal_sign)
         {
             *equal_sign = '\0';
-            ft_set_env(args[i], equal_sign + 1);
+            char *value = equal_sign + 1;
+            
+            // Remove surrounding quotes if present
+            if ((value[0] == '"' && value[ft_strlen(value)-1] == '"') ||
+                (value[0] == '\'' && value[ft_strlen(value)-1] == '\''))
+            {
+                value[ft_strlen(value)-1] = '\0';
+                value++;
+            }
+            
+            ft_set_env(arg, value);
             *equal_sign = '=';
         }
         else
-            ft_set_env(args[i], "");
+        {
+            ft_set_env(arg, "");
+        }
         i++;
     }
 }
