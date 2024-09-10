@@ -4,6 +4,25 @@
 # include "minishell.h"
 
 //TOKENIZER
+char *find_executable(char *command);
+
+typedef struct s_builtin_command {
+    const char *name;
+    int is_parent;
+} t_builtin_command;
+
+// Define an array of built-in commands with a flag indicating if it is a "parent" command.
+static const t_builtin_command builtin_commands[] = {
+    {"cd", 1},
+    {"pwd", 0},
+    {"export", 1},
+    {"echo", 0},
+    {"unset", 1},
+    {"env", 0},
+    {"exit", 1},
+    {"bye", 1},
+    {NULL, 0}
+};
 
 typedef enum {
 	TOKEN_WORD,
