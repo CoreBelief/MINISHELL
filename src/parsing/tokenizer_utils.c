@@ -6,12 +6,13 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/10 20:31:53 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/11 00:02:16 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tokenizer.h"
-#include "libft.h"
+#include "minishell.h"
+// #include "libft.h"
 
 
 void	tokenize_redirection(char *input, int *i, t_token **head)

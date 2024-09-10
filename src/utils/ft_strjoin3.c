@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include "libft.h"  // Assuming this contains declarations for ft_strlen and ft_strlcpy
 #include "minishell.h"
 
 char	*ft_strjoin3(const char *s1, const char *s2, const char *s3)

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/10 22:24:12 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/11 00:01:21 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@
 # include <sys/types.h>
 # include <stdbool.h>
 
-# include "libft.h"
+#include "../src/lib_FT/libft.h"
+
 # include "structs.h"
 # include "builtins.h"
 # include "parser.h"

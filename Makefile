@@ -19,7 +19,7 @@ OBJS = $(patsubst $(SRCS_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
 OBJ_SUBDIRS = $(sort $(dir $(OBJS)))
 
-LIBFT_DIR = src/libft
+LIBFT_DIR = src/lib_FT
 LIBFT = $(LIBFT_DIR)/libft.a
 
 all: $(LIBFT) $(NAME)

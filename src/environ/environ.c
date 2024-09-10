@@ -1,5 +1,5 @@
 #include "environ.h"
-#include "libft.h"
+// #include "libft.h"
 #include "utils.h"
 #include <stdlib.h>
 #include "minishell.h"
