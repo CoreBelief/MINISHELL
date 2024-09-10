@@ -4,22 +4,35 @@
 #include <string.h>
 #include <stdbool.h>
 
+static bool	is_only_n_flag(char *arg)
+{
+	int	i;
+
+	if (arg[0] != '-')
+		return (false);
+	i = 1;
+	while (arg[i])
+	{
+		if (arg[i] != 'n')
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
+
 void builtin_echo(char **args)
 {
-	if (!args)
-		return ;
-
 	int i = 1;
 	bool newline = true;
-
-	// Handle multiple -n flags
-	while (args[i] && ft_strcmp(args[i], "-n") == 0)
-	{
+	if (!args)
+		return;
+	while (args[i] && is_only_n_flag(args[i]))
+	{	
+		
 		newline = false;
 		i++;
 	}
-
-	// Print arguments
 	while (args[i])
 	{
 		printf("%s", args[i]);
@@ -27,7 +40,6 @@ void builtin_echo(char **args)
 			printf(" ");
 		i++;
 	}
-
 	if (newline)
 		printf("\n");
 }

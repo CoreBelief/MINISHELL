@@ -6,18 +6,16 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 00:02:16 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/11 00:28:02 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tokenizer.h"
 #include "minishell.h"
-// #include "libft.h"
 
 
 void	tokenize_redirection(char *input, int *i, t_token **head)
 {
-	// printf("entered handle_redirection\n");
 	if (input[*i] == '>' || input[*i] == '<')
 	{
 		if (input[*i + 1] == input[*i])
@@ -44,7 +42,6 @@ void	tokenize_single(char *input, int *i, t_token **head)
 	int		start;
 	char	*content;
 
-	// printf("entered handle_single\n");
 	start = *i + 1;
 	content = NULL;
 	(*i)++;
@@ -56,7 +53,6 @@ void	tokenize_single(char *input, int *i, t_token **head)
 		add_token(head, content, TOKEN_SINGLE_QUOTE);
 		(*i)++;
 	}
-	// else its a wrong input??
 }
 
 void	tokenize_double(char *input, int *i, t_token **head)
@@ -64,7 +60,6 @@ void	tokenize_double(char *input, int *i, t_token **head)
 	int		start;
 	char	*content;
 
-	// printf("entered handle_double\n");
 	start = *i + 1;
 	content = NULL;
 	(*i)++;
@@ -76,32 +71,18 @@ void	tokenize_double(char *input, int *i, t_token **head)
 		add_token(head, content, TOKEN_DOUBLE_QUOTE);
 		(*i)++;
 	}
-	// else its a wrong input??
 }
 
 bool is_special_token(char c)
 {
     return (c == '|' || c == '<' || c == '>');
 }
+
+
 //the special token thing fucks it up if there are 2 consecutive commands or not????
 //smth weird might not be here 
-// void	tokenize_word(char *input, int *i, t_token **head)
-// {
-// 	int		start;
-// 	char	*content;
 
-// 	start = *i;
-// 	content = NULL;
-// 	// printf("entered handle_word, word is==%s & index is ==%i\n", input, *i);
-// 	while (input[*i] && !is_whitespace(input[*i]) && !is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
-// 		(*i)++;
-// 	// printf("index afterrr in handle word %i\n", *i);
-// 	content = ft_strndup(&input[start], *i - start);
-// 	// printf("word:%s\n", content);
-// 	add_token(head, content, TOKEN_WORD);	
-// 	if (!is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
-// 		(*i)++;
-// }
+
 void tokenize_word(char *input, int *i, t_token **head)
 {
     int start = *i;
