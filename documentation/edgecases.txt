@@ -19,3 +19,12 @@ fix: Set the $PATH to a multiple directory value (directory1:directory2) and ens
 fix: Execute commands that should not work like 'dsbksdgbksdghsd'. Ensure minishell doesn't crash and prints an error. print if command not found and exit w 127
 do: Try to execute a long command with a ton of arguments.
 
+
+
+parser svp
+rdl@rtx:~/server/MINISHELL/MINISHELL$ hi ||||||
+bash: syntax error near unexpected token `||'
+rdl@rtx:~/server/MINISHELL/MINISHELL$ ./minishell 
+rdl@rtx:~/server/MINISHELL/MINISHELL$ hi |||||||
+Segmentation fault
+rdl@rtx:~/server/MINISHELL/MINISHELL$ 
