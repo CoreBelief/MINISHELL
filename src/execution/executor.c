@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/06 17:10:23 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/10 23:18:01 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	setup_pipes(t_command *cmd, int pipe_fds[2])
 
 void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read)
 {
+	setup_signals_child();
 	if (cmd->redirect_count)
 		setup_redirections(cmd);
 	if (prev_pipe_read != -1 && cmd->input == -1)
@@ -108,20 +109,44 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read)
 	}
 }
 
-void	execute_command(t_command *cmd)
+void wait_for_children(void)
 {
-	t_command	*cur_cmd;
-	int			prev_pipe_read;
-	int			status;
+    int status;
+    pid_t last_pid;
 
-	cur_cmd = cmd;
-	prev_pipe_read = -1;
-	while (cur_cmd)
-	{
-		execute_single_command(cur_cmd, &prev_pipe_read);
-		cur_cmd = cur_cmd->next;
-	}
-	while (wait(&status) > 0)
-		;
-	update_exit_status(status);
+    while ((last_pid = wait(&status)) > 0)
+    {
+        if (WIFSIGNALED(status))
+        {
+            if (WTERMSIG(status) == SIGINT)
+                g_exit_status = 130;
+            else if (WTERMSIG(status) == SIGQUIT)
+            {
+                g_exit_status = 131;
+                write(STDERR_FILENO, "Quit\n", 6);
+            }
+            else if (WTERMSIG(status) == SIGTERM)
+                g_exit_status = 143;
+        }
+        else if (WIFEXITED(status))
+        {
+            g_exit_status = WEXITSTATUS(status);
+        }
+    }
+}
+
+void execute_command(t_command *cmd)
+{
+    t_command   *cur_cmd;
+    int         prev_pipe_read;
+
+    cur_cmd = cmd;
+    prev_pipe_read = -1;
+    while (cur_cmd)
+    {
+        execute_single_command(cur_cmd, &prev_pipe_read);
+        cur_cmd = cur_cmd->next;
+    }
+
+    wait_for_children();
 }

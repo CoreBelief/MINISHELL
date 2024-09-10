@@ -15,6 +15,8 @@
 #define MAX_PATH 1024
 
 
+int g_exit_status = 0;
+
 void update_exit_status(int status)
 {
     if (WIFEXITED(status))
@@ -91,8 +93,9 @@ static void	process_input(char *line)
 		}
 		free_tokens(&tokens);
 		execute_command(cmd);
+        // Handle any pending signals
+        handle_pending_signals();
         free_command_list(&cmd);
-		update_exit_status(g_exit_status);
 	}
 }
 
@@ -100,8 +103,8 @@ void minishell_loop(void)
 {
     char *line;
     char *prompt;
-
     setup_signals_shell();
+    rl_catch_signals = 0; // Prevent readline from handling signals 
 
     while (1)
     {
@@ -113,6 +116,7 @@ void minishell_loop(void)
         }
         line = readline(prompt);
         free(prompt);
+        handle_pending_signals();
         
         if (!line)
         {
@@ -125,10 +129,19 @@ void minishell_loop(void)
             free(line);
             break;
         }
-        
+    int sig = get_and_reset_signal();
+
+         if (sig == SIGINT) {
+            g_exit_status = 130; // Set exit status to 130 for exit command
+
+            free(line);
+            // Handle interrupt (e.g., clear the line, continue the loop)
+            continue;
+        }
         process_input(line);
+
         free(line);
-        reset_signals(); // Reset signals after each command
+        // reset_signals(); // Reset signals after each command
     }
 }
 
