@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void	builtin_unset(char **args)
+void	builtin_unset(char **args, t_shell *shell)
 {
 	int	i;
 
@@ -18,7 +18,7 @@ void	builtin_unset(char **args)
 		}
 		else
 		{
-			ft_unset_env(args[i]);
+			ft_unset_env(args[i], shell);
 		}
 		i++;
 	}

@@ -74,10 +74,9 @@ snprintf(prompt, prompt_size, "\001\033[1;35m\002%s@%s\001\033[0m\002:\001\033[1
     return prompt;
 }
 
-static void	process_input(char *line)
+static void	process_input(char *line, t_shell *shell)
 {
 	t_token		*tokens;
-	t_command	*cmd;
 
 	if (line && *line)
 	{
@@ -85,70 +84,82 @@ static void	process_input(char *line)
 		tokens = tokenizer(line);
 		if (!tokens)
 			return ;
-		cmd = parse_command_from_tokens(tokens);
-		if (!cmd)
+		shell->commands = parse_command_from_tokens(tokens);
+		if (!shell->commands)
 		{
 			free_tokens(&tokens);
 			return ;
 		}
 		free_tokens(&tokens);
-		execute_command(cmd);
+		execute_command(shell);
         // Handle any pending signals
         handle_pending_signals();
-        free_command_list(&cmd);
+        free_command_list(&shell->commands);
 	}
 }
 
-void minishell_loop(void)
+void minishell_loop(t_shell *shell)
 {
-    char *line;
-    char *prompt;
-    setup_signals_shell();
-    rl_catch_signals = 0; // Prevent readline from handling signals 
+	char *line;
+	char *prompt;
+	// rl_catch_signals = 0; // Prevent readline from handling signals 
 
-    while (1)
-    {
-        prompt = create_prompt();
-        if (!prompt)
-        {
-            fprintf(stderr, "Error: Failed to create prompt\n");
-            break;
-        }
-        line = readline(prompt);
-        free(prompt);
-        handle_pending_signals();
-        
-        if (!line)
-        {
-            printf("exit\n");
-            break;
-        }
-        
-        if (ft_strcmp(line, "exit") == 0)
-        {
-            free(line);
-            break;
-        }
-    int sig = get_and_reset_signal();
-
-         if (sig == SIGINT) {
-            g_exit_status = 130; // Set exit status to 130 for exit command
-
-            free(line);
-            // Handle interrupt (e.g., clear the line, continue the loop)
-            continue;
-        }
-        process_input(line);
-
-        free(line);
-        // reset_signals(); // Reset signals after each command
-    }
+	setup_signals_shell();
+	while (1)
+	{
+		prompt = create_prompt();
+		if (!prompt)
+		{
+			fprintf(stderr, "Error: Failed to create prompt\n"); //cannot use fprintf
+			break ;
+		}
+		line = readline(prompt);
+		free(prompt);
+		handle_pending_signals();
+		if (!line)
+		{
+			printf("exit\n");
+			break ;
+		}
+		if (ft_strcmp(line, "exit") == 0)
+		{
+			free(line);
+			break ;
+		}
+		int sig = get_and_reset_signal();
+		if (sig == SIGINT)
+		{
+			g_exit_status = 130; // Set exit status to 130 for exit command
+			free(line);
+			// Handle interrupt (e.g., clear the line, continue the loop)
+			continue;
+		}
+		process_input(line, shell);
+		free(line);
+		// reset_signals(); // Reset signals after each command
+	}
+}
+void	init_shell(t_shell *shell)
+{
+	shell->commands = NULL;
+	shell->last_exit_status = 0;
+	shell->env = NULL;
+	shell->env_size = 0;
 }
 
-
-int main(void)
+int	main(int argc, char **argv, char **envp)
 {
-    minishell_loop();
-    return (g_exit_status);
+	t_shell	shell;
+
+	(void)argc;
+	(void)argv;
+	init_shell(&shell);
+	if (!init_env(&shell, envp))
+	{
+		perror("error init env");
+		return (1);
+	}
+	minishell_loop(&shell);
+	return (shell.last_exit_status);
 }
 

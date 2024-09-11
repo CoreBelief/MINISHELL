@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 00:01:21 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/11 17:25:54 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ extern char **environ;
 // Function prototypes
 
 // Main loop
-void    minishell_loop(void);
+void    minishell_loop(t_shell *shell);
 
 void	setup_signals(void);
 // Environment variables

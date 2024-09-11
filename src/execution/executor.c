@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/10 23:18:01 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/11 18:48:10 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 
 void	print_sorted_env(void);
 
-char *find_executable(char *command)
+char *find_executable(char *command, t_shell *shell)
 {
-    char *path = getenv("PATH");
+    char *path = ft_get_env("PATH", shell);
     char *path_copy = ft_strdup(path);
     char *dir = strtok(path_copy, ":"); //needs fixa
     char *full_path = NULL;
@@ -36,6 +36,16 @@ char *find_executable(char *command)
     return ft_strdup(command);  // Return the command as-is if not found in PATH
 }
 
+void	execute_external(t_command *cmd, t_shell *shell)
+{
+	char	*path;
+
+	path = find_executable(cmd->argv[0], shell);
+	execve(path, cmd->argv, shell->env);
+	perror("minishell: execve failed\n");
+	exit(EXIT_FAILURE);
+}
+
 void	setup_pipes(t_command *cmd, int pipe_fds[2])
 {
 	if (cmd->pipe_out == 1)
@@ -48,7 +58,7 @@ void	setup_pipes(t_command *cmd, int pipe_fds[2])
 	}
 }
 
-void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read)
+void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read, t_shell *shell)
 {
 	setup_signals_child();
 	if (cmd->redirect_count)
@@ -66,11 +76,11 @@ void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read)
 	close(pipe_fds[0]);
 	if (is_builtin(cmd->argv[0]))
 	{
-		execute_builtin(cmd);
+		execute_builtin(cmd, shell);
 		exit(EXIT_SUCCESS);
 	}
 	else
-		execute_external(cmd);
+		execute_external(cmd, shell);
 }
 
 void	handle_parent_process(t_command *cmd, int pipe_fds[2], int *prev_pipe_read)
@@ -86,13 +96,13 @@ void	handle_parent_process(t_command *cmd, int pipe_fds[2], int *prev_pipe_read)
 		*prev_pipe_read = -1;
 }
 
-void	execute_single_command(t_command *cmd, int *prev_pipe_read)
+void	execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell)
 {
 	int			pipe_fds[2];
 	pid_t		pid;
 
 	if (is_builtin_parent(cmd->argv[0]))
-		execute_builtin(cmd);
+		execute_builtin(cmd, shell);
 	else
 	{
 		setup_pipes(cmd, pipe_fds);
@@ -103,50 +113,50 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read)
 			exit(EXIT_FAILURE);
 		}
 		else if (pid == 0)
-			handle_child_process(cmd, pipe_fds, *prev_pipe_read);
+			handle_child_process(cmd, pipe_fds, *prev_pipe_read, shell);
 		else
 			handle_parent_process(cmd, pipe_fds, prev_pipe_read);
 	}
 }
 
-void wait_for_children(void)
+void wait_for_children(t_shell *shell)
 {
-    int status;
-    pid_t last_pid;
+	int		status;
+	pid_t	last_pid;
 
-    while ((last_pid = wait(&status)) > 0)
-    {
-        if (WIFSIGNALED(status))
-        {
-            if (WTERMSIG(status) == SIGINT)
-                g_exit_status = 130;
-            else if (WTERMSIG(status) == SIGQUIT)
-            {
-                g_exit_status = 131;
-                write(STDERR_FILENO, "Quit\n", 6);
-            }
-            else if (WTERMSIG(status) == SIGTERM)
-                g_exit_status = 143;
-        }
-        else if (WIFEXITED(status))
-        {
-            g_exit_status = WEXITSTATUS(status);
-        }
-    }
+	while ((last_pid = wait(&status)) > 0)
+	{
+		if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == SIGINT)
+				shell->last_exit_status = 130;
+			else if (WTERMSIG(status) == SIGQUIT)
+			{
+				shell->last_exit_status = 131;
+				write(STDERR_FILENO, "Quit\n", 6);
+			}
+			else if (WTERMSIG(status) == SIGTERM)
+				shell->last_exit_status = 143;
+		}
+		else if (WIFEXITED(status))
+		{
+			shell->last_exit_status = WEXITSTATUS(status);
+		}
+	}
 }
 
-void execute_command(t_command *cmd)
+void execute_command(t_shell *shell)
 {
-    t_command   *cur_cmd;
-    int         prev_pipe_read;
+	t_command	*cur_cmd;
+	int			prev_pipe_read;
 
-    cur_cmd = cmd;
-    prev_pipe_read = -1;
-    while (cur_cmd)
-    {
-        execute_single_command(cur_cmd, &prev_pipe_read);
-        cur_cmd = cur_cmd->next;
-    }
+	cur_cmd = shell->commands;
+	prev_pipe_read = -1;
+	while (cur_cmd)
+	{
+		execute_single_command(cur_cmd, &prev_pipe_read, shell);
+		cur_cmd = cur_cmd->next;
+	}
 
-    wait_for_children();
+	wait_for_children(shell);
 }

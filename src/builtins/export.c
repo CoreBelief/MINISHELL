@@ -43,34 +43,36 @@ extern char **environ;
 	free(sorted_env);
 }
 
+void	builtin_export(char **args, t_shell *shell)
+	{
+	int	i;
 
-void builtin_export(char **args)
-{
-    int i = 1;
-    while (args[i])
-    {
-        char *arg = args[i];
-        char *equal_sign = ft_strchr(arg, '=');
-        if (equal_sign)
-        {
-            *equal_sign = '\0';
-            char *value = equal_sign + 1;
-            
-            // Remove surrounding quotes if present
-            if ((value[0] == '"' && value[ft_strlen(value)-1] == '"') ||
-                (value[0] == '\'' && value[ft_strlen(value)-1] == '\''))
-            {
-                value[ft_strlen(value)-1] = '\0';
-                value++;
-            }
-            
-            ft_set_env(arg, value);
-            *equal_sign = '=';
-        }
-        else
-        {
-            ft_set_env(arg, "");
-        }
-        i++;
-    }
+	i = 1;
+	
+	while (args[i])
+	{
+		char *arg = args[i];
+		char *equal_sign = ft_strchr(arg, '=');
+		if (equal_sign)
+		{
+			*equal_sign = '\0';
+			char *value = equal_sign + 1;
+			
+			// Remove surrounding quotes if present
+			if ((value[0] == '"' && value[ft_strlen(value)-1] == '"') ||
+				(value[0] == '\'' && value[ft_strlen(value)-1] == '\''))
+			{
+				value[ft_strlen(value)-1] = '\0';
+				value++;
+			}
+			
+			ft_set_env(arg, value, shell);
+			*equal_sign = '=';
+		}
+		else
+		{
+			ft_set_env(arg, "", shell);
+		}
+		i++;
+	}
 }

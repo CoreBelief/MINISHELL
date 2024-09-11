@@ -4,7 +4,7 @@
 # include "minishell.h"
 
 //TOKENIZER
-char *find_executable(char *command);
+// char *find_executable(char *command);
 
 typedef struct s_builtin_command {
     const char *name;
@@ -67,5 +67,13 @@ typedef struct s_parsed_line
 	t_command	*command;
 	char		**env_vars;
 }	t_parsed_line;
+
+typedef struct s_shell
+{
+	t_command	*commands;
+	int			last_exit_status;
+	char		**env;
+	int			env_size;
+}	t_shell;
 
 #endif
