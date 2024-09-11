@@ -5,29 +5,29 @@
 #include <string.h>
 
 //this is a global variable that is defined in the main.c file, so its forbidden!!
-extern char **environ;
+// extern char **shell->env;
 
- void	print_sorted_env(void)
+ void	print_sorted_env(t_shell *shell)
 {
 	char	**sorted_env;
-	int		env_size;
+	// int		env_size;
 	int		i;
 	int		j;
 	char	*temp;
 
-	env_size = 0;
-	while (environ[env_size])
-		env_size++;
-	sorted_env = malloc(sizeof(char *) * (env_size + 1));
+	// env_size = 0;
+	// while (shell->env[env_size])
+	// 	env_size++;
+	sorted_env = malloc(sizeof(char *) * (shell->env_size + 1));
 	i = -1;
-	while (++i < env_size)
-		sorted_env[i] = environ[i];
+	while (++i < shell->env_size)
+		sorted_env[i] = shell->env[i];
 	sorted_env[i] = NULL;
 	i = -1;
-	while (++i < env_size - 1)
+	while (++i < shell->env_size - 1)
 	{
 		j = i;
-		while (++j < env_size)
+		while (++j < shell->env_size)
 		{
 			if (ft_strcmp(sorted_env[i], sorted_env[j]) > 0)
 			{
@@ -38,7 +38,7 @@ extern char **environ;
 		}
 	}
 	i = -1;
-	while (++i < env_size)
+	while (++i < shell->env_size)
 		printf("declare -x %s\n", sorted_env[i]);
 	free(sorted_env);
 }
@@ -48,7 +48,11 @@ void	builtin_export(char **args, t_shell *shell)
 	int	i;
 
 	i = 1;
-	
+	if (!args[1])
+	{
+		print_sorted_env(shell);
+		return ;
+	}
 	while (args[i])
 	{
 		char *arg = args[i];

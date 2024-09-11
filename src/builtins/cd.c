@@ -2,29 +2,29 @@
 #include "environ.h"
 #include <unistd.h>
 
-static char	*get_cd_path(char **args)
+static char	*get_cd_path(char **args, t_shell *shell)
 {
 	if (!args[1] || ft_strcmp(args[1], "~") == 0)
-		return (getenv("HOME"));
+		return (ft_get_env("HOME", shell));
 	else if (ft_strcmp(args[1], "-") == 0)
-		return (getenv("OLDPWD"));
+		return (ft_get_env("OLDPWD", shell));
 	return (args[1]);
 }
 
-static void	update_pwd(char *old_pwd)
+static void	update_pwd(char *old_pwd, t_shell *shell)
 {
 	char	new_pwd[1024];
 
 	if (getcwd(new_pwd, sizeof(new_pwd)) != NULL)
 	{
-		ft_set_env("OLDPWD", old_pwd);
-		ft_set_env("PWD", new_pwd);
+		ft_set_env("OLDPWD", old_pwd, shell);
+		ft_set_env("PWD", new_pwd, shell);
 	}
 	else
 		perror("getcwd");
 }
 
-void	builtin_cd(char **args)
+void	builtin_cd(char **args, t_shell *shell)
 {
 	char	*path;
 	char	old_pwd[1024];
@@ -34,7 +34,7 @@ void	builtin_cd(char **args)
 		perror("getcwd");
 		return ;
 	}
-	path = get_cd_path(args);
+	path = get_cd_path(args, shell);
 	if (!path)
 		return ;
 	if (chdir(path) != 0)
@@ -42,6 +42,6 @@ void	builtin_cd(char **args)
 		perror("cd");
 		return ;
 	}
-	update_pwd(old_pwd);
+	update_pwd(old_pwd, shell);
 	// printf("old_pwd: %s\n", old_pwd);
 }
