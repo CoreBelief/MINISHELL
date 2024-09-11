@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 18:59:56 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/11 19:03:58 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	find_var_len(char *var)
 	return (i);
 }
 
-char	*variable_exp(char *str, int *i)
+char	*variable_exp(char *str, int *i, t_shell *shell)
 {
 	int		len;
 	char	*expansion;
@@ -36,7 +36,7 @@ char	*variable_exp(char *str, int *i)
 	len = find_var_len(&str[*i]);
 	var = ft_strndup(&str[*i], len);
 	//error handling
-	expansion = getenv(var);
+	expansion = ft_get_env(var, shell);
 	free (var);
 	*i += len;
 	return (expansion);
@@ -53,7 +53,7 @@ char	*append_str(char *og, char *to_append)
 	return (str);
 }
 
-void	variable_exp_dollar(t_token *token, char *str)
+void	variable_exp_dollar(t_token *token, char *str, t_shell *shell)
 {
 	int		i;
 	char	*expansion;
@@ -66,7 +66,7 @@ void	variable_exp_dollar(t_token *token, char *str)
 	if (str[i] == '$' && str[i + 1])
 	{
 		i++;
-		expansion = variable_exp(str, &i);
+		expansion = variable_exp(str, &i, shell);
 		if (!expansion)
 		{
 			printf("expansion variable not found\n");
@@ -91,7 +91,7 @@ int	until_dollar(char *str)
 	return (i);
 }
 
-void	variable_exp_double(t_token *token, char *str)
+void	variable_exp_double(t_token *token, char *str, t_shell *shell)
 {
 	int		i;
 	int		len;
@@ -107,7 +107,7 @@ void	variable_exp_double(t_token *token, char *str)
 		if (str[i] == '$' && ft_isalnum(str[i + 1]))
 		{
 			i++;
-			expansion = variable_exp(str, &i);
+			expansion = variable_exp(str, &i, shell);
 			if (!expansion)
 			{
 				printf("expansion variable not found\n");

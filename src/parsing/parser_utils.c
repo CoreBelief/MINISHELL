@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/06 17:12:02 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/11 19:03:12 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,12 @@ int	handle_redirection_parsing(t_command *cmd, t_token **token)
 	return (0);
 }
 
-int	handle_arg_parsing_2nd(t_command *cmd, t_token **tokens, int *i)
+int	handle_arg_parsing_2nd(t_command *cmd, t_token **tokens, int *i, t_shell *shell)
 {
 	if ((*tokens)->type == TOKEN_DOUBLE_QUOTE)
-		variable_exp_double(*tokens, (*tokens)->content);
+		variable_exp_double(*tokens, (*tokens)->content, shell);
 	else if ((*tokens)->content[0] == '$')
-		variable_exp_dollar((*tokens), (*tokens)->content);
+		variable_exp_dollar((*tokens), (*tokens)->content, shell);
 	cmd->argv[*i] = ft_strdup((*tokens)->content);
 	if (!cmd->argv[*i])
 		return (0);
