@@ -104,7 +104,6 @@ void minishell_loop(void)
     char *line;
     char *prompt;
     setup_signals_shell();
-    rl_catch_signals = 0; // Prevent readline from handling signals 
 
     while (1)
     {
