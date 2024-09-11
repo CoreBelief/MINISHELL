@@ -63,6 +63,7 @@ int get_and_reset_signal(void)
 
 void handle_pending_signals(void)
 {
+    // fix this function since it =s only wokring correctly on sigquit!!
     int sig = get_and_reset_signal();
     if (sig == SIGINT) {
         // write(STDOUT_FILENO, "\n", 1);  // Print newline after interrupt
