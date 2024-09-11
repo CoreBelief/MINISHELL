@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
+void	builtin_exit(char **args);
 
 void	builtin_exit(char **args)
 {

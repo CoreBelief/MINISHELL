@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void	builtin_pwd(char **args);
+
 void	builtin_pwd(char **args)
 {
 	char	*cwd;

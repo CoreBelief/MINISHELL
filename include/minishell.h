@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 17:25:54 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/12 01:30:38 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,16 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <stdbool.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <pwd.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <sys/wait.h>
+#include "environ.h"
+#include "signal.h"
 #include "../src/lib_FT/libft.h"
 
 # include "structs.h"

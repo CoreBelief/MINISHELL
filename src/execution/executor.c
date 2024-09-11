@@ -6,14 +6,21 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 18:48:10 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/12 01:27:29 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "executor.h"
-
-void	print_sorted_env(void);
+#include <errno.h>
+char		*find_executable(char *command, t_shell *shell);
+void		execute_external(t_command *cmd, t_shell *shell);
+void		setup_pipes(t_command *cmd, int pipe_fds[2]);
+void		handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read, t_shell *shell);
+void		handle_parent_process(t_command *cmd, int pipe_fds[2], int *prev_pipe_read);
+void		execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell);
+void		wait_for_children(t_shell *shell);
+void		execute_command(t_shell *shell);
 
 char *find_executable(char *command, t_shell *shell)
 {
@@ -119,30 +126,54 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell)
 	}
 }
 
-void wait_for_children(t_shell *shell)
+// void wait_for_children(t_shell *shell)
+// {
+// 	int		status;
+// 	pid_t	last_pid;
+
+// 	while ((last_pid = wait(&status)) > 0)
+// 	{
+// 		if (WIFSIGNALED(status))
+// 		{
+// 			if (WTERMSIG(status) == SIGINT)
+// 				shell->last_exit_status = 130;
+// 			else if (WTERMSIG(status) == SIGQUIT)
+// 			{
+// 				shell->last_exit_status = 131;
+// 				write(STDERR_FILENO, "Quit\n", 6);
+// 			}
+// 			// else if (WTERMSIG(status) == SIGTERM)
+// 			// 	shell->last_exit_status = 143;
+// 		}
+// 		else if (WIFEXITED(status))
+// 		{
+// 			shell->last_exit_status = WEXITSTATUS(status);
+// 		}
+// 	}
+// }
+void	wait_for_children(t_shell *shell)
 {
 	int		status;
 	pid_t	last_pid;
 
-	while ((last_pid = wait(&status)) > 0)
+	while ((last_pid = waitpid(-1, &status, WUNTRACED)) > 0)
 	{
 		if (WIFSIGNALED(status))
 		{
-			if (WTERMSIG(status) == SIGINT)
-				shell->last_exit_status = 130;
-			else if (WTERMSIG(status) == SIGQUIT)
-			{
-				shell->last_exit_status = 131;
-				write(STDERR_FILENO, "Quit\n", 6);
-			}
-			else if (WTERMSIG(status) == SIGTERM)
-				shell->last_exit_status = 143;
+			shell->last_exit_status = 128 + WTERMSIG(status);
+			if (WTERMSIG(status) == SIGQUIT)
+				ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+		}
+		else if (WIFSTOPPED(status)) //this never happens???
+		{
+			shell->last_exit_status = 128 + WSTOPSIG(status);
+			printf("Stopped: %d\n", WSTOPSIG(status));
 		}
 		else if (WIFEXITED(status))
-		{
 			shell->last_exit_status = WEXITSTATUS(status);
-		}
 	}
+	if (last_pid == -1 && errno != ECHILD)
+		perror("waitpid");
 }
 
 void execute_command(t_shell *shell)

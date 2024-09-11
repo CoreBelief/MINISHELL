@@ -3,33 +3,12 @@
 #include <stdlib.h>
 #include "minishell.h"
 
-static char **g_env = NULL;
 
-// int ft_init_env(char **envp)
-// {
-//     int i;
-//     int size;
-
-//     size = 0;
-//     while (envp[size])
-//         size++;
-//     g_env = (char **)malloc(sizeof(char *) * (size + 1));
-//     if (!g_env)
-//         return (0);
-//     i = 0;
-//     while (i < size)
-//     {
-//         g_env[i] = ft_strdup(envp[i]);
-//         if (!g_env[i])
-//         {
-//             ft_free_env(); // Ensure previously allocated memory is freed
-//             return (0);
-//         }
-//         i++;
-//     }
-//     g_env[i] = NULL;
-//     return (1);
-// }
+int			init_env(t_shell *shell, char **envp);
+char		*ft_get_env(const char *name, t_shell *shell);
+static int 	ft_add_env(char *new_var, t_shell *shell);
+int			ft_set_env(const char *name, const char *value, t_shell *shell);
+int			ft_unset_env(const char *name, t_shell *shell);
 
 int	init_env(t_shell *shell, char **envp)
 {
@@ -159,21 +138,4 @@ int ft_unset_env(const char *name, t_shell *shell)
 		i++;
 	}
 	return (0);
-}
-
-void ft_free_env(void)
-{
-    int i;
-
-    if (!g_env) // Check if g_env is NULL
-        return;
-
-    i = 0;
-    while (g_env[i])
-    {
-        free(g_env[i]);
-        i++;
-    }
-    free(g_env);
-    g_env = NULL;
 }
