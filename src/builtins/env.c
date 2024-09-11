@@ -6,7 +6,7 @@ extern char **environ;
 //this is a global variable that is defined in the main.c file, so its forbidden!!
 
 
-void	builtin_env(char **args)
+void	builtin_env(char **args, char **environ)
 {
 	int	i;
 

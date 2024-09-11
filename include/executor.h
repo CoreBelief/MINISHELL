@@ -8,5 +8,6 @@
 
 void		execute_command(t_shell *shell);
 void		update_exit_status(int status, t_shell *shell);
+char 		*find_executable(char *command, t_shell *shell);
 
 #endif

@@ -6,18 +6,18 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/09 17:03:28 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/11 14:53:06 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "executor.h"
 
-void	print_sorted_env(void);
+// void	print_sorted_env(void);
 
-char *find_executable(char *command)
+char *find_executable(char *command, t_shell *shell)
 {
-    char *path = getenv("PATH");
+    char *path = ft_get_env("PATH", shell);
     char *path_copy = ft_strdup(path);
     char *dir = strtok(path_copy, ":"); //needs fixa
     char *full_path = NULL;
@@ -65,11 +65,14 @@ void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read, t
 	close(pipe_fds[0]);
 	if (is_builtin(cmd->argv[0]))
 	{
-		execute_builtin(cmd);
+		execute_builtin(cmd, shell);
 		exit(EXIT_SUCCESS);
 	}
 	else
+	{
+		printf("execute external\n");
 		execute_external(cmd, shell);
+	}
 }
 
 void	handle_parent_process(t_command *cmd, int pipe_fds[2], int *prev_pipe_read)
@@ -91,7 +94,7 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell)
 	pid_t		pid;
 
 	if (is_builtin_parent(cmd->argv[0]))
-		execute_builtin(cmd);
+		execute_builtin(cmd, shell);
 	else
 	{
 		setup_pipes(cmd, pipe_fds);

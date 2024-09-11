@@ -54,6 +54,7 @@ typedef struct s_shell
 	t_command	*commands;
 	int			last_exit_status;
 	char		**env;
+	int			env_size;
 }	t_shell;
 
 #endif

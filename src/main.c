@@ -17,7 +17,7 @@ int g_exit_status = 0;
 
 void update_exit_status(int status, t_shell *shell)
 {
-	printf("exit_status: %i\n", shell->last_exit_status);
+	// printf("exit_status: %i\n", shell->last_exit_status);
     if (WIFEXITED(status))
         shell->last_exit_status = WEXITSTATUS(status);
     else if (WIFSIGNALED(status))
@@ -77,7 +77,8 @@ void	init_shell(t_shell *shell)
 {
 	shell->commands = NULL;
 	shell->last_exit_status = 0;
-	shell->env = NULL;	
+	shell->env = NULL;
+	shell->env_size = 0;
 }
 
 static void	process_input(char *line, t_shell *shell)
@@ -85,7 +86,6 @@ static void	process_input(char *line, t_shell *shell)
 	t_token		*tokens;
 	// t_command	*cmd;
 
-	init_shell(shell);
 	if (line && *line)
 	{
 		add_history(line);
@@ -108,33 +108,40 @@ static void	process_input(char *line, t_shell *shell)
 	}
 }
 
-void minishell_loop(t_shell *shell)
+void	minishell_loop(t_shell *shell)
 {
-    char *line;
-    char *prompt;
+	char	*line;
+	char	*prompt;
 
-    setup_signals();
-    while (1)
-    {
-        prompt = create_prompt();
-        line = readline(prompt);
-        free(prompt);
-        if (!line)
-        {
-            printf("exit\n");
-            break;
-        }
-        // printf("input: %s\n", line);
-        process_input(line, shell);
-        free(line);
-    }
+	setup_signals();
+	while (1)
+	{
+		prompt = create_prompt();
+		line = readline(prompt);
+		free(prompt);
+		if (!line)
+		{
+			printf("exit\n");
+			break ;
+		}
+		process_input(line, shell);
+		free(line);
+	}
 }
 
-int main(void)
+int main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
 
-    minishell_loop(&shell);
-    return (g_exit_status);
+	(void)argc;
+	(void)argv;
+	init_shell(&shell);
+	if (!init_env(&shell, envp))
+	{
+		perror("error init env");
+		return (1);
+	}
+	minishell_loop(&shell);
+	return (shell.last_exit_status);
 }
 

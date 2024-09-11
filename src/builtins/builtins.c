@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-char *find_executable(char *command);
+// char *find_executable(char *command);
 
 static const char *builtin_parent_commands[] = {
     "cd", "export", "unset", "exit", "bye", NULL
@@ -34,7 +34,11 @@ void    execute_external(t_command *cmd, t_shell *shell)
 {
 	char	*path;
 
-	path = find_executable(cmd->argv[0]);
+	printf("entered execute external\n");
+	path = find_executable(cmd->argv[0], shell);
+	printf("path %s\n", path);
+	fflush(stdout);
+	// print_sorted_env(shell);
 	execve(path, cmd->argv, shell->env);
 	perror("minishell: execve failed\n");
 	exit(EXIT_FAILURE);
@@ -54,7 +58,7 @@ int is_builtin(char *command)
 	return 0;
 }
 
-void execute_builtin(t_command *cmd)
+void execute_builtin(t_command *cmd, t_shell *shell)
 {
 	if (ft_strcmp(cmd->argv[0], "echo") == 0)
 		builtin_echo(cmd->argv);
@@ -63,13 +67,13 @@ void execute_builtin(t_command *cmd)
 	else if (ft_strcmp(cmd->argv[0], "pwd") == 0)
 		builtin_pwd(cmd->argv);
 	else if (ft_strcmp(cmd->argv[0], "export") == 0)
-		builtin_export(cmd->argv);
+		builtin_export(cmd->argv, shell);
 	else if (ft_strcmp(cmd->argv[0], "unset") == 0)
-		builtin_unset(cmd->argv);
+		builtin_unset(cmd->argv, shell);
 	else if (ft_strcmp(cmd->argv[0], "env") == 0)
-		builtin_env(cmd->argv);
+		builtin_env(cmd->argv, shell->env);
 	else if (ft_strcmp(cmd->argv[0], "exit") == 0)
 		builtin_exit(cmd->argv);
-		else if (ft_strcmp(cmd->argv[0], "bye") == 0)
+	else if (ft_strcmp(cmd->argv[0], "bye") == 0)
 		builtin_exit(cmd->argv);
 }

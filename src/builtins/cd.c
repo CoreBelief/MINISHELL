@@ -5,9 +5,9 @@
 static char	*get_cd_path(char **args)
 {
 	if (!args[1] || ft_strcmp(args[1], "~") == 0)
-		return (ft_get_env("HOME"));
+		return (getenv("HOME"));
 	else if (ft_strcmp(args[1], "-") == 0)
-		return (ft_get_env("OLDPWD"));
+		return (getenv("OLDPWD"));
 	return (args[1]);
 }
 
