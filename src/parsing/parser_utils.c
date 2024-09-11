@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/11 19:03:12 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/11 19:20:02 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ t_command	*handle_pipe_parsing(t_command *cmd, int *i)
 	cmd->argv[*i] = NULL;
 	cmd->pipe_out = 1; // 
 	cmd->next = new_cmd;
-	new_cmd->pipe_in = 1;
+	// if (new_cmd)
+		new_cmd->pipe_in = 1;
 	*i = 0;
 	return (new_cmd);
 }
