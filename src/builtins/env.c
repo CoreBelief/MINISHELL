@@ -11,7 +11,7 @@ void	builtin_env(char **args, t_shell *shell)
 
 	(void)args;
 	i = 0;
-	while (environ[i])
+	while (shell->env[i])
 	{
 		printf("%s\n", shell->env[i]);
 		i++;
