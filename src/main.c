@@ -84,6 +84,7 @@ static void	process_input(char *line, t_shell *shell)
 		tokens = tokenizer(line);
 		if (!tokens)
 			return ;
+		// print_token_list(tokens);
 		shell->commands = parse_command_from_tokens(tokens, shell);
 		if (!shell->commands)
 		{

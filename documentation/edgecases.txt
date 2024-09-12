@@ -27,6 +27,9 @@ fix: Set the $PATH to a multiple directory value (directory1:directory2) and ens
 fix: Execute commands that should not work like 'dsbksdgbksdghsd'. Ensure minishell doesn't crash and prints an error. print if command not found and exit w 127
 do: Try to execute a long command with a ton of arguments.
 
+tokenizer
+	- echo hello"wprld" should take away the ""
+	- input with open " how to handle?? invalid? or just print it as is?
 
 parser svp
 	- input ends with | gives seg fault

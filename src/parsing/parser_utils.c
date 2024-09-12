@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/12 18:39:54 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/12 20:16:47 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,36 @@ int	handle_redirection_parsing(t_command *cmd, t_token **token)
 	return (0);
 }
 
+void	remove_quotes(char *str)
+{
+	int		i;
+	int		j;
+	int		in_quotes;
+	char	quote_char;
+
+	in_quotes = 0;
+	quote_char = 0;
+	i = 0;
+	j = 0;
+	if (!str)
+		return ;
+	while (str[i])
+	{
+		if ((str[i] == '\'' || str[i] == '\"') && (!in_quotes || str[i] == quote_char))
+		{
+			in_quotes = !in_quotes;
+			if (in_quotes)
+				quote_char = str[i];
+			else
+				quote_char = 0;
+		}
+		else
+			str[j++] = str[i];
+		i++;
+	}
+	str[j] = '\0';
+}
+
 int	handle_arg_parsing_2nd(t_command *cmd, t_token **tokens, int *i, t_shell *shell)
 {
 	if ((*tokens)->type == TOKEN_DOUBLE_QUOTE)
@@ -42,6 +72,7 @@ int	handle_arg_parsing_2nd(t_command *cmd, t_token **tokens, int *i, t_shell *sh
 	else if ((*tokens)->content[0] == '$' && \
 	(*tokens)->type != TOKEN_SINGLE_QUOTE)
 		variable_exp_dollar((*tokens), (*tokens)->content, shell);
+	// remove_quotes((*tokens)->content);
 	cmd->argv[*i] = ft_strdup((*tokens)->content);
 	if (!cmd->argv[*i])
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/12 18:40:51 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/12 20:27:17 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,13 @@ void	tokenize_double(char *input, int *i, t_token **head)
 		add_token(head, content, TOKEN_DOUBLE_QUOTE);
 		(*i)++;
 	}
+// 	else // to print if unclosed ", not sure how we want to handle this case
+// 	{
+// 		start--;
+// 		content = ft_strndup(&input[start], *i - start);
+// 		add_token(head, content, TOKEN_DOUBLE_QUOTE);
+// 		(*i)++;
+// 	}
 }
 
 bool	is_special_token(char c)
@@ -82,6 +89,22 @@ bool	is_special_token(char c)
 //the special token thing fucks it up if there are 2 consecutive commands or not????
 //smth weird might not be here 
 
+
+// void	tokenize_word(char *input, int *i, t_token **head)
+// {
+// 	int		start;
+// 	char	*content;
+
+// 	start = *i;
+// 	content = NULL;
+// 	while (input[*i] && !is_whitespace(input[*i]) && 
+// 	!is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
+// 		(*i)++;
+// 	content = ft_strndup(&input[start], *i - start);
+// 	add_token(head, content, TOKEN_WORD);
+// 	if (!is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
+// 		(*i)++;
+// }
 
 void tokenize_word(char *input, int *i, t_token **head)
 {
