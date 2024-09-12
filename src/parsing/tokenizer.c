@@ -8,6 +8,16 @@ int	is_whitespace(char c)
 		return (1);
 	return (0);
 }
+
+int	tokenize_pipe(int *i, t_token **head)
+{
+	if (*i == 0)  // invalid input if it starts with pipe, i think there might be a better solution later in parser maybe
+		return (0);
+	add_token(head, ft_strdup("|"), TOKEN_PIPE);
+	(*i)++;
+	return (1);
+}
+
 // have to fix if there are 2 consecutive commands in handle_word function
 t_token	*tokenizer(char *input)
 {
@@ -27,10 +37,8 @@ t_token	*tokenizer(char *input)
 			break ;
 		if (input[i] == '|')
 		{
-			if (i == 0) // invalid input if it starts with pipe, i think there might be a better solution later in parser maybe
+			if (!tokenize_pipe(&i, &head))
 				break ;
-			add_token(&head, ft_strdup("|"), TOKEN_PIPE);
-			i++;
 		}
 		else if (input[i] == '<' || input[i] == '>')
 			tokenize_redirection(input, &i, &head);

@@ -99,10 +99,34 @@ static void	process_input(char *line, t_shell *shell)
 	}
 }
 
-void minishell_loop(t_shell *shell)
+// char	*get_full_line(char *line)
+// {
+// 	// char	*line;
+// 	char	*next_line;
+// 	char	*temp;
+
+// 	// line = readline(prompt);
+// 	if (line[ft_strlen(line) - 1] == '|')
+// 	{
+// 		next_line = readline("> ");
+// 		if (!next_line)
+// 		{
+// 			free(line);
+// 			return (NULL);
+// 		}
+// 		temp = line;
+// 		line = ft_strjoin(line, next_line);
+// 		free(temp);
+// 		free(next_line);
+// 	}
+// 	return (line);
+
+// }
+
+void	minishell_loop(t_shell *shell)
 {
-	char *line;
-	char *prompt;
+	char	*line;
+	char	*prompt;
 	// rl_catch_signals = 0; // Prevent readline from handling signals 
 
 	setup_signals_shell();
@@ -115,6 +139,7 @@ void minishell_loop(t_shell *shell)
 			break ;
 		}
 		line = readline(prompt);
+		// line = get_full_line(line);
 		free(prompt);
 		handle_pending_signals();
 		if (!line)
@@ -130,7 +155,7 @@ void minishell_loop(t_shell *shell)
 		int sig = get_and_reset_signal();
 		if (sig == SIGINT)
 		{
-			g_exit_status = 130; // Set exit status to 130 for exit command
+			shell->last_exit_status = 130; // Set exit status to 130 for exit command
 			free(line);
 			// Handle interrupt (e.g., clear the line, continue the loop)
 			continue;

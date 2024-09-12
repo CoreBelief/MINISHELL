@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 19:03:58 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/12 16:43:32 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,15 @@ char	*append_str(char *og, char *to_append)
 	return (str);
 }
 
+char	*var_exp_exit(int *i, t_shell *shell)
+{
+	char	*expansion;
+
+	(*i) += 2;
+	expansion = ft_itoa(shell->last_exit_status);
+	return (expansion);
+}
+
 void	variable_exp_dollar(t_token *token, char *str, t_shell *shell)
 {
 	int		i;
@@ -65,18 +74,26 @@ void	variable_exp_dollar(t_token *token, char *str, t_shell *shell)
 	//error handling
 	if (str[i] == '$' && str[i + 1])
 	{
-		i++;
-		expansion = variable_exp(str, &i, shell);
-		if (!expansion)
+		if (str[i + 1] == '?')
 		{
-			printf("expansion variable not found\n");
-			free (token->content);
-			token->content = "";
-			return ;
+			expansion = var_exp_exit(&i, shell);
+		}
+		else
+		{
+			i++;
+			expansion = variable_exp(str, &i, shell);
+			if (!expansion)
+			{
+				printf("expansion variable not found\n");
+				free (token->content);
+				token->content = "";
+				return ;
+			}
 		}
 		new_str = append_str(new_str, expansion);
 		new_str = append_str(new_str, &str[i]);
 		token->content = new_str;
+		printf("token->cont %s\n", token->content);
 		free (str);
 	}
 }
@@ -91,6 +108,7 @@ int	until_dollar(char *str)
 	return (i);
 }
 
+
 void	variable_exp_double(t_token *token, char *str, t_shell *shell)
 {
 	int		i;
@@ -104,19 +122,28 @@ void	variable_exp_double(t_token *token, char *str, t_shell *shell)
 	//error handling
 	while (str[i])
 	{
-		if (str[i] == '$' && ft_isalnum(str[i + 1]))
+		if (str[i] == '$')
 		{
-			i++;
-			expansion = variable_exp(str, &i, shell);
-			if (!expansion)
+			if (str[i + 1] == '?')
 			{
-				printf("expansion variable not found\n");
-				free (token->content);
-				token->content = "";
-				return ;
+				expansion = var_exp_exit(&i, shell);
+				new_str = append_str(new_str, expansion);
+				free (expansion);
 			}
-			new_str = append_str(new_str, expansion);
-			// i += len;
+			else if (ft_isalnum(str[i + 1]))
+			{
+				i++;
+				expansion = variable_exp(str, &i, shell);
+				if (!expansion)
+				{
+					printf("expansion variable not found\n");
+					free (token->content);
+					token->content = "";
+					return ;
+				}
+				new_str = append_str(new_str, expansion);
+				// i += len;
+			}
 		}
 		len = until_dollar(&str[i]);
 		new_str = append_str(new_str, ft_strndup(&str[i], len));

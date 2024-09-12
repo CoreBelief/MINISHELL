@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 00:28:02 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/12 16:12:46 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,9 @@ void	tokenize_double(char *input, int *i, t_token **head)
 	}
 }
 
-bool is_special_token(char c)
+bool	is_special_token(char c)
 {
-    return (c == '|' || c == '<' || c == '>');
+	return (c == '|' || c == '<' || c == '>');
 }
 
 
