@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/12 16:12:46 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/12 18:40:51 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,34 +85,34 @@ bool	is_special_token(char c)
 
 void tokenize_word(char *input, int *i, t_token **head)
 {
-    int start = *i;
-    int in_quotes = 0;
-    char quote_char = 0;
+	int start = *i;
+	int in_quotes = 0;
+	char quote_char = 0;
 
-    while (input[*i])
-    {
-        if (input[*i] == '"' || input[*i] == '\'')
-        {
-            if (!in_quotes)
-            {
-                in_quotes = 1;
-                quote_char = input[*i];
-            }
-            else if (input[*i] == quote_char)
-            {
-                in_quotes = 0;
-                quote_char = 0;
-            }
-        }
-        else if (!in_quotes && (is_whitespace(input[*i]) || is_special_token(input[*i])))
-        {
-            break;
-        }
-        (*i)++;
-    }
+	while (input[*i])
+	{
+		if (input[*i] == '"' || input[*i] == '\'')
+		{
+			if (!in_quotes)
+			{
+				in_quotes = 1;
+				quote_char = input[*i];
+			}
+			else if (input[*i] == quote_char)
+			{
+				in_quotes = 0;
+				quote_char = 0;
+			}
+		}
+		else if (!in_quotes && (is_whitespace(input[*i]) || is_special_token(input[*i])))
+		{
+			break;
+		}
+		(*i)++;
+	}
 
-    char *content = ft_strndup(&input[start], *i - start);
-    add_token(head, content, TOKEN_WORD);
+	char *content = ft_strndup(&input[start], *i - start);
+	add_token(head, content, TOKEN_WORD);
 }
 
 void	print_token_list(t_token *head)
