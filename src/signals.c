@@ -13,7 +13,7 @@ volatile sig_atomic_t g_received_signal = 0;
 
 static void handle_signal(int sig)
 {
-    g_received_signal = sig;
+    g_received_signal =  sig;
     if (sig == SIGINT) {
         write(STDOUT_FILENO, "\n", 1);
         rl_on_new_line();
@@ -21,6 +21,20 @@ static void handle_signal(int sig)
         rl_redisplay();
     }
 }
+
+static void handle_signal_child(int sig)
+{
+    g_received_signal =  sig;
+    if (sig == SIGINT) {
+        write(STDOUT_FILENO, "\n", 1);
+        rl_on_new_line();
+        rl_replace_line("", 0);
+        // rl_redisplay();
+    }
+}
+
+
+
 
 static void sigchld_handler(int signum)
 {
@@ -36,6 +50,7 @@ static int setup_signal(int signum, void (*handler)(int))
     sigfillset(&sa.sa_mask);  // Block all signals during the handler
     return sigaction(signum, &sa, NULL);
 }
+
 void setup_signals_shell(void)
 {
     if (setup_signal(SIGINT, handle_signal) == -1) {
@@ -50,7 +65,7 @@ void setup_signals_shell(void)
         perror("Error ignoring SIGTERM");
         exit(EXIT_FAILURE);
     }
-    if (setup_signal(SIGTSTP, SIG_IGN) == -1) {
+    if (setup_signal(SIGTSTP, SIG_DFL) == -1) {
         perror("Error ignoring SIGTSTP");
         exit(EXIT_FAILURE);
     }
@@ -61,70 +76,22 @@ void setup_signals_shell(void)
         exit(EXIT_FAILURE);
     }
 }
-
 void setup_signals_child(void) {
     struct sigaction sa;
     sa.sa_flags = SA_RESTART;
     sigemptyset(&sa.sa_mask);
 
     // SIGINT: Custom handler
-    sa.sa_handler = handle_signal;
+    sa.sa_handler = handle_signal_child;
     if (sigaction(SIGINT, &sa, NULL) == -1) {
-        fprintf(stderr, "Error setting SIGINT handler in child: %s\n", strerror(errno));
+        perror("Error setting SIGINT handler in child");
         exit(EXIT_FAILURE);
     }
 
     // SIGQUIT and SIGTERM: Default action
     sa.sa_handler = SIG_DFL;
-    if (sigaction(SIGQUIT, &sa, NULL) == -1) {
-        fprintf(stderr, "Error setting SIGQUIT to default in child: %s\n", strerror(errno));
+    if (sigaction(SIGQUIT, &sa, NULL) == -1 || sigaction(SIGTERM, &sa, NULL) == -1) {
+        perror("Error setting SIGQUIT/SIGTERM to default in child");
         exit(EXIT_FAILURE);
     }
-    if (sigaction(SIGTERM, &sa, NULL) == -1) {
-        fprintf(stderr, "Error setting SIGTERM to default in child: %s\n", strerror(errno));
-        exit(EXIT_FAILURE);
-    }
-
-    // SIGTSTP: Ignore
-    sa.sa_handler = SIG_IGN;
-    if (sigaction(SIGTSTP, &sa, NULL) == -1) {
-        fprintf(stderr, "Error setting SIGTSTP to ignore in child: %s\n", strerror(errno));
-        exit(EXIT_FAILURE);
-    }
-
-    // Optional: Setup any other signals you want to handle in child processes
 }
-// void setup_signals_child(void) {
-//     struct sigaction sa;
-//     sa.sa_flags = SA_RESTART;
-//     sigemptyset(&sa.sa_mask);
-
-//     // SIGINT: Custom handler
-//     sa.sa_handler = handle_signal;
-//     if (sigaction(SIGINT, &sa, NULL) == -1) {
-//         perror("Error setting SIGINT handler in child");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     // SIGQUIT and SIGTERM: Default action
-//     sa.sa_handler = SIG_DFL;
-//     if (sigaction(SIGQUIT, &sa, NULL) == -1 || sigaction(SIGTERM, &sa, NULL) == -1) {
-//         perror("Error setting SIGQUIT or SIGTERM to default in child");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     // SIGTSTP: Ignore
-//     sa.sa_handler = SIG_IGN;
-//     if (sigaction(SIGTSTP, &sa, NULL) == -1) {
-//         perror("Error setting SIGTSTP to ignore in child");
-//         exit(EXIT_FAILURE);
-//     }
-// }
-
-int get_and_reset_signal(void)
-{
-    int sig = g_received_signal;
-    g_received_signal = 0;
-    return sig;
-}
-
