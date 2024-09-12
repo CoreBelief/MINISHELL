@@ -1,0 +1,39 @@
+export append edgecase += (strjoin)
+and export variable edgecases (ellen thinks its somethig w numbers)
+export happens sometimes in child and sometimes in parent, needs to be fixed
+
+rm dir in dir fix ( setting path if unknown, using loop to go dit up until path is found) (ask claudia)
+
+error handlin+ unset path etc handling
+	- shouldnt show env after unsetting PATH, but our does
+	- should display error mesage and our doesnt
+
+exit should be fully numerical, should  exit with exitcode 2 when alphanumerical
+
+finalize signals
+	- interrupting tasks with ctrl Z doesnt work yet
+
+exit status
+	- remove gloal for exit status
+	- variable expansion $?
+	- add specific exit codes everywhere
+
+HEREDOC
+
+minishellception
+
+fix: Set the $PATH to a multiple directory value (directory1:directory2) and ensure that directories are checked in order from left to right.
+
+fix: Execute commands that should not work like 'dsbksdgbksdghsd'. Ensure minishell doesn't crash and prints an error. print if command not found and exit w 127
+do: Try to execute a long command with a ton of arguments.
+
+
+parser svp
+	- input ends with | gives seg fault
+		- should give bash: syntax error near unexpected token `|' if just | and should wait for next cmd if cmd |, ex. ls |
+rdl@rtx:~/server/MINISHELL/MINISHELL$ hi ||||||
+bash: syntax error near unexpected token `||'
+rdl@rtx:~/server/MINISHELL/MINISHELL$ ./minishell 
+rdl@rtx:~/server/MINISHELL/MINISHELL$ hi |||||||
+Segmentation fault
+rdl@rtx:~/server/MINISHELL/MINISHELL$

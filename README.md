@@ -1,2 +1,0 @@
-# MINISHELL
-group project shell

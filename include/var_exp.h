@@ -1,32 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   main.c                                             :+:    :+:            */
+/*   var_exp.h                                          :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2024/07/25 15:31:46 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/07/25 15:45:35 by eeklund       ########   odam.nl         */
+/*   Created: 2024/08/23 13:36:31 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/09/11 19:06:02 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+#ifndef VAR_EXP_H
+# define VAR_EXP_H
 
-void	minishell_loop(void)
-{
-	char	*line; //malloced 
+# include "minishell.h"
 
-	line = NULL;
-	while (1)
-	{
-		line = readline("something: ");
-	}
-}
+void	variable_exp_double(t_token *token, char *str, t_shell *shell);
+int		until_dollar(char *str);
+void	variable_exp_dollar(t_token *token, char *str, t_shell *shell);
+int		is_var_char(char c);
+int		find_var_len(char *var);
 
-int	main(int ac, char **av)
-{
-	minishell_loop();
-}
-
+#endif

@@ -1,0 +1,84 @@
+<html><head><base href="/">
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f0f0f0; }
+  .mermaid { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body>
+
+<div class="mermaid">
+flowchart TB
+    Start([Start]) --> ProjectSetup[1. Project Setup]
+    ProjectSetup --> |Create directory| Makefile[Create Makefile]
+    ProjectSetup --> |Setup files| SourceFiles[Create source files]
+
+    Makefile --> ShellInit[2. Shell Initialization]
+    SourceFiles --> ShellInit
+    ShellInit --> |Initialize| MainFunction[Main function]
+    ShellInit --> |Implement| SignalHandling[Signal handling]
+
+    MainFunction --> DisplayPrompt[3. Displaying the Prompt]
+    SignalHandling --> DisplayPrompt
+    DisplayPrompt --> |Create| PromptLoop[Prompt loop]
+    DisplayPrompt --> |Implement| ReadInput[Read user input]
+
+    ReadInput --> Tokenization[4. Tokenization]
+    Tokenization --> |Split input| Tokens[Create tokens]
+    Tokenization --> |Allocate memory| DynamicAllocation[Dynamic allocation]
+
+    Tokens --> CommandParsing[5. Command Parsing]
+    DynamicAllocation --> CommandParsing
+    CommandParsing --> |Define| CommandStruct[Command structure]
+    CommandParsing --> |Handle| SpecialChars[Special characters]
+
+    CommandStruct --> BuiltInCommands[6. Built-in Commands]
+    SpecialChars --> BuiltInCommands
+    BuiltInCommands --> |Identify| BuiltIns[Identify built-ins]
+    BuiltInCommands --> |Implement| ImplementBuiltIns[Implement built-ins]
+
+    BuiltIns --> CommandExecution[7. Command Execution]
+    ImplementBuiltIns --> CommandExecution
+    CommandExecution --> |Check| CheckBuiltIns[Check for built-ins]
+    CommandExecution --> |Fork| ForkExecute[Fork and execute]
+    CommandExecution --> |Wait| WaitCompletion[Wait for completion]
+
+    CheckBuiltIns --> RedirectionsAndPipes[8. Redirections and Pipes]
+    ForkExecute --> RedirectionsAndPipes
+    WaitCompletion --> RedirectionsAndPipes
+    RedirectionsAndPipes --> |Handle| HandleRedirections[Handle redirections]
+    RedirectionsAndPipes --> |Implement| ImplementPipes[Implement pipes]
+
+    HandleRedirections --> EnvVariables[9. Environment Variables]
+    ImplementPipes --> EnvVariables
+    EnvVariables --> |Expand| ExpandVariables[Expand variables]
+    EnvVariables --> |Handle| SpecialVariables[Handle special variables]
+
+    ExpandVariables --> SignalHandlingInteractive[10. Signal Handling in Interactive Mode]
+    SpecialVariables --> SignalHandlingInteractive
+    SignalHandlingInteractive --> |Handle| HandleCtrlC[Handle Ctrl-C]
+    SignalHandlingInteractive --> |Handle| HandleCtrlD[Handle Ctrl-D]
+    SignalHandlingInteractive --> |Handle| HandleCtrlBackslash[Handle Ctrl-\]
+
+    HandleCtrlC --> MemoryManagement[11. Memory Management]
+    HandleCtrlD --> MemoryManagement
+    HandleCtrlBackslash --> MemoryManagement
+    MemoryManagement --> |Free| FreeMemory[Free allocated memory]
+    MemoryManagement --> |Handle| HandleReadlineLeaks[Handle readline leaks]
+
+    FreeMemory --> ErrorHandling[12. Error Handling]
+    HandleReadlineLeaks --> ErrorHandling
+    ErrorHandling --> |Handle| CommandNotFound[Command not found]
+    ErrorHandling --> |Handle| PermissionDenied[Permission denied]
+    ErrorHandling --> |Handle| InvalidArguments[Invalid arguments]
+
+    CommandNotFound --> End([End])
+    PermissionDenied --> End
+    InvalidArguments --> End
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true });
+</script>
+
+</body></html>
