@@ -27,6 +27,8 @@ t_token	*tokenizer(char *input)
 			break ;
 		if (input[i] == '|')
 		{
+			if (i == 0) // invalid input if it starts with pipe, i think there might be a better solution later in parser maybe
+				break ;
 			add_token(&head, ft_strdup("|"), TOKEN_PIPE);
 			i++;
 		}

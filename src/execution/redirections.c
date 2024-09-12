@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/21 11:00:43 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/05 17:33:36 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/12 10:21:24 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	open_file(char *target, t_token_type type)
 {
 	int	fd;
 
+	fd = -1;
 	if (type == TOKEN_REDIRECT_IN)
 		fd = open(target, O_RDONLY);
 	else if (type == TOKEN_REDIRECT_OUT)

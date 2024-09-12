@@ -91,6 +91,7 @@ static void	process_input(char *line, t_shell *shell)
 			return ;
 		}
 		free_tokens(&tokens);
+		// print_cmd_list(shell->commands);
 		execute_command(shell);
         // Handle any pending signals
         handle_pending_signals();

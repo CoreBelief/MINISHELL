@@ -35,6 +35,7 @@ int	init_env(t_shell *shell, char **envp)
 {
 	int	i;
 
+	i = 0;
 	while (envp[shell->env_size])
 		shell->env_size++;
 	shell->env = malloc(sizeof(char *) * (shell->env_size + 1));

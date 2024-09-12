@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/11 19:20:02 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/12 10:56:24 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,15 @@ t_command	*handle_pipe_parsing(t_command *cmd, int *i)
 	new_cmd = init_cmd();
 	if (!new_cmd)
 		return (NULL); // Handle error
+	printf("index in pipe %i\n", *i);
 	cmd->argv[*i] = NULL;
 	cmd->pipe_out = 1; // 
 	cmd->next = new_cmd;
 	// if (new_cmd)
 		new_cmd->pipe_in = 1;
 	*i = 0;
+	printf("cur_cmd in pipe pars %s\n", (cmd)->argv[0]);
+	
 	return (new_cmd);
 }
 // gives seg fault if the input ends with a pipe, it tires to access cur_cmd->argv[0] which doesnt exists
@@ -69,10 +72,12 @@ void	set_command_paths(t_command *cur_cmd)
 {
 	while (cur_cmd)
 	{
+		printf("hello1\n");
 		cur_cmd->path = ft_strdup(cur_cmd->argv[0]);
 		if (!cur_cmd->path)
 			return ; // Handle error
 		cur_cmd = cur_cmd->next;
+		printf("hello\n");
 	}
 }
 

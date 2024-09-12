@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 19:02:52 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/12 10:58:15 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,11 @@ static int	handle_token(t_token **tokens, t_command **cur_cmd, int *i, t_shell *
 	}
 	else if ((*tokens)->type == TOKEN_PIPE)
 	{
+		printf("%i index", *i);
 		*cur_cmd = handle_pipe_parsing(*cur_cmd, i);
 		if (!*cur_cmd)
 			return (0);
+		printf("cur_cmd in handle_token %s\n", (*cur_cmd)->argv[0]);
 	}
 	return (1);
 }
@@ -83,6 +85,7 @@ t_command	*parse_command_from_tokens(t_token *tokens, t_shell *shell)
 		tokens = tokens->next;
 	}
 	cur_cmd->argv[i] = NULL;
-	set_command_paths(head);
+	// printf("token cur next\n");
+	// set_command_paths(head); // im not sure we are ever using the path so might be unnecessary
 	return (head);
 }
