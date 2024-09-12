@@ -93,8 +93,6 @@ static void	process_input(char *line, t_shell *shell)
 		free_tokens(&tokens);
 		// print_cmd_list(shell->commands);
 		execute_command(shell);
-        // Handle any pending signals
-        handle_pending_signals();
         free_command_list(&shell->commands);
 	}
 }
@@ -165,6 +163,9 @@ void	minishell_loop(t_shell *shell)
 		// reset_signals(); // Reset signals after each command
 	}
 }
+
+
+
 void	init_shell(t_shell *shell)
 {
 	shell->commands = NULL;

@@ -4,6 +4,10 @@
 #include <string.h>
 #include <stdbool.h>
 
+static bool	is_only_n_flag(char *arg);
+void 		builtin_echo(char **args);
+
+
 static bool	is_only_n_flag(char *arg)
 {
 	int	i;

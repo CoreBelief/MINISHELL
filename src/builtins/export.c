@@ -4,10 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-//this is a global variable that is defined in the main.c file, so its forbidden!!
-// extern char **shell->env;
+void		builtin_export(char **args, t_shell *shell);
+static void	print_sorted_env(t_shell *shell);
 
-void	print_sorted_env(t_shell *shell)
+static void	print_sorted_env(t_shell *shell)
+static void	print_sorted_env(t_shell *shell)
 {
 	char	**sorted_env;
 	int		i;

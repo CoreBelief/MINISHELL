@@ -1,6 +1,6 @@
 NAME = minishell
 CC = gcc -g
-CFLAGS = -Wall -Wextra -Werror -Iinclude -Isrc/libft -I/usr/local/opt/readline/include
+CFLAGS =  -Wall -Wextra -Werror  -Iinclude -Isrc/libft -I/usr/local/opt/readline/include 
 # this is for mac -I/usr/local/opt/readline/include
 LDFLAGS = -g -L/usr/local/opt/readline/lib -lreadline
 #and the LDFLAGS is also for mac so can be removed on linux computer
