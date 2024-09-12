@@ -11,9 +11,19 @@
 
 volatile sig_atomic_t g_received_signal = 0;
 
+// static void handle_signal(int sig)
+// {
+//     g_received_signal =  sig;
+//     if (sig == SIGINT) {
+//         write(STDOUT_FILENO, "\n", 1);
+//         rl_on_new_line();
+//         rl_replace_line("", 0);
+//         // rl_redisplay();
+//     }
+// }
 static void handle_signal(int sig)
 {
-    g_received_signal =  sig;
+    g_received_signal = sig;
     if (sig == SIGINT) {
         write(STDOUT_FILENO, "\n", 1);
         rl_on_new_line();
@@ -21,20 +31,6 @@ static void handle_signal(int sig)
         rl_redisplay();
     }
 }
-
-static void handle_signal_child(int sig)
-{
-    g_received_signal =  sig;
-    if (sig == SIGINT) {
-        write(STDOUT_FILENO, "\n", 1);
-        rl_on_new_line();
-        rl_replace_line("", 0);
-        // rl_redisplay();
-    }
-}
-
-
-
 
 static void sigchld_handler(int signum)
 {
@@ -47,7 +43,7 @@ static int setup_signal(int signum, void (*handler)(int))
     struct sigaction sa;
     sa.sa_handler = handler;
     sa.sa_flags = SA_RESTART;
-    sigfillset(&sa.sa_mask);  // Block all signals during the handler
+    sigemptyset(&sa.sa_mask);  // Block all signals during the handler
     return sigaction(signum, &sa, NULL);
 }
 
@@ -82,7 +78,7 @@ void setup_signals_child(void) {
     sigemptyset(&sa.sa_mask);
 
     // SIGINT: Custom handler
-    sa.sa_handler = handle_signal_child;
+    sa.sa_handler = handle_signal;
     if (sigaction(SIGINT, &sa, NULL) == -1) {
         perror("Error setting SIGINT handler in child");
         exit(EXIT_FAILURE);
