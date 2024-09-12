@@ -1,5 +1,6 @@
 export append edgecase += (strjoin)
 and export variable edgecases (ellen thinks its somethig w numbers)
+export happens sometimes in child and sometimes in parent, needs to be fixed
 
 rm dir in dir fix ( setting path if unknown, using loop to go dit up until path is found) (ask claudia)
 
@@ -25,6 +26,7 @@ fix: Set the $PATH to a multiple directory value (directory1:directory2) and ens
 
 fix: Execute commands that should not work like 'dsbksdgbksdghsd'. Ensure minishell doesn't crash and prints an error. print if command not found and exit w 127
 do: Try to execute a long command with a ton of arguments.
+
 
 parser svp
 	- input ends with | gives seg fault
