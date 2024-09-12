@@ -125,7 +125,7 @@ void	minishell_loop(t_shell *shell)
 {
 	char	*line;
 	char	*prompt;
-	int		sig;
+	// int		sig;
 	// rl_catch_signals = 0; // Prevent readline from handling signals 
 
 	setup_signals_shell();
@@ -150,14 +150,14 @@ void	minishell_loop(t_shell *shell)
 			free(line);
 			break ;
 		}
-		sig = get_and_reset_signal();
-		if (sig == SIGINT)
-		{
-			shell->last_exit_status = 130; // Set exit status to 130 for exit command
-			free(line);
-			// Handle interrupt (e.g., clear the line, continue the loop)
-			continue;
-		}
+		// sig = get_and_reset_signal();
+		// if (sig == SIGINT)
+		// {
+		// 	shell->last_exit_status = 130; // Set exit status to 130 for exit command
+		// 	free(line);
+		// 	// Handle interrupt (e.g., clear the line, continue the loop)
+		// 	continue;
+		// }
 		process_input(line, shell);
 		free(line);
 		// reset_signals(); // Reset signals after each command
