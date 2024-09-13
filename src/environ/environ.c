@@ -66,7 +66,10 @@ static int ft_add_env(char *new_var, t_shell *shell)
 		return (0);
 	new_env = (char **)malloc(sizeof(char *) * (shell->env_size + 2));
 	if (!new_env)
+	{	
+		free(new_var);
 		return (0);
+	}
 	i = 0;
 	while (shell->env && shell->env[i])
 	{

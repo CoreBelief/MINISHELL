@@ -10,9 +10,6 @@ error handlin+ unset path etc handling
 
 exit should be fully numerical, should  exit with exitcode 2 when alphanumerical
 
-finalize signals
-	- interrupting tasks with ctrl Z doesnt work yet
-
 exit status
 	- remove gloal for exit status
 	- variable expansion $?
@@ -25,7 +22,7 @@ minishellception (update levels++, $SHLVL)
 fix: Set the $PATH to a multiple directory value (directory1:directory2) and ensure that directories are checked in order from left to right.
 
 fix: Execute commands that should not work like 'dsbksdgbksdghsd'. Ensure minishell doesn't crash and prints an error. print if command not found and exit w 127
-do: Try to execute a long command with a ton of arguments.
+do: Try to execute a long command with a ton of arguments. added this bu needs rigurous testing
 
 
 parser svp
@@ -37,3 +34,44 @@ rdl@rtx:~/server/MINISHELL/MINISHELL$ ./minishell
 rdl@rtx:~/server/MINISHELL/MINISHELL$ hi |||||||
 Segmentation fault
 rdl@rtx:~/server/MINISHELL/MINISHELL$
+
+
+
+
+should do single quotes better!!
+
+
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:10:31] ➜ pwd
+/home/rdl/server/MINISHELL/MINISHELL
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:10:43] ➜ echo yo
+yo
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:10:53] ➜ echo " yo"
+ yo
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:11:02] ➜ echo " yo'
+
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:11:04] ➜ echo " 'yo'
+
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:11:12] ➜ echo 'yo'
+yo
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:11:15] ➜ echo 'yo
+
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:11:19] ➜ echo john's
+john's
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:11:29] ➜ echo johns'
+johns'
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:11:36] ➜ echo 'johns
+
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:11:40] ➜ echo 'johns'
+johns
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:11:42] ➜ echo 'john's
+john s
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:11:47] ➜ bash
+rdl@rtx:~/server/MINISHELL/MINISHELL$ echo 'john's
+johns
+rdl@rtx:~/server/MINISHELL/MINISHELL$ echo "john's"
+john's
+rdl@rtx:~/server/MINISHELL/MINISHELL$ ./minishell 
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:12:25] ➜  echo "john's"
+john's
+rdl@rtx:~/server/MINISHELL/MINISHELL [18:12:26] ➜ 
+

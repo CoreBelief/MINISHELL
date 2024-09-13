@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/13 17:51:01 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/13 21:18:22 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,30 +171,6 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell)
 	}
 }
 
-// void	wait_for_children(t_shell *shell)
-// {
-// 	int		status;
-// 	pid_t	last_pid;
-
-// 	while ((last_pid = waitpid(-1, &status, WUNTRACED)) > 0)
-// 	{
-// 		if (WIFSIGNALED(status))
-// 		{
-// 			shell->last_exit_status = 128 + WTERMSIG(status);
-// 			if (WTERMSIG(status) == SIGQUIT)
-// 				ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
-// 		}
-// 		else if (WIFSTOPPED(status)) //this never happens??? since we block it in setup_signals_child
-// 		{
-// 			shell->last_exit_status = 128 + WSTOPSIG(status);
-// 			printf("Stopped: %d\n", WSTOPSIG(status));
-// 		}
-// 		else if (WIFEXITED(status))
-// 			shell->last_exit_status = WEXITSTATUS(status);
-// 	}
-// 	if (last_pid == -1 && errno != ECHILD)
-// 		perror("waitpid");
-// }
 void	wait_for_children(t_shell *shell)
 {
 	int		status;
@@ -225,11 +201,7 @@ void	execute_command(t_shell *shell)
 	prev_pipe_read = -1;
 	while (cur_cmd)
 	{	
-		;  // Modify this to match your path-finding logic
-        
 		execute_single_command(cur_cmd, &prev_pipe_read, shell);
 		cur_cmd = cur_cmd->next;
 	}
-
-
 }
