@@ -6,6 +6,8 @@
 
 #define BUFFER_SIZE 1024
 
+// placeholder example heredoc bullshit EOF
+
 // Function to read input from the user until the delimiter is reached
 void heredoc_input(char *delimiter, char *tmp_filename) {
     char *line = NULL;
