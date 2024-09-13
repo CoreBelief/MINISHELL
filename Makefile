@@ -8,7 +8,7 @@ LIBS = -lreadline
 SRCS_DIR = src
 OBJ_DIR = obj
 
-SRCS = $(addprefix $(SRCS_DIR)/, main.c signals.c memory.c parsing/tokenizer.c \
+SRCS = $(addprefix $(SRCS_DIR)/, main.c prompt.c error.c signals.c memory.c parsing/tokenizer.c \
 parsing/tokenizer_utils.c parsing/parser.c parsing/parser_utils.c \
 execution/executor.c execution/redirections.c builtins/echo.c builtins/cd.c \
 builtins/pwd.c builtins/export.c builtins/unset.c builtins/env.c builtins/exit.c \

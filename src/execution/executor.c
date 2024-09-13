@@ -6,13 +6,14 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/12 17:35:34 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/13 03:10:23 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "executor.h"
 #include <errno.h>
+#include "error.h"
 char		*find_executable(char *command, t_shell *shell);
 void		execute_external(t_command *cmd, t_shell *shell);
 void		setup_pipes(t_command *cmd, int pipe_fds[2]);
@@ -22,7 +23,7 @@ void		execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell
 void		wait_for_children(t_shell *shell);
 void		execute_command(t_shell *shell);
 
-char *find_executable(char *command, t_shell *shell)
+char *find_executable(char *command, t_shell *shell) //illegal function!!!
 {
     char *path = ft_get_env("PATH", shell);
     char *path_copy = ft_strdup(path);
@@ -42,6 +43,26 @@ char *find_executable(char *command, t_shell *shell)
     free(path_copy);
     return ft_strdup(command);  // Return the command as-is if not found in PATH
 }
+
+
+char *find_command_in_path(char *command) //another illegal function!!!
+{
+    // Sample function to search command in PATH
+    char *path_env = getenv("PATH");  // Get PATH environment variable
+    char *path = strtok(path_env, ":");  // Split PATH by ':'
+    
+    while (path != NULL) {
+        char full_path[1024];
+        snprintf(full_path, sizeof(full_path), "%s/%s", path, command);  // Concatenate path and command
+        
+        if (access(full_path, X_OK) == 0) {  // Check if command is executable
+            return strdup(full_path);  // Return full path to the command
+        }
+        path = strtok(NULL, ":");
+    }
+    return NULL;  // Command not found
+}
+
 
 void	execute_external(t_command *cmd, t_shell *shell)
 {
@@ -66,7 +87,7 @@ void	setup_pipes(t_command *cmd, int pipe_fds[2])
 }
 
 void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read, t_shell *shell)
-{
+{	
 	setup_signals_child();
 	if (cmd->redirect_count)
 		setup_redirections(cmd);
@@ -84,10 +105,11 @@ void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read, t
 	if (is_builtin(cmd->argv[0]))
 	{
 		execute_builtin(cmd, shell);
-		exit(EXIT_SUCCESS);
+		exit(shell->last_exit_status);
 	}
 	else
 		execute_external(cmd, shell);
+	exit(EXIT_FAILURE);
 }
 
 void	handle_parent_process(t_command *cmd, int pipe_fds[2], int *prev_pipe_read)
@@ -107,6 +129,8 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell)
 {
 	int			pipe_fds[2];
 	pid_t		pid;
+	char 		*path;
+
 
 	if (is_builtin_parent(cmd->argv[0]))
 		execute_builtin(cmd, shell);
@@ -120,36 +144,54 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell)
 			exit(EXIT_FAILURE);
 		}
 		else if (pid == 0)
+		{	
+			path = find_command_in_path(cmd->argv[0]);
+			if (path == NULL) 
+			{
+            print_command_not_found(cmd->argv[0]);
+			exit(127);   // Call this when a command is not found
+        	}
+
 			handle_child_process(cmd, pipe_fds, *prev_pipe_read, shell);
+		}
 		else
+		{
+			signal(SIGINT, SIG_IGN);
+
 			handle_parent_process(cmd, pipe_fds, prev_pipe_read);
+
+			// Wait for child to complete
+			wait_for_children(shell);
+
+			// Restore SIGINT handler for parent shell after the child has finished
+			setup_signals_shell();
+		}
 	}
 }
 
-// void wait_for_children(t_shell *shell)
+// void	wait_for_children(t_shell *shell)
 // {
 // 	int		status;
 // 	pid_t	last_pid;
 
-// 	while ((last_pid = wait(&status)) > 0)
+// 	while ((last_pid = waitpid(-1, &status, WUNTRACED)) > 0)
 // 	{
 // 		if (WIFSIGNALED(status))
 // 		{
-// 			if (WTERMSIG(status) == SIGINT)
-// 				shell->last_exit_status = 130;
-// 			else if (WTERMSIG(status) == SIGQUIT)
-// 			{
-// 				shell->last_exit_status = 131;
-// 				write(STDERR_FILENO, "Quit\n", 6);
-// 			}
-// 			// else if (WTERMSIG(status) == SIGTERM)
-// 			// 	shell->last_exit_status = 143;
+// 			shell->last_exit_status = 128 + WTERMSIG(status);
+// 			if (WTERMSIG(status) == SIGQUIT)
+// 				ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+// 		}
+// 		else if (WIFSTOPPED(status)) //this never happens??? since we block it in setup_signals_child
+// 		{
+// 			shell->last_exit_status = 128 + WSTOPSIG(status);
+// 			printf("Stopped: %d\n", WSTOPSIG(status));
 // 		}
 // 		else if (WIFEXITED(status))
-// 		{
 // 			shell->last_exit_status = WEXITSTATUS(status);
-// 		}
 // 	}
+// 	if (last_pid == -1 && errno != ECHILD)
+// 		perror("waitpid");
 // }
 void	wait_for_children(t_shell *shell)
 {
@@ -164,17 +206,13 @@ void	wait_for_children(t_shell *shell)
 			if (WTERMSIG(status) == SIGQUIT)
 				ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
 		}
-		else if (WIFSTOPPED(status)) //this never happens???
-		{
-			shell->last_exit_status = 128 + WSTOPSIG(status);
-			printf("Stopped: %d\n", WSTOPSIG(status));
-		}
 		else if (WIFEXITED(status))
 			shell->last_exit_status = WEXITSTATUS(status);
 	}
 	if (last_pid == -1 && errno != ECHILD)
 		perror("waitpid");
 }
+
 
 void	execute_command(t_shell *shell)
 {
@@ -184,10 +222,12 @@ void	execute_command(t_shell *shell)
 	cur_cmd = shell->commands;
 	prev_pipe_read = -1;
 	while (cur_cmd)
-	{
+	{	
+		;  // Modify this to match your path-finding logic
+        
 		execute_single_command(cur_cmd, &prev_pipe_read, shell);
 		cur_cmd = cur_cmd->next;
 	}
 
-	wait_for_children(shell);
+
 }

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/12 01:30:38 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/13 03:23:27 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 #include "environ.h"
 #include "signal.h"
 #include "../src/lib_FT/libft.h"
-
+#include "prompt.h"
 # include "structs.h"
 # include "builtins.h"
 # include "parser.h"
