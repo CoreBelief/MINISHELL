@@ -4,20 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-//this is a global variable that is defined in the main.c file, so its forbidden!!
-// extern char **shell->env;
+void		builtin_export(char **args, t_shell *shell);
+static void	print_sorted_env(t_shell *shell);
 
- void	print_sorted_env(t_shell *shell)
+static void	print_sorted_env(t_shell *shell)
 {
 	char	**sorted_env;
-	// int		env_size;
 	int		i;
 	int		j;
 	char	*temp;
 
-	// env_size = 0;
-	// while (shell->env[env_size])
-	// 	env_size++;
 	sorted_env = malloc(sizeof(char *) * (shell->env_size + 1));
 	i = -1;
 	while (++i < shell->env_size)

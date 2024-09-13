@@ -6,11 +6,15 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/11 17:48:56 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 18:55:00 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/12 01:26:00 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int    	is_builtin_parent(char *command);
+int     is_builtin(char *command);
+void    execute_builtin(t_command *cmd, t_shell *shell);
 
 int	is_builtin_parent(char *command)
 {

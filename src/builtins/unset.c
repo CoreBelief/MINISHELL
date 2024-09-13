@@ -2,6 +2,7 @@
 #include "minishell.h"
 #include <stdlib.h>
 #include <string.h>
+void	builtin_unset(char **args, t_shell *shell);
 
 void	builtin_unset(char **args, t_shell *shell)
 {

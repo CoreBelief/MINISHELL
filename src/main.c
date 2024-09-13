@@ -93,53 +93,71 @@ static void	process_input(char *line, t_shell *shell)
 		free_tokens(&tokens);
 		// print_cmd_list(shell->commands);
 		execute_command(shell);
-        // Handle any pending signals
-        handle_pending_signals();
         free_command_list(&shell->commands);
 	}
 }
-
 void minishell_loop(t_shell *shell)
 {
-	char *line;
-	char *prompt;
-	// rl_catch_signals = 0; // Prevent readline from handling signals 
+    char *line;
+    char *prompt;
 
-	setup_signals_shell();
-	while (1)
-	{
-		prompt = create_prompt();
-		if (!prompt)
-		{
-			fprintf(stderr, "Error: Failed to create prompt\n"); //cannot use fprintf
-			break ;
-		}
-		line = readline(prompt);
-		free(prompt);
-		handle_pending_signals();
-		if (!line)
-		{
-			printf("exit\n");
-			break ;
-		}
-		if (ft_strcmp(line, "exit") == 0)
-		{
-			free(line);
-			break ;
-		}
-		int sig = get_and_reset_signal();
-		if (sig == SIGINT)
-		{
-			g_exit_status = 130; // Set exit status to 130 for exit command
-			free(line);
-			// Handle interrupt (e.g., clear the line, continue the loop)
-			continue;
-		}
-		process_input(line, shell);
-		free(line);
-		// reset_signals(); // Reset signals after each command
-	}
+    setup_signals_shell(); // Setup the signals
+
+    while (1)
+    {
+        prompt = create_prompt();
+        if (!prompt)
+        {
+            fprintf(stderr, "Error: Failed to create prompt\n"); //cannot use fprintf
+            break;
+        }
+
+        line = readline(prompt);
+        free(prompt);
+
+        if (!line) // If readline returns NULL, handle exit
+        {
+            printf("exit\n");
+            break;
+        }
+
+        // Handle exit
+        if (ft_strcmp(line, "exit") == 0)
+        {
+            free(line);
+            break;
+        }
+
+        // Check if a signal (SIGINT) was received
+        // int sig = get_and_reset_signal();
+        // if (sig == SIGINT)
+        // {
+		// 	printf("T1.");
+        //     g_exit_status = 130; // Set exit status to 130 for Ctrl+C
+        //     // Reset readline's internal buffer
+        //     rl_on_new_line(); 
+		// 	printf("T2.");
+		// 	   // Tell readline we're on a new line
+        //     rl_replace_line("", 0); 
+		// 	printf("T3.");
+		// 	// Clear the current buffer
+        //     rl_redisplay();
+		// 	printf("T4.");
+		// 	      // Redisplay the prompt immediately
+        //     free(line); 
+		// 	printf("T5.");
+		// 	         // Free the current input
+        //     continue;            // Continue the loop without processing
+        // }
+
+        // Process the input command if no signal interrupts
+        process_input(line, shell);
+        free(line);
+    }
 }
+
+
+
 void	init_shell(t_shell *shell)
 {
 	shell->commands = NULL;
