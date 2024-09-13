@@ -20,7 +20,7 @@ exit status
 
 HEREDOC
 
-minishellception
+minishellception (update levels++, $SHLVL)
 
 fix: Set the $PATH to a multiple directory value (directory1:directory2) and ensure that directories are checked in order from left to right.
 

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/13 03:10:23 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/13 17:51:01 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,9 @@ char *find_command_in_path(char *command) //another illegal function!!!
     // Sample function to search command in PATH
     char *path_env = getenv("PATH");  // Get PATH environment variable
     char *path = strtok(path_env, ":");  // Split PATH by ':'
-    
+    if (access(command, X_OK) == 0) {
+		return (command);
+	}
     while (path != NULL) {
         char full_path[1024];
         snprintf(full_path, sizeof(full_path), "%s/%s", path, command);  // Concatenate path and command
