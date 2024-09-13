@@ -7,6 +7,7 @@
 void		builtin_export(char **args, t_shell *shell);
 static void	print_sorted_env(t_shell *shell);
 
+
 static void	print_sorted_env(t_shell *shell)
 {
 	char	**sorted_env;

@@ -32,7 +32,8 @@ typedef enum {
 	TOKEN_REDIRECT_APPEND,
 	TOKEN_HEREDOC,
 	TOKEN_SINGLE_QUOTE,
-	TOKEN_DOUBLE_QUOTE
+	TOKEN_DOUBLE_QUOTE,
+	TOKEN_EXIT
 } t_token_type;
 
 typedef struct s_token

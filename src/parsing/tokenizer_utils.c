@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 00:28:02 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/12 20:27:17 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,18 @@ void	tokenize_double(char *input, int *i, t_token **head)
 		add_token(head, content, TOKEN_DOUBLE_QUOTE);
 		(*i)++;
 	}
+// 	else // to print if unclosed ", not sure how we want to handle this case
+// 	{
+// 		start--;
+// 		content = ft_strndup(&input[start], *i - start);
+// 		add_token(head, content, TOKEN_DOUBLE_QUOTE);
+// 		(*i)++;
+// 	}
 }
 
-bool is_special_token(char c)
+bool	is_special_token(char c)
 {
-    return (c == '|' || c == '<' || c == '>');
+	return (c == '|' || c == '<' || c == '>');
 }
 
 
@@ -83,36 +90,52 @@ bool is_special_token(char c)
 //smth weird might not be here 
 
 
+// void	tokenize_word(char *input, int *i, t_token **head)
+// {
+// 	int		start;
+// 	char	*content;
+
+// 	start = *i;
+// 	content = NULL;
+// 	while (input[*i] && !is_whitespace(input[*i]) && 
+// 	!is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
+// 		(*i)++;
+// 	content = ft_strndup(&input[start], *i - start);
+// 	add_token(head, content, TOKEN_WORD);
+// 	if (!is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
+// 		(*i)++;
+// }
+
 void tokenize_word(char *input, int *i, t_token **head)
 {
-    int start = *i;
-    int in_quotes = 0;
-    char quote_char = 0;
+	int start = *i;
+	int in_quotes = 0;
+	char quote_char = 0;
 
-    while (input[*i])
-    {
-        if (input[*i] == '"' || input[*i] == '\'')
-        {
-            if (!in_quotes)
-            {
-                in_quotes = 1;
-                quote_char = input[*i];
-            }
-            else if (input[*i] == quote_char)
-            {
-                in_quotes = 0;
-                quote_char = 0;
-            }
-        }
-        else if (!in_quotes && (is_whitespace(input[*i]) || is_special_token(input[*i])))
-        {
-            break;
-        }
-        (*i)++;
-    }
+	while (input[*i])
+	{
+		if (input[*i] == '"' || input[*i] == '\'')
+		{
+			if (!in_quotes)
+			{
+				in_quotes = 1;
+				quote_char = input[*i];
+			}
+			else if (input[*i] == quote_char)
+			{
+				in_quotes = 0;
+				quote_char = 0;
+			}
+		}
+		else if (!in_quotes && (is_whitespace(input[*i]) || is_special_token(input[*i])))
+		{
+			break;
+		}
+		(*i)++;
+	}
 
-    char *content = ft_strndup(&input[start], *i - start);
-    add_token(head, content, TOKEN_WORD);
+	char *content = ft_strndup(&input[start], *i - start);
+	add_token(head, content, TOKEN_WORD);
 }
 
 void	print_token_list(t_token *head)

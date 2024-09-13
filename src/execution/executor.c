@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/12 01:27:29 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/12 17:35:34 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ void	wait_for_children(t_shell *shell)
 		perror("waitpid");
 }
 
-void execute_command(t_shell *shell)
+void	execute_command(t_shell *shell)
 {
 	t_command	*cur_cmd;
 	int			prev_pipe_read;
