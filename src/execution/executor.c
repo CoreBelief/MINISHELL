@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/12 20:25:47 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/13 02:26:05 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,11 +127,43 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell)
 		}
 		else
 		{
+			signal(SIGINT, SIG_IGN);
+
 			handle_parent_process(cmd, pipe_fds, prev_pipe_read);
+
+			// Wait for child to complete
+			wait_for_children(shell);
+
+			// Restore SIGINT handler for parent shell after the child has finished
+			setup_signals_shell();
 		}
 	}
 }
 
+// void	wait_for_children(t_shell *shell)
+// {
+// 	int		status;
+// 	pid_t	last_pid;
+
+// 	while ((last_pid = waitpid(-1, &status, WUNTRACED)) > 0)
+// 	{
+// 		if (WIFSIGNALED(status))
+// 		{
+// 			shell->last_exit_status = 128 + WTERMSIG(status);
+// 			if (WTERMSIG(status) == SIGQUIT)
+// 				ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+// 		}
+// 		else if (WIFSTOPPED(status)) //this never happens??? since we block it in setup_signals_child
+// 		{
+// 			shell->last_exit_status = 128 + WSTOPSIG(status);
+// 			printf("Stopped: %d\n", WSTOPSIG(status));
+// 		}
+// 		else if (WIFEXITED(status))
+// 			shell->last_exit_status = WEXITSTATUS(status);
+// 	}
+// 	if (last_pid == -1 && errno != ECHILD)
+// 		perror("waitpid");
+// }
 void	wait_for_children(t_shell *shell)
 {
 	int		status;
@@ -145,17 +177,13 @@ void	wait_for_children(t_shell *shell)
 			if (WTERMSIG(status) == SIGQUIT)
 				ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
 		}
-		else if (WIFSTOPPED(status)) //this never happens??? since we block it in setup_signals_child
-		{
-			shell->last_exit_status = 128 + WSTOPSIG(status);
-			printf("Stopped: %d\n", WSTOPSIG(status));
-		}
 		else if (WIFEXITED(status))
 			shell->last_exit_status = WEXITSTATUS(status);
 	}
 	if (last_pid == -1 && errno != ECHILD)
 		perror("waitpid");
 }
+
 
 void	execute_command(t_shell *shell)
 {
@@ -170,5 +198,5 @@ void	execute_command(t_shell *shell)
 		cur_cmd = cur_cmd->next;
 	}
 
-	wait_for_children(shell);
+
 }
