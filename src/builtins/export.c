@@ -58,8 +58,6 @@ void	builtin_export(char **args, t_shell *shell)
 		{
 			*equal_sign = '\0';
 			char *value = equal_sign + 1;
-			
-			// Remove surrounding quotes if present
 			if ((value[0] == '"' && value[ft_strlen(value)-1] == '"') ||
 				(value[0] == '\'' && value[ft_strlen(value)-1] == '\''))
 			{
