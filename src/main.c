@@ -20,7 +20,7 @@ static void	process_input(char *line, t_shell *shell)
 		tokens = tokenizer(line);
 		if (!tokens)
 		{
-            shell->last_exit_status = 1;  // Set error exit code if tokenization fails
+            shell->last_exit_status = 1;
             return;
         }
 		shell->commands = parse_command_from_tokens(tokens, shell);
@@ -31,15 +31,6 @@ static void	process_input(char *line, t_shell *shell)
 			return ;
 		}
 		free_tokens(&tokens);
-		//maybe implement this
-		//   if (execute_command(shell) != 0)  // Assuming execute_command returns non-zero on error
-        // {
-        //     shell->last_exit_status = 1;  // Set error exit code if execution fails
-        // }
-        // else
-        // {
-        //     shell->last_exit_status = 0;  // Set success exit code
-        // }
 		execute_command(shell);
         free_command_list(&shell->commands);
 	}
@@ -70,12 +61,6 @@ void	minishell_loop(t_shell *shell)
 			printf("exit\n");
 			break ;
 		}
-		//maybe implememnt this
-		// if (process_input(line, shell) != 0)  // Assuming process_input returns an error code 
-        // {
-        //     write(STDERR_FILENO, "Error: Failed to process input\n", 31);
-        //     shell->last_exit_status = 1;  // Set appropriate exit code if input processing fails
-        // }
 		process_input(line, shell);
 		free(line);
 	}

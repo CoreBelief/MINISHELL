@@ -41,3 +41,20 @@ void	free_command_list(t_command **head)
 		*head = (*head)->next;
 	}
 }
+
+
+
+void	ft_free_str_array(char **arr)
+{
+	int	i;
+
+	if (!arr)
+		return;
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);  
+		i++;
+	}
+	free(arr);  
+}

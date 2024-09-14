@@ -6,7 +6,7 @@
 /*   By: elleneklund <elleneklund@student.codam.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/30 15:13:08 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/08/30 15:14:19 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/14 02:35:57 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,5 +17,7 @@
 
 void	free_command(t_command *cmd);
 void	free_command_list(t_command **head);
+void	ft_free_str_array(char **arr);
+
 
 #endif

@@ -75,38 +75,24 @@ char *create_prompt(void)
     char *time_str;
     size_t prompt_size;
 
-    /* Get the hostname */
     if (gethostname(hostname, sizeof(hostname)) != 0)
         ft_strcpy(hostname, "unknown");
-
-    /* Get the username */
     struct passwd *pw = getpwuid(getuid());
     if (pw)
         ft_strncpy(username, pw->pw_name, sizeof(username) - 1);
     else
         ft_strcpy(username, "user");
-
-    /* Get current directory */
     cwd = get_current_dir();
-
-    /* Get current time */
     time_str = get_current_time();
-
-    /* Calculate the prompt size */
     prompt_size = ft_strlen(username) + ft_strlen(hostname) + ft_strlen(cwd) + 100;
-
-    /* Allocate memory for the prompt */
     prompt = malloc(prompt_size);
     if (prompt)
     {
-        /* Create the fancy prompt with colors, symbols, and format */
         snprintf(prompt, prompt_size,
                  "\001\033[1;32m\002%s@\033[1;36m%s\001\033[0m\002:\033[1;33m%s\033[0m "
                  "\033[1;35m[%s]\033[0m ➜ ",
                  username, hostname, cwd, time_str);
     }
-
-    /* Free the current directory and time strings */
     free(cwd);
     free(time_str);
 

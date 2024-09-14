@@ -10,11 +10,12 @@ static int 	ft_add_env(char *new_var, t_shell *shell);
 int			ft_set_env(const char *name, const char *value, t_shell *shell);
 int			ft_unset_env(const char *name, t_shell *shell);
 
+
 int	init_env(t_shell *shell, char **envp)
 {
-	int	i;
+	int i;
 
-	i = 0;
+	shell->env_size = 0;
 	while (envp[shell->env_size])
 		shell->env_size++;
 	shell->env = malloc(sizeof(char *) * (shell->env_size + 1));
@@ -23,14 +24,13 @@ int	init_env(t_shell *shell, char **envp)
 		perror("allocation failed for env");
 		return (0);
 	}
-	while (envp[i])
+	i = 0;
+	while (i < shell->env_size)
 	{
 		shell->env[i] = ft_strdup(envp[i]);
 		if (!shell->env[i])
 		{
-			while (--i >= 0)
-				free(shell->env[i]);
-			free(shell->env);
+			ft_free_str_array(shell->env);
 			return (0);
 		}
 		i++;
@@ -38,6 +38,7 @@ int	init_env(t_shell *shell, char **envp)
 	shell->env[shell->env_size] = NULL;
 	return (1);
 }
+
 
 char	*ft_get_env(const char *name, t_shell *shell)
 {
