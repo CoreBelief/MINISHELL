@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:19:51 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 19:04:42 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/14 13:59:43 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void		set_command_paths(t_command *cur_cmd);
 t_command	*handle_pipe_parsing(t_command *cmd, int *i);
 int			handle_arg_parsing(t_command *cmd, t_token *tokens, int *i);
 int			handle_arg_parsing_2nd(t_command *cmd, t_token **tokens, int *i, t_shell *shell);
+int			handle_heredoc_parsing(t_command *cmd, t_token **token, t_shell *shell);
+
 
 
 

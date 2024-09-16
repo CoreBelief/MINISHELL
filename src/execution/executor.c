@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/13 03:10:23 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/16 14:41:48 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,14 @@ char *find_executable(char *command, t_shell *shell) //illegal function!!!
         full_path = ft_strjoin3(dir, "/", command);
         if (access(full_path, X_OK) == 0) {
             free(path_copy);
-            return full_path;
+            return (full_path);
         }
         free(full_path);
         dir = strtok(NULL, ":");
     }
 
     free(path_copy);
-    return ft_strdup(command);  // Return the command as-is if not found in PATH
+    return (NULL);  // Return the command as-is if not found in PATH
 }
 
 
@@ -69,6 +69,12 @@ void	execute_external(t_command *cmd, t_shell *shell)
 	char	*path;
 
 	path = find_executable(cmd->argv[0], shell);
+	if (!path)
+	{
+		print_command_not_found(cmd->argv[0]);
+		shell->last_exit_status = 127;
+		exit(EXIT_FAILURE);
+	}
 	execve(path, cmd->argv, shell->env);
 	perror("minishell: execve failed\n");
 	exit(EXIT_FAILURE);
@@ -129,7 +135,7 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell)
 {
 	int			pipe_fds[2];
 	pid_t		pid;
-	char 		*path;
+	// char 		*path;
 
 
 	if (is_builtin_parent(cmd->argv[0]))
@@ -145,12 +151,12 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell)
 		}
 		else if (pid == 0)
 		{	
-			path = find_command_in_path(cmd->argv[0]);
-			if (path == NULL) 
-			{
-            print_command_not_found(cmd->argv[0]);
-			exit(127);   // Call this when a command is not found
-        	}
+			// path = find_command_in_path(cmd->argv[0]);
+			// if (path == NULL) 
+			// {
+            // print_command_not_found(cmd->argv[0]);
+			// exit(127);   // Call this when a command is not found
+        	// }
 
 			handle_child_process(cmd, pipe_fds, *prev_pipe_read, shell);
 		}
@@ -213,6 +219,21 @@ void	wait_for_children(t_shell *shell)
 		perror("waitpid");
 }
 
+void cleanup_heredoc_files(t_command *cmd)
+{
+	int i;
+
+	i = 0;
+	while (i < cmd->redirect_count)
+	{
+		if (cmd->redir[i].type == TOKEN_HEREDOC)
+		{
+			unlink(cmd->redir[i].file);
+			// free(cmd->redir[i].file);
+		}
+		i++;
+	}
+}
 
 void	execute_command(t_shell *shell)
 {
@@ -223,9 +244,8 @@ void	execute_command(t_shell *shell)
 	prev_pipe_read = -1;
 	while (cur_cmd)
 	{	
-		;  // Modify this to match your path-finding logic
-        
 		execute_single_command(cur_cmd, &prev_pipe_read, shell);
+		// cleanup_heredoc_files(cur_cmd);
 		cur_cmd = cur_cmd->next;
 	}
 

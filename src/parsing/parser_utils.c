@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/13 17:42:08 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/16 14:44:07 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,57 @@ int	is_redirect_token(int token_type)
 		token_type == TOKEN_REDIRECT_APPEND || \
 		token_type == TOKEN_HEREDOC);
 }
+
+int	handle_heredoc_parsing(t_command *cmd, t_token **token, t_shell *shell)
+{
+	char	*delim;
+	int		hered_fd;
+	// char 	*line;
+	char 	*tmp_file;
+
+	cmd->redir[cmd->redirect_count].type = (*token)->type;
+	(*token) = (*token)->next;
+	if (token && *token && (*token)->type == TOKEN_WORD)
+	{
+		delim = (*token)->content;
+		tmp_file = ft_strjoin("/tmp/heredoc_", ft_itoa(cmd->redirect_count));
+		hered_fd = open(tmp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		if (hered_fd == -1) 
+		{
+			perror("minishell: open");
+			free(tmp_file);
+			exit(EXIT_FAILURE);
+		}
+		while (1)
+		{
+			(*token)->content = readline("> ");
+			if (!(*token)->content)
+				break ;
+			if (ft_strcmp((*token)->content, delim) == 0) 
+           		break;
+			variable_exp_double(*token, (*token)->content, shell);
+			write(hered_fd, (*token)->content, strlen((*token)->content));
+			write(hered_fd, "\n", 1);
+			free((*token)->content);
+		}
+		if ((*token)->content)
+			free((*token)->content);
+		close(hered_fd);
+		cmd->redir[cmd->redirect_count].file = tmp_file;
+		if (!cmd->redir[cmd->redirect_count].file)
+			return (0);
+		cmd->redirect_count++;
+		return (1);
+	}
+	return (0);
+}
+
 //need special handling for heredoc
 int	handle_redirection_parsing(t_command *cmd, t_token **token)
 {
 	cmd->redir[cmd->redirect_count].type = (*token)->type;
 	(*token) = (*token)->next;
-	if (token && (*token)->type == TOKEN_WORD)
+	if (token && *token && (*token)->type == TOKEN_WORD)
 	{
 		cmd->redir[cmd->redirect_count].file = ft_strdup((*token)->content);
 		if (!cmd->redir[cmd->redirect_count].file)
@@ -32,6 +77,7 @@ int	handle_redirection_parsing(t_command *cmd, t_token **token)
 		cmd->redirect_count++;
 		return (1);
 	}
+	printf("syntax error near redirection\n");
 	return (0);
 }
 
@@ -67,16 +113,15 @@ void	remove_quotes(char *str)
 
 int	handle_arg_parsing_2nd(t_command *cmd, t_token **tokens, int *i, t_shell *shell)
 {
-	if ((*tokens)->type == TOKEN_DOUBLE_QUOTE)
+	if ((*tokens)->type == TOKEN_DOUBLE_QUOTE || (*tokens)->type != TOKEN_SINGLE_QUOTE)
 		variable_exp_double(*tokens, (*tokens)->content, shell);
-	else if ((*tokens)->content[0] == '$' && \
-	(*tokens)->type != TOKEN_SINGLE_QUOTE)
-		variable_exp_dollar((*tokens), (*tokens)->content, shell);
+	// else if ((*tokens)->type != TOKEN_SINGLE_QUOTE)
+	// 	variable_exp_double((*tokens), (*tokens)->content, shell);
 	// remove_quotes((*tokens)->content);
 	cmd->argv[*i] = ft_strdup((*tokens)->content);
 	if (!cmd->argv[*i])
 		return (0);
-	(*i)++;
+	(*i)++; 
 	return (1);
 }
 

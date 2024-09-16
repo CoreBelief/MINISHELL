@@ -32,7 +32,6 @@ void builtin_echo(char **args)
 		return;
 	while (args[i] && is_only_n_flag(args[i]))
 	{	
-		
 		newline = false;
 		i++;
 	}

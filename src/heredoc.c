@@ -46,7 +46,6 @@ void heredoc_input(char *delimiter, char *tmp_filename) {
         write(tmp_fd, line, strlen(line));
         write(tmp_fd, "\n", 1);  // Add newline
     }
-
     free(line);
     close(tmp_fd);
 }
