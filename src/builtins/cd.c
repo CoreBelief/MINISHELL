@@ -2,6 +2,10 @@
 #include "environ.h"
 #include <unistd.h>
 
+static char	*get_cd_path(char **args, t_shell *shell);
+static void	update_pwd(char *old_pwd, t_shell *shell);
+void		builtin_cd(char **args, t_shell *shell);
+
 static char	*get_cd_path(char **args, t_shell *shell)
 {
 	if (!args[1] || ft_strcmp(args[1], "~") == 0)

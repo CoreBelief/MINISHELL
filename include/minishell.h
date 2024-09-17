@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 17:25:54 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/17 14:41:35 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,13 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <stdbool.h>
+# include <pwd.h>
+# include <errno.h>
 
-#include "../src/lib_FT/libft.h"
-
+# include "environ.h"
+# include "signal.h"
+# include "../src/lib_FT/libft.h"
+# include "prompt.h"
 # include "structs.h"
 # include "builtins.h"
 # include "parser.h"
@@ -36,38 +40,30 @@
 # include "executor.h"
 # include "var_exp.h"
 # include "environ.h"
-#include "signals.h"
+# include "signals.h"
+# include "redirections.h"
+# include "error.h"
 
 # define MAX_ARGS 1024
 # define MAX_REDIRECTS 10
-
-// Global variables
-extern int g_exit_status;
-extern char **environ;
 
 // Function prototypes
 
 // Main loop
 void    minishell_loop(t_shell *shell);
 
-void	setup_signals(void);
-// Environment variables
-char        *expand_variables(char *str);
-
-// Redirections and pipes
-void        setup_redirections(t_command *cmd);
-void        handle_pipes(t_command *cmd1, t_command *cmd2);
+// void	setup_signals(void);
 
 // Memory management
-// void        free_command(t_command *cmd);
+// void        free_command(t_cmd *cmd);
 
 // Error handling
-void        print_error(char *msg);
+// void        print_error(char *msg);
 
 // environment setup
-char *get_env(const char *name);
-int set_env(const char *name, const char *value);
-int unset_env(const char *name);
+// char *get_env(const char *name);
+// int set_env(const char *name, const char *value);
+// int unset_env(const char *name);
 
 //utils
 // char *ft_strjoin3(const char *s1, const char *s2, const char *s3);

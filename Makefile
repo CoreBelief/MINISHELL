@@ -1,6 +1,6 @@
 NAME = minishell
 CC = gcc -g
-CFLAGS = -Wall -Wextra -Werror -Iinclude -Isrc/libft -I/usr/local/opt/readline/include
+CFLAGS =  -Wall -Wextra -Werror  -Iinclude -Isrc/libft -I/usr/local/opt/readline/include 
 # this is for mac -I/usr/local/opt/readline/include
 LDFLAGS = -g -L/usr/local/opt/readline/lib -lreadline
 #and the LDFLAGS is also for mac so can be removed on linux computer
@@ -8,8 +8,8 @@ LIBS = -lreadline
 SRCS_DIR = src
 OBJ_DIR = obj
 
-SRCS = $(addprefix $(SRCS_DIR)/, main.c signals.c memory.c parsing/tokenizer.c \
-parsing/tokenizer_utils.c parsing/parser.c parsing/parser_utils.c \
+SRCS = $(addprefix $(SRCS_DIR)/, main.c prompt.c error.c signals.c memory.c parsing/tokenizer.c \
+parsing/tokenizer_utils.c parsing/parser.c parsing/parser_utils.c parsing/parser_redirects.c \
 execution/executor.c execution/redirections.c builtins/echo.c builtins/cd.c \
 builtins/pwd.c builtins/export.c builtins/unset.c builtins/env.c builtins/exit.c \
 builtins/builtins.c environ/environ.c parsing/var_exp.c utils/ft_strjoin3.c \

@@ -1,0 +1,44 @@
+Here's a comprehensive overview of the issues and tasks remaining in your minishell 42 project:
+
+### Export Handling
+1. **Export append edge case (`+=` for string joining):** Implement proper handling of variable appending using `+=` to concatenate strings.
+2. **Export variable edge cases:** 
+   - Variables containing numbers need specific handling.
+   - Identify and address scenarios where edge cases cause issues.
+3. **Export inconsistencies between child and parent processes:** Ensure that `export` behavior is consistent and always occurs in the parent process.
+
+### Path and Directory Handling
+1. **`rm` directory within directory (path unknown):**
+   - Implement a loop that moves up directories until the correct path is found if the initial path is unknown.
+   - Seek input from Claudia to resolve potential issues with this logic.
+
+### Error Handling
+1. **Unset PATH handling:** 
+   - Minishell should not display `env` output after PATH is unset, but currently does.
+   - Display an appropriate error message when PATH is unset.
+2. **`exit` behavior:** 
+   - Ensure `exit` only allows numerical input and exits with code 2 if the input is alphanumeric.
+
+### Signals
+1. **Finalize signal handling:** 
+   - Interrupting tasks with `ctrl + Z` does not work yet; fix this behavior.
+2. **Exit status:** 
+   - Remove global variables for exit status.
+   - Ensure proper variable expansion for `$?` and exit with the correct status.
+   - Assign specific exit codes for different errors.
+
+### Functionality and Edge Cases
+1. **HEREDOC:** Implement HEREDOC functionality to handle multiline input properly.
+2. **Minishellception:** Ensure that nested minishells work as expected.
+3. **Handling multiple directories in PATH:** When `$PATH` is set to multiple directories, ensure that commands are executed by checking directories in the correct order (left to right).
+4. **Handling invalid commands:** 
+   - If an invalid command is entered (e.g., gibberish), minishell should print an error, not crash, and exit with code 127.
+   - Test with long commands that have many arguments to ensure stability.
+
+### Parser Fixes
+1. **Segmentation fault with `|` token:** 
+   - Input that ends with `|` currently causes a segmentation fault. It should instead display the error `bash: syntax error near unexpected token '|'` or wait for the next command if part of a valid pipeline (`cmd |`).
+2. **Multiple `||` token handling:** 
+   - Input like `||||||` should return `bash: syntax error near unexpected token '||'` instead of causing a segmentation fault.
+
+These are the remaining areas to address in your project. Let me know if you'd like to focus on any particular section or if you need further clarification!

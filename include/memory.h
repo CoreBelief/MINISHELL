@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   memory.h                                           :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: elleneklund <elleneklund@student.codam.      +#+                     */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/30 15:13:08 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/08/30 15:14:19 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/17 14:41:26 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "minishell.h"
 
-void	free_command(t_command *cmd);
-void	free_command_list(t_command **head);
+void	free_command(t_cmd *cmd);
+void	free_command_list(t_cmd **head);
 
 #endif

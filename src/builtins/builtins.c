@@ -6,11 +6,15 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/11 17:48:56 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/11 18:55:00 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/17 14:43:23 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int		is_builtin_parent(char *command);
+int		is_builtin(char *command);
+void	execute_builtin(t_cmd *cmd, t_shell *shell);
 
 int	is_builtin_parent(char *command)
 {
@@ -42,7 +46,7 @@ int is_builtin(char *command)
 	return 0;
 }
 
-void	execute_builtin(t_command *cmd, t_shell *shell)
+void	execute_builtin(t_cmd *cmd, t_shell *shell)
 {
 	if (ft_strcmp(cmd->argv[0], "echo") == 0)
 		builtin_echo(cmd->argv);

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/12 16:43:32 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/13 17:44:16 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void	variable_exp_dollar(t_token *token, char *str, t_shell *shell)
 		new_str = append_str(new_str, expansion);
 		new_str = append_str(new_str, &str[i]);
 		token->content = new_str;
-		printf("token->cont %s\n", token->content);
+		// printf("token->cont %s\n", token->content);
 		free (str);
 	}
 }

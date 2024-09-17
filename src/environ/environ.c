@@ -3,33 +3,12 @@
 #include <stdlib.h>
 #include "minishell.h"
 
-static char **g_env = NULL;
 
-// int ft_init_env(char **envp)
-// {
-//     int i;
-//     int size;
-
-//     size = 0;
-//     while (envp[size])
-//         size++;
-//     g_env = (char **)malloc(sizeof(char *) * (size + 1));
-//     if (!g_env)
-//         return (0);
-//     i = 0;
-//     while (i < size)
-//     {
-//         g_env[i] = ft_strdup(envp[i]);
-//         if (!g_env[i])
-//         {
-//             ft_free_env(); // Ensure previously allocated memory is freed
-//             return (0);
-//         }
-//         i++;
-//     }
-//     g_env[i] = NULL;
-//     return (1);
-// }
+int			init_env(t_shell *shell, char **envp);
+char		*ft_get_env(const char *name, t_shell *shell);
+static int 	ft_add_env(char *new_var, t_shell *shell);
+int			ft_set_env(const char *name, const char *value, t_shell *shell);
+int			ft_unset_env(const char *name, t_shell *shell);
 
 int	init_env(t_shell *shell, char **envp)
 {
@@ -49,7 +28,6 @@ int	init_env(t_shell *shell, char **envp)
 		shell->env[i] = ft_strdup(envp[i]);
 		if (!shell->env[i])
 		{
-			// Clean up on failure
 			while (--i >= 0)
 				free(shell->env[i]);
 			free(shell->env);
@@ -66,11 +44,11 @@ char	*ft_get_env(const char *name, t_shell *shell)
 	int	i;
 	size_t	len;
 
-	if (!name) // Check if name is NULL
+	if (!name)
 		return (NULL);
 	i = 0;
 	len = ft_strlen(name);
-	while (shell->env && shell->env[i]) // Ensure shell->env is not NULL
+	while (shell->env && shell->env[i])
 	{
 		if (ft_strncmp(shell->env[i], name, len) == 0 && shell->env[i][len] == '=')
 			return (shell->env[i] + len + 1);
@@ -84,12 +62,8 @@ static int ft_add_env(char *new_var, t_shell *shell)
 	int i;
 	char **new_env;
 
-	if (!new_var) // Check if new_var is NULL
+	if (!new_var)
 		return (0);
-
-	// i = 0;
-	// while (environ && environ[i])
-	// 	i++;
 	new_env = (char **)malloc(sizeof(char *) * (shell->env_size + 2));
 	if (!new_env)
 		return (0);
@@ -101,7 +75,7 @@ static int ft_add_env(char *new_var, t_shell *shell)
 	}
 	new_env[i] = new_var;
 	new_env[i + 1] = NULL;
-	free(shell->env); // Free the old shell->envment
+	free(shell->env);
 	shell->env = new_env;
 	shell->env_size++;
 	return (1);
@@ -112,7 +86,7 @@ int ft_set_env(const char *name, const char *value, t_shell *shell)
 	char *new_var;
 	int i;
 
-	if (!name || !value) // Check if name or value is NULL
+	if (!name || !value)
 		return (0);
 
 	new_var = ft_strjoin3(name, "=", value);
@@ -124,7 +98,7 @@ int ft_set_env(const char *name, const char *value, t_shell *shell)
 		if (ft_strncmp(shell->env[i], name, ft_strlen(name)) == 0
 			&& shell->env[i][ft_strlen(name)] == '=')
 		{
-			free(shell->env[i]); // Free the old variable
+			free(shell->env[i]);
 			shell->env[i] = new_var;
 			return (1);
 		}
@@ -138,7 +112,7 @@ int ft_unset_env(const char *name, t_shell *shell)
 	int i;
 	int j;
 
-	if (!name) // Check if name is NULL
+	if (!name)
 		return (0);
 
 	i = 0;
@@ -147,7 +121,7 @@ int ft_unset_env(const char *name, t_shell *shell)
 		if (ft_strncmp(shell->env[i], name, ft_strlen(name)) == 0
 			&& shell->env[i][ft_strlen(name)] == '=')
 		{
-			free(shell->env[i]); // Free the variable to be unset
+			free(shell->env[i]);
 			j = i;
 			while (shell->env[j])
 			{
@@ -160,21 +134,4 @@ int ft_unset_env(const char *name, t_shell *shell)
 		i++;
 	}
 	return (0);
-}
-
-void ft_free_env(void)
-{
-    int i;
-
-    if (!g_env) // Check if g_env is NULL
-        return;
-
-    i = 0;
-    while (g_env[i])
-    {
-        free(g_env[i]);
-        i++;
-    }
-    free(g_env);
-    g_env = NULL;
 }
