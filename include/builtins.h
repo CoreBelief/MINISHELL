@@ -6,7 +6,7 @@
 // Builtins.c
 int     is_builtin_parent(char *command);
 int     is_builtin(char *command);
-void    execute_builtin(t_command *cmd, t_shell *shell);
+void    execute_builtin(t_cmd *cmd, t_shell *shell);
 
 //commands
 void    builtin_cd(char **args, t_shell *shell);

@@ -6,97 +6,27 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/16 14:44:07 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/17 14:59:18 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-int	is_redirect_token(int token_type)
-{
-	return (token_type == TOKEN_REDIRECT_IN || \
-		token_type == TOKEN_REDIRECT_OUT || \
-		token_type == TOKEN_REDIRECT_APPEND || \
-		token_type == TOKEN_HEREDOC);
-}
-
-int	handle_heredoc_parsing(t_command *cmd, t_token **token, t_shell *shell)
-{
-	char	*delim;
-	int		hered_fd;
-	// char 	*line;
-	char 	*tmp_file;
-
-	cmd->redir[cmd->redirect_count].type = (*token)->type;
-	(*token) = (*token)->next;
-	if (token && *token && (*token)->type == TOKEN_WORD)
-	{
-		delim = (*token)->content;
-		tmp_file = ft_strjoin("/tmp/heredoc_", ft_itoa(cmd->redirect_count));
-		hered_fd = open(tmp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-		if (hered_fd == -1) 
-		{
-			perror("minishell: open");
-			free(tmp_file);
-			exit(EXIT_FAILURE);
-		}
-		while (1)
-		{
-			(*token)->content = readline("> ");
-			if (!(*token)->content)
-				break ;
-			if (ft_strcmp((*token)->content, delim) == 0) 
-           		break;
-			variable_exp_double(*token, (*token)->content, shell);
-			write(hered_fd, (*token)->content, strlen((*token)->content));
-			write(hered_fd, "\n", 1);
-			free((*token)->content);
-		}
-		if ((*token)->content)
-			free((*token)->content);
-		close(hered_fd);
-		cmd->redir[cmd->redirect_count].file = tmp_file;
-		if (!cmd->redir[cmd->redirect_count].file)
-			return (0);
-		cmd->redirect_count++;
-		return (1);
-	}
-	return (0);
-}
-
-//need special handling for heredoc
-int	handle_redirection_parsing(t_command *cmd, t_token **token)
-{
-	cmd->redir[cmd->redirect_count].type = (*token)->type;
-	(*token) = (*token)->next;
-	if (token && *token && (*token)->type == TOKEN_WORD)
-	{
-		cmd->redir[cmd->redirect_count].file = ft_strdup((*token)->content);
-		if (!cmd->redir[cmd->redirect_count].file)
-			return (0);
-		cmd->redirect_count++;
-		return (1);
-	}
-	printf("syntax error near redirection\n");
-	return (0);
-}
-
 void	remove_quotes(char *str)
 {
 	int		i;
 	int		j;
-	int		in_quotes;
-	char	quote_char;
+	int		in_quotes = 0;
+	char	quote_char = 0;
 
-	in_quotes = 0;
-	quote_char = 0;
 	i = 0;
 	j = 0;
 	if (!str)
 		return ;
 	while (str[i])
 	{
-		if ((str[i] == '\'' || str[i] == '\"') && (!in_quotes || str[i] == quote_char))
+		if ((str[i] == '\'' || str[i] == '\"') && \
+		(!in_quotes || str[i] == quote_char))
 		{
 			in_quotes = !in_quotes;
 			if (in_quotes)
@@ -111,7 +41,7 @@ void	remove_quotes(char *str)
 	str[j] = '\0';
 }
 
-int	handle_arg_parsing_2nd(t_command *cmd, t_token **tokens, int *i, t_shell *shell)
+int	handle_arg_parsing_2nd(t_cmd *cmd, t_token **tokens, int *i, t_shell *shell)
 {
 	if ((*tokens)->type == TOKEN_DOUBLE_QUOTE || (*tokens)->type != TOKEN_SINGLE_QUOTE)
 		variable_exp_double(*tokens, (*tokens)->content, shell);
@@ -121,55 +51,37 @@ int	handle_arg_parsing_2nd(t_command *cmd, t_token **tokens, int *i, t_shell *sh
 	cmd->argv[*i] = ft_strdup((*tokens)->content);
 	if (!cmd->argv[*i])
 		return (0);
-	(*i)++; 
+	(*i)++;
 	return (1);
 }
 
-t_command	*handle_pipe_parsing(t_command *cmd, int *i)
+t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i)
 {
-	t_command	*new_cmd;
+	t_cmd	*new_cmd;
 
 	new_cmd = init_cmd();
 	if (!new_cmd)
 		return (NULL); // Handle error
 	// printf("index in pipe %i\n", *i);
 	cmd->argv[*i] = NULL;
-	cmd->pipe_out = 1; // 
+	cmd->pipe_out = 1;
 	cmd->next = new_cmd;
-	// if (new_cmd)
-		new_cmd->pipe_in = 1;
+	new_cmd->pipe_in = 1;
 	*i = 0;
 	// printf("cur_cmd in pipe pars %s\n", (cmd)->argv[0]);
-	
 	return (new_cmd);
 }
-// gives seg fault if the input ends with a pipe, it tires to access cur_cmd->argv[0] which doesnt exists
-// i think if it ends with a pipe it is waiting for that command from stdin. 
-void	set_command_paths(t_command *cur_cmd)
-{
-	while (cur_cmd)
-	{
-		// printf("hello1\n");
-		cur_cmd->path = ft_strdup(cur_cmd->argv[0]);
-		if (!cur_cmd->path)
-			return ; // Handle error
-		cur_cmd = cur_cmd->next;
-		// printf("hello\n");
-	}
-}
-
 
 //DEUG FUNCTION
-void	print_cmd_list(t_command *head)
+void	print_cmd_list(t_cmd *head)
 {
-	int			i;
+	int			i = 0;
 	int			j;
 
 	printf("inside print cmd_lst\n");
 	while (head)
 	{
-		printf("command path-> '%s' redir count:%i\n", head->path, head->redirect_count);
-		i = 0;
+		printf("redir count:%i\n",head->redirect_count);
 		while (head->argv && head->argv[i])
 		{
 			printf("arg: %s\n", head->argv[i]);
@@ -179,13 +91,29 @@ void	print_cmd_list(t_command *head)
 		{
 			printf("redirecttype == %i target file == %s\n", head->redir->type, head->redir->file);
 		}
-	    printf("  Pipe In: %d, Pipe Out: %d\n", head->pipe_in, head->pipe_out);
+		printf("  Pipe In: %d, Pipe Out: %d\n", head->pipe_in, head->pipe_out);
 		j = 0;
-        for (j = 0; j < head->redirect_count; j++)
-        {
-            printf("  Redirect[%d] Type: %d, File: %s\n", j, head->redir[j].type, head->redir[j].file);
-        }
+		for (j = 0; j < head->redirect_count; j++)
+		{
+			printf("  Redirect[%d] Type: %d, File: %s\n", j, head->redir[j].type, head->redir[j].file);
+		}
 		head = head->next;
 	}
 	printf("\n");
 }
+
+// gives seg fault if the input ends with a pipe, it tires to access 
+// cur_cmd->argv[0] which doesnt exists
+// i think if it ends with a pipe it is waiting for that command from stdin. 
+// void	set_cmd_paths(t_cmd *cur_cmd)
+// {
+// 	while (cur_cmd)
+// 	{
+// 		// printf("hello1\n");
+// 		cur_cmd->path = ft_strdup(cur_cmd->argv[0]);
+// 		if (!cur_cmd->path)
+// 			return ; // Handle error
+// 		cur_cmd = cur_cmd->next;
+// 		// printf("hello\n");
+// 	}
+// }

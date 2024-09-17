@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/21 11:00:43 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/17 13:34:52 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/17 14:38:58 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static void	redirect_stream(int fd, t_token_type type)
 	}
 }
 
-void	setup_redirections(t_command *cmd)
+void	setup_redirections(t_cmd *cmd)
 {
 	int	cur;
 
