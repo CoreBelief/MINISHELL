@@ -6,14 +6,14 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/16 14:41:48 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/17 13:31:38 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "executor.h"
 #include <errno.h>
-#include "error.h"
+// #include "error.h"
+
 char		*find_executable(char *command, t_shell *shell);
 void		execute_external(t_command *cmd, t_shell *shell);
 void		setup_pipes(t_command *cmd, int pipe_fds[2]);
@@ -93,7 +93,7 @@ void	setup_pipes(t_command *cmd, int pipe_fds[2])
 }
 
 void	handle_child_process(t_command *cmd, int pipe_fds[2], int prev_pipe_read, t_shell *shell)
-{	
+{
 	setup_signals_child();
 	if (cmd->redirect_count)
 		setup_redirections(cmd);
@@ -137,8 +137,7 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell)
 	pid_t		pid;
 	// char 		*path;
 
-
-	if (is_builtin_parent(cmd->argv[0]))
+	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 && cmd->pipe_in == -1)
 		execute_builtin(cmd, shell);
 	else
 	{
@@ -157,18 +156,14 @@ void	execute_single_command(t_command *cmd, int *prev_pipe_read, t_shell *shell)
             // print_command_not_found(cmd->argv[0]);
 			// exit(127);   // Call this when a command is not found
         	// }
-
 			handle_child_process(cmd, pipe_fds, *prev_pipe_read, shell);
 		}
 		else
 		{
 			signal(SIGINT, SIG_IGN);
-
 			handle_parent_process(cmd, pipe_fds, prev_pipe_read);
-
 			// Wait for child to complete
 			wait_for_children(shell);
-
 			// Restore SIGINT handler for parent shell after the child has finished
 			setup_signals_shell();
 		}
@@ -243,9 +238,9 @@ void	execute_command(t_shell *shell)
 	cur_cmd = shell->commands;
 	prev_pipe_read = -1;
 	while (cur_cmd)
-	{	
+	{
 		execute_single_command(cur_cmd, &prev_pipe_read, shell);
-		// cleanup_heredoc_files(cur_cmd);
+		cleanup_heredoc_files(cur_cmd);
 		cur_cmd = cur_cmd->next;
 	}
 

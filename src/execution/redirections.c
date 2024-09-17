@@ -6,13 +6,13 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/21 11:00:43 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/17 13:05:48 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/17 13:34:52 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	open_file(char *target, t_token_type type)
+static int	open_file(char *target, t_token_type type)
 {
 	int	fd;
 
@@ -26,7 +26,7 @@ int	open_file(char *target, t_token_type type)
 	return (fd);
 }
 
-void	handle_file_opening(int *fd, char *target, t_token_type type)
+static void	handle_file_opening(int *fd, char *target, t_token_type type)
 {
 	if (*fd != -1)
 		close (*fd);
@@ -39,7 +39,7 @@ void	handle_file_opening(int *fd, char *target, t_token_type type)
 
 }
 
-void	redirect_stream(int fd, t_token_type type)
+static void	redirect_stream(int fd, t_token_type type)
 {
 	if (type == TOKEN_REDIRECT_IN || type == TOKEN_HEREDOC)
 	{
