@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/21 11:00:43 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/15 15:21:04 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/17 13:05:48 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void	handle_file_opening(int *fd, char *target, t_token_type type)
 {
 	if (*fd != -1)
 		close (*fd);
-	printf("target %s\n", target);
 	*fd = open_file(target, type);
 	if (*fd == -1)
 	{
@@ -81,9 +80,13 @@ void	setup_redirections(t_command *cmd)
 				cmd->redir[cur].type);
 		cur++;
 	}
-	if (cmd->redir[cur - 1].type == TOKEN_REDIRECT_IN || cmd->redir[cur - 1].type == TOKEN_HEREDOC)
-		redirect_stream(cmd->input, cmd->redir[cur - 1].type);
-	else if (cmd->redir[cur - 1].type == TOKEN_REDIRECT_OUT || \
-	cmd->redir[cur - 1].type == TOKEN_REDIRECT_APPEND)
-		redirect_stream(cmd->output, cmd->redir[cur - 1].type);
+	if (cmd->input != -1)
+		redirect_stream(cmd->input, TOKEN_REDIRECT_IN);
+	if (cmd->output != -1)
+		redirect_stream(cmd->output, TOKEN_REDIRECT_OUT);
+	// if (cmd->redir[cur - 1].type == TOKEN_REDIRECT_IN || cmd->redir[cur - 1].type == TOKEN_HEREDOC)
+	// 	redirect_stream(cmd->input, cmd->redir[cur - 1].type);
+	// else if (cmd->redir[cur - 1].type == TOKEN_REDIRECT_OUT || 
+	// cmd->redir[cur - 1].type == TOKEN_REDIRECT_APPEND)
+	// 	redirect_stream(cmd->output, cmd->redir[cur - 1].type);
 }
