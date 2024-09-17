@@ -3,11 +3,11 @@
 #include "error.h"
 #include "path.h"
 
-void	child_proc(t_command *cmd, int pipe_fds[2],
+void	child_proc(t_cmd *cmd, int pipe_fds[2],
 			int prev_pipe_read, t_shell *shell);
-void	parent_proc(t_command *cmd, int pipe_fds[2],
+void	parent_proc(t_cmd *cmd, int pipe_fds[2],
 			int *prev_pipe_read);
-void	execute_child_process(t_command *cmd, int *pipe_fds,
+void	execute_child_process(t_cmd *cmd, int *pipe_fds,
 			int prev_pipe_read, t_shell *shell);
 void	wait_for_children(t_shell *shell);
 
@@ -53,7 +53,7 @@ void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 		*prev_prd = -1;
 }
 
-// void	child_proc(t_command *cmd, int pipe_fds[2],
+// void	child_proc(t_cmd *cmd, int pipe_fds[2],
 // 			int prev_pipe_read, t_shell *shell)
 // {
 // 	setup_signals_child();
@@ -81,7 +81,7 @@ void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 // }
 
 
-// void	parent_proc(t_command *cmd, int pipe_fds[2],
+// void	parent_proc(t_cmd *cmd, int pipe_fds[2],
 // 			int *prev_pipe_read)
 // {
 // 	if (*prev_pipe_read != -1)
@@ -96,7 +96,7 @@ void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 // }
 
 
-void	execute_child_process(t_command *cmd, int *pipe_fds,
+void	execute_child_process(t_cmd *cmd, int *pipe_fds,
 			int prev_pipe_read, t_shell *shell)
 {
 	char	*path;

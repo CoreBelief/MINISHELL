@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/17 17:57:31 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/17 18:12:46 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,10 @@
 #include "path.h"
 #include "process.h"
 
-void	execute_external(t_command *cmd, t_shell *shell);
-void	setup_pipes(t_command *cmd, int pipe_fds[2]);
-void	fork_and_execute(t_command *cmd, int *pipe_fds,
-			int *prev_pipe_read, t_shell *shell);
-void	execute_single_command(t_command *cmd, int *prev_pipe_read,
-			t_shell *shell);
+void	execute_external(t_cmd *cmd, t_shell *shell);
+void	setup_pipes(t_cmd *cmd, int pipe_fds[2]);
+void	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell);
+void	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell);
 void	execute_command(t_shell *shell);
 
 
@@ -54,8 +52,7 @@ void	setup_pipes(t_cmd *cmd, int pfds[2])
 }
 
 
-void	fork_and_execute(t_command *cmd, int *pipe_fds,
-			int *prev_pipe_read, t_shell *shell)
+void	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
 {
 	pid_t	pid;
 
@@ -66,11 +63,11 @@ void	fork_and_execute(t_command *cmd, int *pipe_fds,
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
-		execute_child_process(cmd, pipe_fds, *prev_pipe_read, shell);
+		execute_child_process(cmd, pfds, *prev_prd, shell);
 	else
 	{
 		signal(SIGINT, SIG_IGN);
-		handle_parent_process(cmd, pipe_fds, prev_pipe_read);
+		parent_proc(cmd, pfds, prev_prd);
 		wait_for_children(shell);
 		setup_signals_shell();
 	}
@@ -80,12 +77,12 @@ void	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 {
 	int		pipe_fds[2];
 
-	if (is_builtin_parent(cmd->argv[0]))
+	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 && cmd->pipe_in == -1)
 		execute_builtin(cmd, shell);
 	else
 	{
 		setup_pipes(cmd, pipe_fds);
-		fork_and_execute(cmd, pipe_fds, prev_pipe_read, shell);
+		fork_and_execute(cmd, pipe_fds, prev_prd, shell);
 	}
 }
 

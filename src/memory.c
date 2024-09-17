@@ -4,7 +4,6 @@
 void	free_command(t_cmd *cmd)
 {
 	int	i;
-	int	i;
 
 	if (!cmd)
 		return ;
