@@ -17,7 +17,6 @@
 #define MAX_USERNAME 256
 #define MAX_PATH 1024
 
-char *get_current_dir(void);
 char *create_prompt(void);
 
 #endif // PROMPT_H

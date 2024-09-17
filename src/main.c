@@ -10,17 +10,6 @@
 #include "environ.h"
 #include "signal.h"
 
-int g_exit_status = 0;
-
-void update_exit_status(int status)
-{
-    if (WIFEXITED(status))
-        g_exit_status = WEXITSTATUS(status);
-    else if (WIFSIGNALED(status))
-        g_exit_status = 128 + WTERMSIG(status);
-}
-
-
 static void	process_input(char *line, t_shell *shell)
 {
 	t_token		*tokens;
@@ -30,16 +19,18 @@ static void	process_input(char *line, t_shell *shell)
 		add_history(line);
 		tokens = tokenizer(line);
 		if (!tokens)
-			return ;
-		// print_token_list(tokens);
+		{
+            shell->last_exit_status = 1;
+            return;
+        }
 		shell->commands = parse_command_from_tokens(tokens, shell);
 		if (!shell->commands)
-		{
+		{	
+			shell->last_exit_status = 1;
 			free_tokens(&tokens);
 			return ;
 		}
 		free_tokens(&tokens);
-		// print_cmd_list(shell->commands);
 		execute_command(shell);
         free_command_list(&shell->commands);
 	}
@@ -57,13 +48,16 @@ void	minishell_loop(t_shell *shell)
 		prompt = create_prompt();
 		if (!prompt)
 		{
-			fprintf(stderr, "Error: Failed to create prompt\n"); //cannot use fprintf
+			// fprintf(stderr, "Error: Failed to create prompt\n"); //cannot use fprintf
+			write(STDERR_FILENO, "Error: Failed to create prompt\n", 31);
+            shell->last_exit_status = 1; 
 			break ;
 		}
 		line = readline(prompt);
 		free(prompt);
 		if (!line)
-		{
+		{	
+			shell->last_exit_status = 0;
 			printf("exit\n");
 			break ;
 		}
@@ -88,11 +82,12 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
+
 	init_shell(&shell);
 	if (!init_env(&shell, envp))
 	{
 		perror("error init env");
-		return (1);
+		return (EXIT_FAILURE);
 	}
 	minishell_loop(&shell);
 	return (shell.last_exit_status);

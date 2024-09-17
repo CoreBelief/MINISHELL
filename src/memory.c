@@ -4,6 +4,7 @@
 void	free_command(t_cmd *cmd)
 {
 	int	i;
+	int	i;
 
 	if (!cmd)
 		return ;
@@ -42,4 +43,21 @@ void	free_command_list(t_cmd **head)
 		free_command(tmp);
 		*head = (*head)->next;
 	}
+}
+
+
+
+void	ft_free_str_array(char **arr)
+{
+	int	i;
+
+	if (!arr)
+		return;
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);  
+		i++;
+	}
+	free(arr);  
 }

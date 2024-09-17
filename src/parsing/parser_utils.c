@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/17 14:59:18 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/17 17:44:00 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i)
 	new_cmd = init_cmd();
 	if (!new_cmd)
 		return (NULL); // Handle error
-	// printf("index in pipe %i\n", *i);
 	cmd->argv[*i] = NULL;
 	cmd->pipe_out = 1;
 	cmd->next = new_cmd;

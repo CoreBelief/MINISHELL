@@ -1,164 +1,153 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <pwd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <sys/wait.h>
-#include "minishell.h"
-#include "environ.h"
-#include "signal.h"
 
-#define MAX_HOSTNAME 256
-#define MAX_USERNAME 256
 #define MAX_PATH 1024
-
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
-#include <pwd.h>
-#include <sys/types.h>
 #include <limits.h>
-#include <time.h>
+#include <dirent.h>
+#include "minishell.h"
 
-//experimental page.... old version is commented out below since this time nonsense is illegal
-//should proably pass the environment to this function to make it more legal
+#define COLOR_GREEN "\001\033[1;32m\002"
+#define COLOR_CYAN "\001\033[1;36m\002"
+#define COLOR_YELLOW "\001\033[1;33m\002"
+#define COLOR_RESET "\001\033[0m\002"
 
 
-/* Function to get the current time in HH:MM:SS format */
-char *get_current_time(void)
+//too many functions in one file!!!!
+// check if header is up to date
+
+static char	*get_username(void)
 {
-    time_t t;
-    struct tm *timeinfo;
-    char *time_str = malloc(9 * sizeof(char));
+	char	*username;
+	char	*result;
 
-    if (!time_str)
-        return (NULL);
-    t = time(NULL);
-    timeinfo = localtime(&t);
-    strftime(time_str, 9, "%H:%M:%S", timeinfo);
-    return (time_str);
+	username = getenv("USER");
+	if (username)
+		result = ft_strdup(username);
+	else
+		result = ft_strdup("user");
+	return (result);
 }
 
-/* Function to get the current working directory */
-char *get_current_dir(void)
+static char	*get_current_dir(void)
 {
-    char *cwd = getcwd(NULL, 0);
-    if (!cwd)
-        return (ft_strdup("unknown"));
+	char	cwd[MAX_PATH];
+	char	*home;
+	char	*relative_path;
+	char	*result;
 
-    char *home = getenv("HOME");
-    if (home && ft_strncmp(cwd, home, ft_strlen(home)) == 0)
-    {
-        char *relative_path = cwd + ft_strlen(home);
-        char *result = malloc(ft_strlen(relative_path) + 2);
-        if (result)
-        {
-            result[0] = '~';
-            ft_strcpy(result + 1, relative_path);
-            free(cwd);
-            return (result);
-        }
-    }
-    return (cwd);
+	if (!getcwd(cwd, sizeof(cwd)))
+		return (ft_strdup("unknown"));
+	home = getenv("HOME");
+	if (home && ft_strncmp(cwd, home, ft_strlen(home)) == 0)
+	{
+		relative_path = cwd + ft_strlen(home);
+		result = malloc(ft_strlen(relative_path) + 2);
+		if (result)
+		{
+			result[0] = '~';
+			ft_strcpy(result + 1, relative_path);
+			return (result);
+		}
+	}
+	return (ft_strdup(cwd));
 }
 
-/* Function to create and return the fancy prompt string */
-char *create_prompt(void)
+static char	*append_to_prompt(char *prompt, char *str)
 {
-    char hostname[MAX_HOSTNAME];
-    char username[MAX_USERNAME];
-    char *cwd;
-    char *prompt;
-    char *time_str;
-    size_t prompt_size;
+	char	*temp;
 
-    /* Get the hostname */
-    if (gethostname(hostname, sizeof(hostname)) != 0)
-        ft_strcpy(hostname, "unknown");
-
-    /* Get the username */
-    struct passwd *pw = getpwuid(getuid());
-    if (pw)
-        ft_strncpy(username, pw->pw_name, sizeof(username) - 1);
-    else
-        ft_strcpy(username, "user");
-
-    /* Get current directory */
-    cwd = get_current_dir();
-
-    /* Get current time */
-    time_str = get_current_time();
-
-    /* Calculate the prompt size */
-    prompt_size = ft_strlen(username) + ft_strlen(hostname) + ft_strlen(cwd) + 100;
-
-    /* Allocate memory for the prompt */
-    prompt = malloc(prompt_size);
-    if (prompt)
-    {
-        /* Create the fancy prompt with colors, symbols, and format */
-        snprintf(prompt, prompt_size,
-                 "\001\033[1;32m\002%s@\033[1;36m%s\001\033[0m\002:\033[1;33m%s\033[0m "
-                 "\033[1;35m[%s]\033[0m ➜ ",
-                 username, hostname, cwd, time_str);
-    }
-
-    /* Free the current directory and time strings */
-    free(cwd);
-    free(time_str);
-
-    return (prompt);
+	temp = ft_strjoin(prompt, str);
+	free(prompt);
+	return (temp);
 }
 
+static int	check_git_in_dir(char *dir_path)
+{
+	DIR				*dir;
+	struct dirent	*entry;
 
-// char *get_current_dir(void)
-// {
-//     char *cwd = getcwd(NULL, 0);
-//     if (!cwd)
-//         return ft_strdup("unknown");
+	dir = opendir(dir_path);
+	if (!dir)
+		return (0);
+	while ((entry = readdir(dir)) != NULL)
+	{
+		if (ft_strcmp(entry->d_name, ".git") == 0)
+		{
+			closedir(dir);
+			return (1);
+		}
+	}
+	closedir(dir);
+	return (0);
+}
 
-//     char *home = getenv("HOME");
-//     if (home && ft_strncmp(cwd, home, ft_strlen(home)) == 0)
-//     {
-//         char *relative_path = cwd + ft_strlen(home);
-//         char *result = malloc(ft_strlen(relative_path) + 2);
-//         if (result)
-//         {
-//             result[0] = '~';
-//             ft_strcpy(result + 1, relative_path);
-//             free(cwd);
-//             return result;
-//         }
-//     }
-//     return cwd;
-// }
+static char	*get_parent_dir(char *path)
+{
+	int		len;
+	char	*parent_path;
 
-// char *create_prompt(void)
-// {
-//     char hostname[MAX_HOSTNAME];
-//     char username[MAX_USERNAME];
-//     char *cwd;
-//     char *prompt;
+	len = ft_strlen(path);
+	while (len > 0 && path[len] != '/')
+		len--;
+	if (len == 0)
+		return (ft_strdup("/"));
+	parent_path = ft_substr(path, 0, len);
+	return (parent_path);
+}
 
-//     if (gethostname(hostname, sizeof(hostname)) != 0)
-//         ft_strcpy(hostname, "unknown");
-    
-//     struct passwd *pw = getpwuid(getuid());
-//     if (pw)
-//         ft_strncpy(username, pw->pw_name, sizeof(username) - 1);
-//     else
-//         ft_strcpy(username, "user");
+static int	is_git_repo(void)
+{
+	char	*cwd;
+	char	*parent_dir;
+	int		is_repo;
 
-//     cwd = get_current_dir();
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+		return (0);
+	while (1)
+	{
+		is_repo = check_git_in_dir(cwd);
+		if (is_repo)
+		{
+			free(cwd);
+			return (1);
+		}
+		if (ft_strcmp(cwd, "/") == 0)
+			break ;
+		parent_dir = get_parent_dir(cwd);
+		free(cwd);
+		if (!parent_dir)
+			return (0);
+		cwd = parent_dir;
+	}
+	free(cwd);
+	return (0);
+}
 
-//     size_t prompt_size = ft_strlen(username) + ft_strlen(hostname) + ft_strlen(cwd) + 50;
-//     prompt = malloc(prompt_size);
-//     if (prompt)
-// snprintf(prompt, prompt_size, "\001\033[1;35m\002%s@%s\001\033[0m\002:\001\033[1;33m\002%s\001\033[0m\002$ ", username, hostname, cwd);
+char	*create_prompt(void)
+{
+	char	*username;
+	char	*cwd;
+	char	*prompt;
+	int		in_git_repo;
 
-//     free(cwd);
-//     return prompt;
-// }
+	username = get_username();
+	cwd = get_current_dir();
+	if (!username || !cwd)
+		return (NULL);
+	in_git_repo = is_git_repo();
+	prompt = ft_strdup(COLOR_GREEN);
+	prompt = append_to_prompt(prompt, username);
+	prompt = append_to_prompt(prompt, COLOR_RESET ":");
+	prompt = append_to_prompt(prompt, COLOR_CYAN);
+	prompt = append_to_prompt(prompt, cwd);
+	if (in_git_repo)
+	{
+		prompt = append_to_prompt(prompt, COLOR_YELLOW);
+		prompt = append_to_prompt(prompt, " (git)");
+	}
+	prompt = append_to_prompt(prompt, COLOR_RESET " $ ");
+	free(username);
+	free(cwd);
+	return (prompt);
+}
