@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/13 17:44:16 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/19 00:44:30 by elleneklund   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,9 @@ void	variable_exp_dollar(t_token *token, char *str, t_shell *shell)
 			if (!expansion)
 			{
 				printf("expansion variable not found\n");
-				free (token->content);
-				token->content = "";
-				return ;
+				// free (token->content);
+				// token->content = "";
+				// return ;
 			}
 		}
 		new_str = append_str(new_str, expansion);
@@ -130,23 +130,23 @@ void	variable_exp_double(t_token *token, char *str, t_shell *shell)
 				new_str = append_str(new_str, expansion);
 				free (expansion);
 			}
-			else if (ft_isalnum(str[i + 1]))
+			else if (is_var_char(str[i + 1]))
 			{
 				i++;
 				expansion = variable_exp(str, &i, shell);
-				if (!expansion)
-				{
-					printf("expansion variable not found\n");
-					free (token->content);
-					token->content = "";
-					return ;
-				}
-				new_str = append_str(new_str, expansion);
+				if (expansion)
+					new_str = append_str(new_str, expansion);
 				// i += len;
+			}
+			else
+			{
+				new_str = append_str(new_str, ft_strndup(&str[i], 1));
+				i++;
 			}
 		}
 		len = until_dollar(&str[i]);
-		new_str = append_str(new_str, ft_strndup(&str[i], len));
+		if (len != 0)
+			new_str = append_str(new_str, ft_strndup(&str[i], len));
 		i += len;
 		token->content = new_str;
 	}

@@ -40,5 +40,6 @@ Here's a comprehensive overview of the issues and tasks remaining in your minish
    - Input that ends with `|` currently causes a segmentation fault. It should instead display the error `bash: syntax error near unexpected token '|'` or wait for the next command if part of a valid pipeline (`cmd |`).
 2. **Multiple `||` token handling:** 
    - Input like `||||||` should return `bash: syntax error near unexpected token '||'` instead of causing a segmentation fault.
+   - exit with exitcode 258 (syntax errors?)
 
 These are the remaining areas to address in your project. Let me know if you'd like to focus on any particular section or if you need further clarification!
