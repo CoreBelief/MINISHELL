@@ -24,7 +24,6 @@ static bool	is_only_n_flag(char *arg)
 	return (true);
 }
 
-
 void builtin_echo(char **args)
 {
 	int i = 1;
@@ -33,10 +32,10 @@ void builtin_echo(char **args)
 		return;
 	while (args[i] && is_only_n_flag(args[i]))
 	{	
-		
 		newline = false;
 		i++;
 	}
+	// remove_quotes(args[i]);
 	while (args[i])
 	{
 		printf("%s", args[i]);

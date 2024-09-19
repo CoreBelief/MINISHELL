@@ -27,6 +27,9 @@ do: Try to execute a long command with a ton of arguments. added this bu needs r
 echo "> >> < * ? [ ] | ; [ ] || && ( ) & # $ \ <<"  //infinite loop ??
 echo "$" //another infiinte loop??
 
+tokenizer
+	- echo hello"wprld" should take away the ""
+	- input with open " how to handle?? invalid? or just print it as is?
 
 parser svp
 	- input ends with | gives seg fault

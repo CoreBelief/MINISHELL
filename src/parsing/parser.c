@@ -6,17 +6,17 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/13 03:44:51 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/17 18:12:37 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-t_command	*init_cmd(void)
+t_cmd	*init_cmd(void)
 {
-	t_command	*cmd;
+	t_cmd	*cmd;
 
-	cmd = malloc(sizeof(t_command));
+	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
 		return (NULL);
 	cmd->argv = malloc(sizeof(char *) * (MAX_ARGS + 1));
@@ -38,24 +38,28 @@ t_command	*init_cmd(void)
 	cmd->input = -1;
 	cmd->output = -1;
 	cmd->next = NULL;
-	cmd->path = NULL;
 	return (cmd);
 }
 
-static int	handle_token(t_token **tokens, t_command **cur_cmd, int *i, t_shell *shell)
+static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell)
 {
-	if (!is_redirect_token((*tokens)->type) && (*tokens)->type != TOKEN_PIPE)
-		return (handle_arg_parsing_2nd(*cur_cmd, tokens, i, shell));
-	else if (is_redirect_token((*tokens)->type))
+	if (!is_redirect_token((*tok)->type) && (*tok)->type != TOKEN_PIPE)
+		return (handle_arg_parsing_2nd(*cur_cmd, tok, i, shell));
+	else if (is_redirect_token((*tok)->type))
 	{
 		if ((*cur_cmd)->redirect_count >= MAX_REDIRECTS)
 			return (0); //implement error handling
-		if (!handle_redirection_parsing(*cur_cmd, tokens))
+		if ((*tok)->type == TOKEN_HEREDOC)
+		{
+			if (!(handle_heredoc_parsing(*cur_cmd, tok, shell)))
+				return (0);
+		}
+		else if (!handle_redirection_parsing(*cur_cmd, tok))
 			return (0);
-		// if ((*tokens)->next)
-		// 	(*tokens) = (*tokens)->next;
+		// if ((*tok)->next)
+		// 	(*tok) = (*tok)->next;
 	}
-	else if ((*tokens)->type == TOKEN_PIPE)
+	else if ((*tok)->type == TOKEN_PIPE)
 	{
 		// printf("%i index", *i);
 		*cur_cmd = handle_pipe_parsing(*cur_cmd, i);
@@ -67,11 +71,11 @@ static int	handle_token(t_token **tokens, t_command **cur_cmd, int *i, t_shell *
 }
 
 // DOESNT PARSE PIPES CORRECTLY
-t_command	*parse_command_from_tokens(t_token *tokens, t_shell *shell)
+t_cmd	*parse_command_from_tokens(t_token *tokens, t_shell *shell)
 {
-	t_command	*head;
-	t_command	*cur_cmd;
-	int			i;
+	t_cmd	*head;
+	t_cmd	*cur_cmd;
+	int		i;
 
 	head = init_cmd();
 	if (!head)
@@ -86,6 +90,6 @@ t_command	*parse_command_from_tokens(t_token *tokens, t_shell *shell)
 	}
 	cur_cmd->argv[i] = NULL;
 	// printf("token cur next\n");
-	// set_command_paths(head); // im not sure we are ever using the path so might be unnecessary
+	// set_cmd_paths(head); // im not sure we are ever using the path so might be unnecessary
 	return (head);
 }

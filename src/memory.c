@@ -1,14 +1,12 @@
 #include "minishell.h"
 #include <stdlib.h>
 
-void	free_command(t_command *cmd)
+void	free_command(t_cmd *cmd)
 {
 	int	i;
 
 	if (!cmd)
-		return;
-	if (cmd->path)
-		free(cmd->path);
+		return ;
 	if (cmd->argv)
 	{
 		i = 0;
@@ -32,9 +30,9 @@ void	free_command(t_command *cmd)
 	free(cmd);
 }
 
-void	free_command_list(t_command **head)
+void	free_command_list(t_cmd **head)
 {
-	t_command	*tmp;
+	t_cmd	*tmp;
 
 	if (!head || !*head)
 		return ;

@@ -50,9 +50,8 @@ typedef struct s_redirect
 	char	*file;
 }	t_redirect;
 
-typedef struct s_command
+typedef struct s_cmd
 {
-	char				*path;
 	char				**argv;
 	t_redirect			*redir;
 	int					redirect_count;
@@ -60,18 +59,18 @@ typedef struct s_command
 	int					output;
 	int					pipe_in;
 	int					pipe_out;
-	struct s_command	*next;
-}	t_command;
+	struct s_cmd		*next;
+}	t_cmd;
 
 typedef struct s_parsed_line
 {
-	t_command	*command;
-	char		**env_vars;
+	t_cmd	*cmd;
+	char	**env_vars;
 }	t_parsed_line;
 
 typedef struct s_shell
 {
-	t_command	*commands;
+	t_cmd		*commands;
 	int			last_exit_status;
 	char		**env;
 	int			env_size;

@@ -2,6 +2,8 @@
 	"files.associations": {
 		"minishell.h": "c",
 		"sstream": "c",
-		"algorithm": "c"
+		"algorithm": "c",
+		"error.h": "c",
+		"structs.h": "c"
 	}
 }
