@@ -32,7 +32,16 @@ void	builtin_cd(char **args, t_shell *shell)
 {
 	char	*path;
 	char	old_pwd[1024];
+	int		arg_count = 0;
 
+	// Count the number of arguments
+	while (args[arg_count])
+		arg_count++;
+	if (arg_count > 2)
+	{
+		fprintf(stderr, "cd: too many arguments\n");
+		return;
+	}
 	if (!getcwd(old_pwd, sizeof(old_pwd)))
 	{
 		perror("getcwd");

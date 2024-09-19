@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/17 18:12:46 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/19 19:43:15 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,13 @@ void	execute_external(t_cmd *cmd, t_shell *shell)
 
 	path = find_executable(cmd->argv[0], shell);
 	if (!path)
-	{
+	{	
+		// printf("Executable for %s not found, PID: %d\n", cmd->argv[0], getpid());
 		print_command_not_found(cmd->argv[0]);
 		shell->last_exit_status = 127;
 		exit(EXIT_FAILURE);
 	}
+	// printf("Child process PID %d executing %s\n", getpid(), cmd->argv[0]);
 	execve(path, cmd->argv, shell->env);
 	perror("minishell: execve failed\n");
 	exit(EXIT_FAILURE);
@@ -63,13 +65,21 @@ void	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
+	{
+		// printf("Child process started with PID: %d\n", getpid());
 		execute_child_process(cmd, pfds, *prev_prd, shell);
+		// printf("Child process with PID %d finished execution\n", getpid());
+	}
 	else
 	{
+		// printf("Parent process waiting for child with PID: %d\n", pid);
 		signal(SIGINT, SIG_IGN);
 		parent_proc(cmd, pfds, prev_prd);
 		wait_for_children(shell);
 		setup_signals_shell();
+		int status;
+    waitpid(pid, &status, 0);
+    // printf("Child process PID %d finished\n", pid);
 	}
 }
 

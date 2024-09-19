@@ -37,7 +37,8 @@ void builtin_echo(char **args)
 	}
 	// remove_quotes(args[i]);
 	while (args[i])
-	{
+	{	
+		// remove_quotes(args[i]);
 		printf("%s", args[i]);
 		if (args[i + 1])
 			printf(" ");
