@@ -24,13 +24,6 @@ static void handle_signal(int sig)
 }
 
 
-static void sigchld_handler(int signum)
-{
-    (void)signum; 
-    while (waitpid(-1, NULL, WNOHANG) > 0);  
-}
-
-
 static int setup_signal(int signum, void (*handler)(int), int flags)
 {
     struct sigaction sa;
@@ -63,12 +56,6 @@ void setup_signals_shell(void)
     if (setup_signal(SIGTSTP, SIG_DFL, 0) == -1)  
     {
         perror("Error setting up SIGTSTP handler");
-        exit(EXIT_FAILURE);
-    }
-
-    if (setup_signal(SIGCHLD, sigchld_handler, SA_RESTART) == -1)  
-    {
-        perror("Error setting up SIGCHLD handler");
         exit(EXIT_FAILURE);
     }
 }
