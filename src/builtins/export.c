@@ -14,6 +14,7 @@ static void	print_sorted_env(t_shell *shell)
 	int		i;
 	int		j;
 	char	*temp;
+	char	*e_sign;
 
 	sorted_env = malloc(sizeof(char *) * (shell->env_size + 1));
 	i = -1;
@@ -36,7 +37,11 @@ static void	print_sorted_env(t_shell *shell)
 	}
 	i = -1;
 	while (++i < shell->env_size)
-		printf("declare -x %s\n", sorted_env[i]);
+	{
+		e_sign = ft_strchr(sorted_env[i], '=');
+		printf("declare -x %.*s\"%s\"\n", (int)(e_sign - sorted_env[i] + 1), \
+		sorted_env[i], e_sign + 1);
+	}
 	free(sorted_env);
 }
 

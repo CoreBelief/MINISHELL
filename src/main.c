@@ -20,19 +20,21 @@ static void	process_input(char *line, t_shell *shell)
 		tokens = tokenizer(line);
 		if (!tokens)
 		{
-            shell->last_exit_status = 1;
-            return;
-        }
+			shell->last_exit_status = 1;
+			return ;
+		}
+		// print_token_list(tokens);
 		shell->commands = parse_command_from_tokens(tokens, shell);
 		if (!shell->commands)
-		{	
+		{
 			shell->last_exit_status = 1;
 			free_tokens(&tokens);
 			return ;
 		}
 		free_tokens(&tokens);
+		// print_cmd_list(shell->commands);
 		execute_command(shell);
-        free_command_list(&shell->commands);
+		free_command_list(&shell->commands);
 	}
 }
 
@@ -56,7 +58,7 @@ void	minishell_loop(t_shell *shell)
 		line = readline(prompt);
 		free(prompt);
 		if (!line)
-		{	
+		{
 			shell->last_exit_status = 0;
 			printf("exit\n");
 			break ;

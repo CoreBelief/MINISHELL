@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/19 00:44:30 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/19 14:21:55 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,10 @@ int	until_dollar(char *str)
 	int	i;
 
 	i = 0;
-	while (str[i] && str[i] != '$')
+	while (str[i] && str[i] != '$' && str[i] != '\'')
 		i++;
 	return (i);
 }
-
 
 void	variable_exp_double(t_token *token, char *str, t_shell *shell)
 {
@@ -115,14 +114,20 @@ void	variable_exp_double(t_token *token, char *str, t_shell *shell)
 	int		len;
 	char	*expansion;
 	char	*new_str;
+	int		single_q;
 
 	i = 0;
+	single_q = 0;
 	expansion = NULL;
 	new_str = ft_strdup("");
-	//error handling
 	while (str[i])
 	{
-		if (str[i] == '$')
+		if (str[i] == '\'')
+		{
+			single_q = !single_q;
+			i++;
+		}
+		else if (!single_q && str[i] == '$')
 		{
 			if (str[i + 1] == '?')
 			{
@@ -138,17 +143,63 @@ void	variable_exp_double(t_token *token, char *str, t_shell *shell)
 					new_str = append_str(new_str, expansion);
 				// i += len;
 			}
-			else
-			{
-				new_str = append_str(new_str, ft_strndup(&str[i], 1));
-				i++;
-			}
+		}
+		else
+		{
+			new_str = append_str(new_str, ft_strndup(&str[i], 1));
+			i++;
 		}
 		len = until_dollar(&str[i]);
-		if (len != 0)
-			new_str = append_str(new_str, ft_strndup(&str[i], len));
+		new_str = append_str(new_str, ft_strndup(&str[i], len));
 		i += len;
 		token->content = new_str;
 	}
 }
+
+
+
+// void	variable_exp_double(t_token *token, char *str, t_shell *shell)
+// {
+// 	int		i;
+// 	int		len;
+// 	char	*expansion;
+// 	char	*new_str;
+
+// 	i = 0;
+// 	expansion = NULL;
+// 	new_str = ft_strdup("");
+// 	//error handling
+// 	printf("string given: %s\n", str);
+// 	while (str[i])
+// 	{
+// 		printf("cur char: %c\n", str[i]);
+// 		if (str[i] == '$')
+// 		{
+// 			if (str[i + 1] == '?')
+// 			{
+// 				expansion = var_exp_exit(&i, shell);
+// 				new_str = append_str(new_str, expansion);
+// 				free (expansion);
+// 			}
+// 			else if (is_var_char(str[i + 1]))
+// 			{
+// 				i++;
+// 				expansion = variable_exp(str, &i, shell);
+// 				if (expansion)
+// 					new_str = append_str(new_str, expansion);
+// 				// i += len;
+// 			}
+// 			else
+// 			{
+// 				new_str = append_str(new_str, ft_strndup(&str[i], 1));
+// 				i++;
+// 			}
+// 		}
+// 		len = until_dollar(&str[i]);
+// 		if (len != 0)
+// 			new_str = append_str(new_str, ft_strndup(&str[i], len));
+// 		i += len;
+// 		token->content = new_str;
+// 	}
+// }
 

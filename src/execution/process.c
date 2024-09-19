@@ -21,7 +21,11 @@ void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
 		setup_redirections(cmd);
 	if (prev_prd != -1 && cmd->input == -1)
 	{
-		dup2(prev_prd, STDIN_FILENO);
+		if (dup2(prev_prd, STDIN_FILENO) == -1)
+		{
+			perror("dup2 failed for STDIN");
+			exit(EXIT_FAILURE);
+		}
 		close(prev_prd);
 	}
 	if (cmd->pipe_out == 1 && cmd->output == -1)

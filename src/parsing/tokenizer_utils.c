@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/13 19:21:10 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/19 14:31:32 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ bool	is_special_token(char c)
 // 		(*i)++;
 // }
 
-void tokenize_word(char *input, int *i, t_token **head)
+void	tokenize_word(char *input, int *i, t_token **head)
 {
 	int start = *i;
 	int in_quotes = 0;
@@ -129,7 +129,7 @@ void tokenize_word(char *input, int *i, t_token **head)
 		}
 		else if (!in_quotes && (is_whitespace(input[*i]) || is_special_token(input[*i])))
 		{
-			break;
+			break ;
 		}
 		(*i)++;
 	}
@@ -137,6 +137,24 @@ void tokenize_word(char *input, int *i, t_token **head)
 	char *content = ft_strndup(&input[start], *i - start);
 	add_token(head, content, TOKEN_WORD);
 }
+
+// void	tokenize_word(char *input, int *i, t_token **head)
+// {
+// 	int		start;
+// 	char	*content;
+
+// 	start = *i;
+// 	content = NULL;
+// 	// printf("entered handle_word, word is==%s & index is ==%i\n", input, *i);
+// 	while (input[*i] && !is_whitespace(input[*i]) && !is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
+// 		(*i)++;
+// 	// printf("index afterrr in handle word %i\n", *i);
+// 	content = ft_strndup(&input[start], *i - start);
+// 	// printf("word:%s\n", content);
+// 	add_token(head, content, TOKEN_WORD);	
+// 	if (!is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
+// 		(*i)++;
+// }
 
 void	print_token_list(t_token *head)
 {
