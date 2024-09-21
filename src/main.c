@@ -31,6 +31,7 @@ static void	process_input(char *line, t_shell *shell)
 			free_tokens(&tokens);
 			return ;
 		}
+		// print_cmd_list(shell->commands);
 		free_tokens(&tokens);
 		execute_command(shell);
         free_command_list(&shell->commands);
