@@ -20,9 +20,10 @@ static void	process_input(char *line, t_shell *shell)
 		tokens = tokenizer(line);
 		if (!tokens)
 		{
-            shell->last_exit_status = 1;
-            return;
-        }
+			shell->last_exit_status = 1;
+			return ;
+		}
+		// print_token_list(tokens);
 		shell->commands = parse_command_from_tokens(tokens, shell);
 		if (!shell->commands)
 		{	

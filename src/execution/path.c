@@ -30,15 +30,15 @@ char	*find_executable(char *command, t_shell *shell)
 
 	path_env = ft_get_env("PATH", shell);
 	if (!path_env)
-		return (ft_strdup(command));
+		return (NULL);
 	paths = ft_split(path_env, ':');
 	if (!paths)
-		return (ft_strdup(command));
+		return (NULL);
 	full_path = search_paths(paths, command);
 	ft_free_str_array(paths);
 	if (full_path)
 		return (full_path);
-	return (ft_strdup(command));
+	return (NULL);
 }
 
 char	*find_command_in_path(char *command, t_shell *shell)
