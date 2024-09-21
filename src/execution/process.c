@@ -42,6 +42,7 @@ void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
 	close(pfds[1]);
 	if (is_builtin(cmd->argv[0]))
 	{
+		printf("Executing builtin %s\n", cmd->argv[0]);
 		execute_builtin(cmd, shell);
 		exit(shell->last_exit_status);
 	}
@@ -77,7 +78,7 @@ void	execute_child_process(t_cmd *cmd, int *pipe_fds,
 {
 	char	*path;
 
-	path = find_command_in_path(cmd->argv[0], shell);
+	path = find_command_in_path(cmd->argv[0], shell); // export VAR=hej | smth doesn't work
 	if (path == NULL)
 	{
 		print_command_not_found(cmd->argv[0]);
