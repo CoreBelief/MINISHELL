@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/19 18:07:01 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/21 17:24:28 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,13 @@ void	execute_external(t_cmd *cmd, t_shell *shell)
 
 	path = find_executable(cmd->argv[0], shell);
 	if (!path)
-	{
+	{	
+		// printf("Executable for %s not found, PID: %d\n", cmd->argv[0], getpid());
 		print_command_not_found(cmd->argv[0]);
 		shell->last_exit_status = 127;
 		exit(EXIT_FAILURE);
 	}
+	// printf("Child process PID %d executing %s\n", getpid(), cmd->argv[0]);
 	execve(path, cmd->argv, shell->env);
 	perror("minishell: execve failed\n");
 	exit(EXIT_FAILURE);
@@ -51,7 +53,6 @@ void	setup_pipes(t_cmd *cmd, int pfds[2])
 	}
 }
 
-
 void	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
 {
 	pid_t	pid;
@@ -63,12 +64,14 @@ void	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
+	{
 		execute_child_process(cmd, pfds, *prev_prd, shell);
+	}
 	else
 	{
 		signal(SIGINT, SIG_IGN);
 		parent_proc(cmd, pfds, prev_prd);
-		wait_for_children(shell);
+		// Remove the wait_for_children call here
 		setup_signals_shell();
 	}
 }
@@ -102,11 +105,10 @@ void cleanup_heredoc_files(t_cmd *cmd)
 		i++;
 	}
 }
-
 void	execute_command(t_shell *shell)
 {
 	t_cmd	*cur_cmd;
-	int			prev_prd;
+	int		prev_prd;
 
 	cur_cmd = shell->commands;
 	prev_prd = -1;
@@ -116,4 +118,6 @@ void	execute_command(t_shell *shell)
 		cleanup_heredoc_files(cur_cmd);
 		cur_cmd = cur_cmd->next;
 	}
+	// Add this line to wait for all child processes after the pipeline is set up
+	wait_for_children(shell);
 }

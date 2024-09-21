@@ -29,11 +29,17 @@ void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
 		close(prev_prd);
 	}
 	if (cmd->pipe_out == 1 && cmd->output == -1)
-	{
-		dup2(pfds[1], STDOUT_FILENO);
+	{	
+		if (dup2(pfds[1], STDOUT_FILENO) == -1)
+		{
+			perror("dup2 failed for STDOUT");
+			exit(EXIT_FAILURE);
+		}
 		close(pfds[1]);
 	}
+	// Close both ends of the pipe in the child process
 	close(pfds[0]);
+	close(pfds[1]);
 	if (is_builtin(cmd->argv[0]))
 	{
 		execute_builtin(cmd, shell);
@@ -47,57 +53,23 @@ void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
 void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 {
 	if (*prev_prd != -1)
+	{
 		close(*prev_prd);
+	}
 	if (cmd->pipe_out == 1 && cmd->output == -1)
 	{
 		close(pfds[1]);
 		*prev_prd = pfds[0];
 	}
 	else
+	{
 		*prev_prd = -1;
+		// Close both ends of the pipe if it's the last command
+		close(pfds[0]);
+		close(pfds[1]);
+	}
 }
 
-// void	child_proc(t_cmd *cmd, int pipe_fds[2],
-// 			int prev_pipe_read, t_shell *shell)
-// {
-// 	setup_signals_child();
-// 	if (cmd->redirect_count)
-// 		setup_redirections(cmd);
-// 	if (prev_pipe_read != -1 && cmd->input == -1)
-// 	{
-// 		dup2(prev_pipe_read, STDIN_FILENO);
-// 		close(prev_pipe_read);
-// 	}
-// 	if (cmd->pipe_out == 1 && cmd->output == -1)
-// 	{
-// 		dup2(pipe_fds[1], STDOUT_FILENO);
-// 		close(pipe_fds[1]);
-// 	}
-// 	close(pipe_fds[0]);
-// 	if (is_builtin(cmd->argv[0]))
-// 	{
-// 		execute_builtin(cmd, shell);
-// 		exit(shell->last_exit_status);
-// 	}
-// 	else
-// 		execute_external(cmd, shell);
-// 	exit(EXIT_FAILURE);
-// }
-
-
-// void	parent_proc(t_cmd *cmd, int pipe_fds[2],
-// 			int *prev_pipe_read)
-// {
-// 	if (*prev_pipe_read != -1)
-// 		close(*prev_pipe_read);
-// 	if (cmd->pipe_out == 1 && cmd->output == -1)
-// 	{
-// 		close(pipe_fds[1]);
-// 		*prev_pipe_read = pipe_fds[0];
-// 	}
-// 	else
-// 		*prev_pipe_read = -1;
-// }
 
 
 void	execute_child_process(t_cmd *cmd, int *pipe_fds,
