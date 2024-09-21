@@ -52,14 +52,13 @@ static void process_identifier(char *arg, char *equal_sign, t_shell *shell)
 		identifier = ft_strndup(arg, equal_sign - arg);
 	else
 		identifier = arg;
-	
 	if (!is_valid_identifier(identifier))
 	{
 		dprintf(2, "export: `%s`: not a valid identifier\n", arg);
 		shell->last_exit_status = 1;
 		if (equal_sign != NULL)
 			free(identifier);
-		return;
+		return ;
 	}
 
 	if (equal_sign != NULL)

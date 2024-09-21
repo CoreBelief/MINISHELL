@@ -28,6 +28,8 @@ char	*find_executable(char *command, t_shell *shell)
 	char	**paths;
 	char	*full_path;
 
+	// if (access(command, X_OK) == 0)
+	// 	return (ft_strdup(command)); // this is making minishellception work but gives other issues
 	path_env = ft_get_env("PATH", shell);
 	if (!path_env)
 		return (NULL);
