@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/19 19:43:15 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/21 17:01:26 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ void	setup_pipes(t_cmd *cmd, int pfds[2])
 	}
 }
 
-
 void	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
 {
 	pid_t	pid;
@@ -66,20 +65,14 @@ void	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
 	}
 	else if (pid == 0)
 	{
-		// printf("Child process started with PID: %d\n", getpid());
 		execute_child_process(cmd, pfds, *prev_prd, shell);
-		// printf("Child process with PID %d finished execution\n", getpid());
 	}
 	else
 	{
-		// printf("Parent process waiting for child with PID: %d\n", pid);
 		signal(SIGINT, SIG_IGN);
 		parent_proc(cmd, pfds, prev_prd);
-		wait_for_children(shell);
+		// Remove the wait_for_children call here
 		setup_signals_shell();
-		int status;
-    waitpid(pid, &status, 0);
-    // printf("Child process PID %d finished\n", pid);
 	}
 }
 
@@ -112,11 +105,10 @@ void cleanup_heredoc_files(t_cmd *cmd)
 		i++;
 	}
 }
-
 void	execute_command(t_shell *shell)
 {
 	t_cmd	*cur_cmd;
-	int			prev_prd;
+	int		prev_prd;
 
 	cur_cmd = shell->commands;
 	prev_prd = -1;
@@ -126,4 +118,6 @@ void	execute_command(t_shell *shell)
 		cleanup_heredoc_files(cur_cmd);
 		cur_cmd = cur_cmd->next;
 	}
+	// Add this line to wait for all child processes after the pipeline is set up
+	wait_for_children(shell);
 }
