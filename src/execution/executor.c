@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/21 23:49:04 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/22 00:30:45 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 
 void	execute_external(t_cmd *cmd, t_shell *shell);
 void	setup_pipes(t_cmd *cmd, int pipe_fds[2]);
-void	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell);
-void	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell);
 void	execute_command(t_shell *shell);
 
 
@@ -53,41 +51,47 @@ void	setup_pipes(t_cmd *cmd, int pfds[2])
 	}
 }
 
-void	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
+static pid_t fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
 {
-	pid_t	pid;
+    pid_t pid;
 
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("minishell: fork");
-		exit(EXIT_FAILURE);
-	}
-	else if (pid == 0)
-	{
-		execute_child_process(cmd, pfds, *prev_prd, shell);
-	}
-	else
-	{
-		signal(SIGINT, SIG_IGN);
-		parent_proc(cmd, pfds, prev_prd);
-		// Remove the wait_for_children call here
-		setup_signals_shell();
-	}
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("minishell: fork");
+        exit(EXIT_FAILURE);
+    }
+    else if (pid == 0)  // Child process
+    {
+        execute_child_process(cmd, pfds, *prev_prd, shell);
+    }
+    else  // Parent process
+    {
+        signal(SIGINT, SIG_IGN);
+        parent_proc(cmd, pfds, prev_prd);
+        setup_signals_shell();
+    }
+    return pid;  // Return the PID of the forked process
 }
 
-void	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
+static pid_t execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 {
-	int		pipe_fds[2];
+    int pipe_fds[2];
+    pid_t pid = -1;  // Store the PID of the forked process
 
-	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 && cmd->pipe_in == -1)
-		execute_builtin(cmd, shell);
-	else
-	{
-		setup_pipes(cmd, pipe_fds);
-		fork_and_execute(cmd, pipe_fds, prev_prd, shell);
-	}
+    if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 && cmd->pipe_in == -1)
+    {
+        execute_builtin(cmd, shell);
+    }
+    else
+    {
+        setup_pipes(cmd, pipe_fds);
+        pid = fork_and_execute(cmd, pipe_fds, prev_prd, shell);  // Capture the PID of the process
+    }
+
+    return pid;  // Return the PID of the last process
 }
+
 
 
 void cleanup_heredoc_files(t_cmd *cmd)
@@ -105,19 +109,51 @@ void cleanup_heredoc_files(t_cmd *cmd)
 		i++;
 	}
 }
-void	execute_command(t_shell *shell)
+static void wait_for_children(t_shell *shell, pid_t last_pid)
 {
-	t_cmd	*cur_cmd;
-	int		prev_prd;
+    int status;
+    pid_t pid;
 
-	cur_cmd = shell->commands;
-	prev_prd = -1;
-	while (cur_cmd)
-	{
-		execute_single_command(cur_cmd, &prev_prd, shell);
-		cleanup_heredoc_files(cur_cmd);
-		cur_cmd = cur_cmd->next;
-	}
-	// Add this line to wait for all child processes after the pipeline is set up
-	wait_for_children(shell);
+    // Wait for all child processes to finish
+    while ((pid = waitpid(-1, &status, WUNTRACED)) > 0)
+    {
+        // If this is the last command's PID, update shell->last_exit_status
+        if (pid == last_pid)
+        {
+            if (WIFSIGNALED(status))
+            {
+                // Command was terminated by a signal
+                shell->last_exit_status = 128 + WTERMSIG(status);
+                if (WTERMSIG(status) == SIGQUIT)
+                    ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+            }
+            else if (WIFEXITED(status))
+            {
+                // Command exited normally
+                shell->last_exit_status = WEXITSTATUS(status);
+            }
+        }
+    }
+
+    if (pid == -1 && errno != ECHILD)
+        perror("waitpid");
 }
+void execute_command(t_shell *shell)
+{
+    t_cmd *cur_cmd;
+    int prev_prd = -1;
+    pid_t last_pid = -1;  // Store the PID of the last command
+
+    cur_cmd = shell->commands;
+    while (cur_cmd)
+    {
+        // Execute each command and capture the PID of the last command
+        last_pid = execute_single_command(cur_cmd, &prev_prd, shell);
+        cleanup_heredoc_files(cur_cmd);
+        cur_cmd = cur_cmd->next;
+    }
+
+    // After all commands are executed, wait for all children
+    wait_for_children(shell, last_pid);  // Pass the last command's PID
+}
+

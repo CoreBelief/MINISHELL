@@ -9,7 +9,6 @@ void	parent_proc(t_cmd *cmd, int pipe_fds[2],
 			int *prev_pipe_read);
 void	execute_child_process(t_cmd *cmd, int *pipe_fds,
 			int prev_pipe_read, t_shell *shell);
-void	wait_for_children(t_shell *shell);
 
 
 //in exec_single_cmd if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 && cmd->pipe_in == -1)
@@ -183,22 +182,4 @@ void	execute_child_process(t_cmd *cmd, int *pipe_fds,
 	child_proc(cmd, pipe_fds, prev_pipe_read, shell);
 }
 
-void	wait_for_children(t_shell *shell)
-{
-	int		status;
-	pid_t	last_pid;
 
-	while ((last_pid = waitpid(-1, &status, WUNTRACED)) > 0)
-	{
-		if (WIFSIGNALED(status))
-		{
-			shell->last_exit_status = 128 + WTERMSIG(status);
-			if (WTERMSIG(status) == SIGQUIT)
-				ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
-		}
-		else if (WIFEXITED(status))
-			shell->last_exit_status = WEXITSTATUS(status);
-	}
-	if (last_pid == -1 && errno != ECHILD)
-		perror("waitpid");
-}
