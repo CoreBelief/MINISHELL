@@ -76,14 +76,14 @@ void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 void	execute_child_process(t_cmd *cmd, int *pipe_fds,
 			int prev_pipe_read, t_shell *shell)
 {
-	char	*path;
+	// char	*path;
 
-	path = find_command_in_path(cmd->argv[0], shell); // export VAR=hej | smth doesn't work
-	if (path == NULL)
-	{
-		print_command_not_found(cmd->argv[0]);
-		exit(127);
-	}
+	// path = find_command_in_path(cmd->argv[0], shell); // export VAR=hej | smth doesn't work
+	// if (path == NULL)
+	// {
+	// 	print_command_not_found(cmd->argv[0]);
+	// 	exit(127);
+	// }
 	child_proc(cmd, pipe_fds, prev_pipe_read, shell);
 }
 
