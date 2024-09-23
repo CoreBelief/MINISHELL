@@ -83,6 +83,7 @@ void	execute_child_process(t_cmd *cmd, int *pipe_fds,
 	// 	print_command_not_found(cmd->argv[0]);
 	// 	exit(127);
 	// }
+	// check_permissions(cmd->argv[0], shell);
 	child_proc(cmd, pipe_fds, prev_pipe_read, shell);
 }
 

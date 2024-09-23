@@ -9,4 +9,6 @@ char	*find_executable(char *command, t_shell *shell);
 
 char	*find_command_in_path(char *command, t_shell *shell);
 
+int		check_permissions(char *path, t_shell *shell);
+
 #endif
