@@ -6,14 +6,14 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/13 19:21:10 by elleneklund   ########   odam.nl         */
+/*   Updated: 2024/09/24 19:57:13 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tokenizer.h"
 #include "minishell.h"
 
-
+// maybe needs to return smth indicating error
 void	tokenize_redirection(char *input, int *i, t_token **head)
 {
 	if (input[*i] == '>' || input[*i] == '<')
@@ -36,7 +36,7 @@ void	tokenize_redirection(char *input, int *i, t_token **head)
 		}
 	}
 }
-
+// maybe needs to return smth indicating error
 void	tokenize_single(char *input, int *i, t_token **head)
 {
 	int		start;
@@ -54,7 +54,7 @@ void	tokenize_single(char *input, int *i, t_token **head)
 		(*i)++;
 	}
 }
-
+// maybe needs to return smth indicating error
 void	tokenize_double(char *input, int *i, t_token **head)
 {
 	int		start;
@@ -106,11 +106,13 @@ bool	is_special_token(char c)
 // 		(*i)++;
 // }
 
+// maybe needs to return smth indicating error
 void tokenize_word(char *input, int *i, t_token **head)
 {
 	int start = *i;
 	int in_quotes = 0;
 	char quote_char = 0;
+	char *content;
 
 	while (input[*i])
 	{
@@ -129,13 +131,15 @@ void tokenize_word(char *input, int *i, t_token **head)
 		}
 		else if (!in_quotes && (is_whitespace(input[*i]) || is_special_token(input[*i])))
 		{
-			break;
+			break ;
 		}
 		(*i)++;
 	}
-
-	char *content = ft_strndup(&input[start], *i - start);
+	content = ft_strndup(&input[start], *i - start);
+	if (!content)
+		return ;
 	add_token(head, content, TOKEN_WORD);
+	//error check if malloc fails in add_token
 }
 
 void	print_token_list(t_token *head)

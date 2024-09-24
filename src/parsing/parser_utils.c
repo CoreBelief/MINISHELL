@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/19 21:11:13 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/24 19:56:31 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ int	handle_arg_parsing_2nd(t_cmd *cmd, t_token **tokens, int *i, t_shell *shell)
 	// 	variable_exp_double((*tokens), (*tokens)->content, shell);
 	// remove_quotes((*tokens)->content);
 	cmd->argv[*i] = ft_strdup((*tokens)->content);
+	// free ((*tokens)->content); //is getting freed at a later state in free_tokens()
+	// (*tokens)->content = NULL;
 	if (!cmd->argv[*i])
 		return (0);
 	(*i)++;

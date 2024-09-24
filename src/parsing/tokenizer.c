@@ -78,16 +78,3 @@ t_token	*add_token(t_token **head, char *content, t_token_type type)
 	return (new_token);
 }
 
-void	free_tokens(t_token **head)
-{
-	t_token	*temp;
-
-	if (!head)
-		return ;
-	while (*head)
-	{
-		temp = *head;
-		*head = (*head)->next;
-		free(temp);
-	}
-}

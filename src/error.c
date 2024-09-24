@@ -8,7 +8,7 @@
 // only the first error handler is implemented but not correctly.... the rest are just placeholders
 
 
-void	print_error(int fd, char *msg1, char *msg2, char cmd)
+void	print_error(int fd, char *msg1, char *cmd, char *msg2)
 {
 	ft_putstr_fd(msg1, fd);
 	ft_putstr_fd(cmd, fd);

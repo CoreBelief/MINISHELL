@@ -44,19 +44,35 @@ void	free_command_list(t_cmd **head)
 	}
 }
 
-
-
 void	ft_free_str_array(char **arr)
 {
 	int	i;
 
 	if (!arr)
-		return;
+		return ;
 	i = 0;
 	while (arr[i])
 	{
-		free(arr[i]);  
+		free (arr[i]);
 		i++;
 	}
-	free(arr);  
+	free (arr);
+}
+
+
+void	free_tokens(t_token **head)
+{
+	t_token	*temp;
+
+	if (!head)
+		return ;
+	while (*head)
+	{
+		temp = *head;
+		*head = (*head)->next;
+		if (temp->content)
+			free(temp->content);
+		free(temp);
+	}
+	*head = NULL;
 }

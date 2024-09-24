@@ -13,7 +13,7 @@ int			ft_unset_env(const char *name, t_shell *shell);
 
 int	init_env(t_shell *shell, char **envp)
 {
-	int i;
+	int	i;
 
 	shell->env_size = 0;
 	while (envp[shell->env_size])
@@ -58,16 +58,16 @@ char	*ft_get_env(const char *name, t_shell *shell)
 	return (NULL);
 }
 
-static int ft_add_env(char *new_var, t_shell *shell)
+static int	ft_add_env(char *new_var, t_shell *shell)
 {
-	int i;
-	char **new_env;
+	int		i;
+	char	**new_env;
 
 	if (!new_var)
 		return (0);
 	new_env = (char **)malloc(sizeof(char *) * (shell->env_size + 2));
 	if (!new_env)
-	{	
+	{
 		free(new_var);
 		return (0);
 	}
