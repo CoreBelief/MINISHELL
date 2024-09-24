@@ -96,7 +96,7 @@ static void	sort_env(char **sorted_env, int size)
 	int		i;
 	int		j;
 	char	*temp;
-	char	*e_sign;
+	// char	*e_sign;
 
 	i = -1;
 	while (++i < size - 1)
@@ -118,6 +118,7 @@ static void	print_sorted_env(t_shell *shell)
 {
 	char	**sorted_env;
 	int		i;
+	char	*e_sign;
 
 	sorted_env = malloc(sizeof(char *) * (shell->env_size + 1));
 	if (!sorted_env)
