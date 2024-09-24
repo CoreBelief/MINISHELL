@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/22 00:30:45 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/24 21:15:37 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ static pid_t fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *she
     {
         signal(SIGINT, SIG_IGN);
         parent_proc(cmd, pfds, prev_prd);
-        setup_signals_shell();
     }
     return pid;  // Return the PID of the forked process
 }
@@ -126,6 +125,8 @@ static void wait_for_children(t_shell *shell, pid_t last_pid)
                 shell->last_exit_status = 128 + WTERMSIG(status);
                 if (WTERMSIG(status) == SIGQUIT)
                     ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+                    else if (WTERMSIG(status) == SIGINT)
+                    ft_putstr_fd("\n", STDERR_FILENO);
             }
             else if (WIFEXITED(status))
             {
@@ -154,6 +155,8 @@ void execute_command(t_shell *shell)
     }
 
     // After all commands are executed, wait for all children
-    wait_for_children(shell, last_pid);  // Pass the last command's PID
+    wait_for_children(shell, last_pid);  
+    setup_signals_shell();
+    // Pass the last command's PID
 }
 
