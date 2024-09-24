@@ -112,10 +112,12 @@ static void	sort_env(char **sorted_env, int size)
 	}
 }
 
+// gives issues if export VAR=""hej"" 2 quotes are shon, but i guess we should remove them in parser/tokenizer
 static void	print_sorted_env(t_shell *shell)
 {
 	char	**sorted_env;
 	int		i;
+	char	*e_sign;
 
 	sorted_env = malloc(sizeof(char *) * (shell->env_size + 1));
 	if (!sorted_env)
@@ -127,6 +129,29 @@ static void	print_sorted_env(t_shell *shell)
 	sort_env(sorted_env, shell->env_size);
 	i = -1;
 	while (++i < shell->env_size)
-		printf("declare -x %s\n", sorted_env[i]);
+	{
+		e_sign = ft_strchr(sorted_env[i], '=');
+		printf("declare -x %.*s\"%s\"\n", (int)(e_sign - sorted_env[i] + 1), \
+		sorted_env[i], e_sign + 1);
+	}
 	free(sorted_env);
 }
+
+// static void	print_sorted_env(t_shell *shell)
+// {
+// 	char	**sorted_env;
+// 	int		i;
+
+// 	sorted_env = malloc(sizeof(char *) * (shell->env_size + 1));
+// 	if (!sorted_env)
+// 		return ;
+// 	i = -1;
+// 	while (++i < shell->env_size)
+// 		sorted_env[i] = shell->env[i];
+// 	sorted_env[i] = NULL;
+// 	sort_env(sorted_env, shell->env_size);
+// 	i = -1;
+// 	while (++i < shell->env_size)
+// 		printf("declare -x %s\n", sorted_env[i]);
+// 	free(sorted_env);
+// }

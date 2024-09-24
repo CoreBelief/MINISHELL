@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/17 13:42:15 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/17 13:43:35 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/24 13:42:45 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 # define ERROR_H
 
 # include "minishell.h" 
+
+//legal func to print all different error msg
+void	print_error(int fd, char *msg1, char *msg2, char cmd);
 
 // Function to print command not found error
 void	print_command_not_found(char *command);
