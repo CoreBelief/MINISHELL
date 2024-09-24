@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/23 18:55:53 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/24 13:26:23 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,9 +112,7 @@ void	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
-	{
-		execute_child_process(cmd, pfds, *prev_prd, shell);
-	}
+		child_proc(cmd, pfds, *prev_prd, shell); //here was before execute_child_process but felt unnessecary
 	else
 	{
 		signal(SIGINT, SIG_IGN);

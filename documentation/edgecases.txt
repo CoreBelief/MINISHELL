@@ -81,3 +81,7 @@ rdl@rtx:~/server/MINISHELL/MINISHELL [18:12:25] ➜  echo "john's"
 john's
 rdl@rtx:~/server/MINISHELL/MINISHELL [18:12:26] ➜ 
 
+if there is no space between execpt if special character, the tokenizer should keep reading? but how to handle if different sorts of types, 
+how to handle the characters inside the different types?, expanding before parser? not relying on the tokens? just read until there is a space or a special character? 
+different states of how to read the input, depening on if your inside double quotes, single or nothing, even though they are together? 
+so just one for all the types handeling it in the tokenizer? and just sending the finished product to the parser as 1 whole word, all expanded and quotes removed?

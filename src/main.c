@@ -68,8 +68,6 @@ void	minishell_loop(t_shell *shell)
 	}
 }
 
-
-
 void	init_shell(t_shell *shell)
 {
 	shell->commands = NULL;
