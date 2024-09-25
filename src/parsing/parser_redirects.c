@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/17 14:52:57 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/21 17:44:14 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/25 14:17:17 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,6 @@ int	handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 			write(hered_fd, "\n", 1);
 			free((*token)->content);
 		}
-		if ((*token)->content)
-			free((*token)->content);
 		close(hered_fd);
 		cmd->redir[cmd->redirect_count].file = tmp_file;
 		if (!cmd->redir[cmd->redirect_count].file)
