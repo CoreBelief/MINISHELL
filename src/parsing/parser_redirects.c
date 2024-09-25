@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/17 14:52:57 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/25 14:17:17 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/25 14:35:02 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,20 @@ int	handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 	int		hered_fd;
 	// char 	*line;
 	char 	*tmp_file;
+	char	*hd_id; // this is fine
 
 	cmd->redir[cmd->redirect_count].type = (*token)->type;
 	(*token) = (*token)->next;
 	if (token && *token && (*token)->type == TOKEN_WORD)
 	{
 		delim = (*token)->content;
-		tmp_file = ft_strjoin("/tmp/heredoc_", ft_itoa(cmd->redirect_count));
+		hd_id = ft_itoa(cmd->redirect_count);
+		if (!hd_id)
+			return (0);
+		tmp_file = ft_strjoin("/tmp/heredoc_", hd_id);
+		free (hd_id);
+		if (!tmp_file)
+			return (0);
 		hered_fd = open(tmp_file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (hered_fd == -1)
 		{

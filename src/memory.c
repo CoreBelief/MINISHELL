@@ -13,9 +13,11 @@ void	free_command(t_cmd *cmd)
 		while (cmd->argv[i])
 		{
 			free(cmd->argv[i]);
+			cmd->argv[i] = NULL;
 			i++;
 		}
 		free(cmd->argv);
+		cmd->argv = NULL;
 	}
 	if (cmd->redir)
 	{
@@ -23,9 +25,11 @@ void	free_command(t_cmd *cmd)
 		while (i < cmd->redirect_count)
 		{
 			free(cmd->redir[i].file);
+			cmd->redir[i].file = NULL;
 			i++;
 		}
 		free(cmd->redir);
+		cmd->redir = NULL;
 	}
 	free(cmd);
 }
@@ -39,9 +43,10 @@ void	free_command_list(t_cmd **head)
 	while (*head)
 	{
 		tmp = *head;
-		free_command(tmp);
 		*head = (*head)->next;
+		free_command(tmp);
 	}
+	*head = NULL;
 }
 
 void	ft_free_str_array(char **arr)

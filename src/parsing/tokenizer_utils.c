@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/24 19:57:13 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/25 14:44:48 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,7 @@ void tokenize_word(char *input, int *i, t_token **head)
 	if (!content)
 		return ;
 	add_token(head, content, TOKEN_WORD);
+	// free (content);
 	//error check if malloc fails in add_token
 }
 
