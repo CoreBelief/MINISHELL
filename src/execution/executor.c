@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/24 18:48:31 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/25 17:32:35 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,8 @@ void	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 {
 	int		pipe_fds[2];
 
+	// pipe_fds[0] = 0;
+	// pipe_fds[1] = 0;
 	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 && cmd->pipe_in == -1)
 		execute_builtin(cmd, shell);
 	else

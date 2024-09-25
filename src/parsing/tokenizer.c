@@ -62,7 +62,11 @@ t_token	*add_token(t_token **head, char *content, t_token_type type)
 
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
+	{
+		free (content);
+		// content = NULL;
 		return (NULL);
+	}
 	new_token->content = content;
 	new_token->type = type;
 	new_token->next = NULL;

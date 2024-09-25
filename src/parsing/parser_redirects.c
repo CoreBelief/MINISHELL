@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/17 14:52:57 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/25 14:35:02 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/25 17:29:29 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ int	handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 	// char 	*line;
 	char 	*tmp_file;
 	char	*hd_id; // this is fine
+	char	*tmp;
 
 	cmd->redir[cmd->redirect_count].type = (*token)->type;
 	(*token) = (*token)->next;
@@ -53,10 +54,13 @@ int	handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 			(*token)->content = readline("> ");
 			if (!(*token)->content || ft_strcmp((*token)->content, delim) == 0)
 				break ;
-			variable_exp_double(*token, (*token)->content, shell);
+			tmp = (*token)->content;
+			variable_exp_double(*token, tmp, shell);
 			write(hered_fd, (*token)->content, strlen((*token)->content));
 			write(hered_fd, "\n", 1);
+			free (tmp);
 			free((*token)->content);
+			free (delim);
 		}
 		close(hered_fd);
 		cmd->redir[cmd->redirect_count].file = tmp_file;

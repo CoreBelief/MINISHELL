@@ -76,7 +76,10 @@ void	free_tokens(t_token **head)
 		temp = *head;
 		*head = (*head)->next;
 		if (temp->content)
+		{
 			free(temp->content);
+			temp->content = NULL;
+		}
 		free(temp);
 	}
 	*head = NULL;

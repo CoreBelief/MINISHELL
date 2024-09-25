@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/24 19:56:31 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/25 17:40:14 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,16 @@ void	remove_quotes(char *str)
 
 int	handle_arg_parsing_2nd(t_cmd *cmd, t_token **tokens, int *i, t_shell *shell)
 {
+	char	*tmp;
+
+	tmp = (*tokens)->content;
 	if ((*tokens)->type == TOKEN_DOUBLE_QUOTE || (*tokens)->type != TOKEN_SINGLE_QUOTE)
-		variable_exp_double(*tokens, (*tokens)->content, shell);
+	{
+		if (!variable_exp_double(*tokens, tmp, shell))
+			return (0);
+		free (tmp);
+	}
+	// tmp = NULL;
 	// else if ((*tokens)->type != TOKEN_SINGLE_QUOTE)
 	// 	variable_exp_double((*tokens), (*tokens)->content, shell);
 	// remove_quotes((*tokens)->content);

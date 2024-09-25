@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/24 19:12:11 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/25 17:42:27 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ int	until_dollar(char *str)
 }
 
 
-void	variable_exp_double(t_token *token, char *str, t_shell *shell)
+int	variable_exp_double(t_token *token, char *str, t_shell *shell)
 {
 	int		i;
 	int		len;
@@ -133,13 +133,14 @@ void	variable_exp_double(t_token *token, char *str, t_shell *shell)
 				if (!expansion)
 				{
 					free (new_str);
-					return ;
+					return (0);
 				}
 				tmp = new_str;
 				new_str = append_str(tmp, expansion);
 				free(tmp);
+				free(expansion);
 				if (!new_str)
-					return ;
+					return (0);
 			}
 			else if (is_var_char(str[i + 1]))
 			{
@@ -148,13 +149,13 @@ void	variable_exp_double(t_token *token, char *str, t_shell *shell)
 				if (!expansion)
 				{
 					free (new_str);
-					return ;
+					return (0);
 				}
 				tmp = new_str;
 				new_str = append_str(tmp, expansion);
 				free(tmp);
 				if (!new_str)
-					return ;
+					return (0);
 				// i += len;
 			}
 			else
@@ -164,13 +165,13 @@ void	variable_exp_double(t_token *token, char *str, t_shell *shell)
 				if (!substr)
 				{
 					free (tmp);
-					return ;
+					return (0);
 				}
 				new_str = append_str(tmp, substr);
 				free (tmp);
 				free (substr);
 				if (!new_str)
-					return ;
+					return (0);
 				i++;
 			}
 		}
@@ -182,16 +183,19 @@ void	variable_exp_double(t_token *token, char *str, t_shell *shell)
 			if (!substr)
 			{
 				free (tmp);
-				return ;
+				return (0);
 			}
 			new_str = append_str(tmp, substr);
 			free (tmp);
 			free (substr);
 			if (!new_str)
-				return ;
+				return (0);
+			// if (token->content)
+				// free(token->content);
 		}
 		i += len;
 		token->content = new_str;
 	}
+	return (1);
 }
 
