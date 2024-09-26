@@ -6,35 +6,50 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/17 14:59:18 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/21 17:26:13 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
+// void	remove_quotes(char *str)
+// {
+// 	int		i;
+// 	int		j;
+// 	int		in_quotes = 0;
+// 	char	quote_char = 0;
+
+// 	i = 0;
+// 	j = 0;
+// 	if (!str)
+// 		return ;
+// 	while (str[i])
+// 	{
+// 		if ((str[i] == '\'' || str[i] == '\"') && (!in_quotes || str[i] == quote_char))
+// 		{
+// 			in_quotes = !in_quotes;
+// 			if (in_quotes)
+// 				quote_char = str[i];
+// 			else
+// 				quote_char = 0;
+// 		}
+// 		else
+// 			str[j++] = str[i];
+// 		i++;
+// 	}
+// 	str[j] = '\0';
+// }
+
 void	remove_quotes(char *str)
 {
-	int		i;
-	int		j;
-	int		in_quotes = 0;
-	char	quote_char = 0;
+	int	i;
+	int	j;
 
 	i = 0;
 	j = 0;
-	if (!str)
-		return ;
 	while (str[i])
 	{
-		if ((str[i] == '\'' || str[i] == '\"') && \
-		(!in_quotes || str[i] == quote_char))
-		{
-			in_quotes = !in_quotes;
-			if (in_quotes)
-				quote_char = str[i];
-			else
-				quote_char = 0;
-		}
-		else
+		if (str[i] != '"' && str[i] != '\'')
 			str[j++] = str[i];
 		i++;
 	}
@@ -44,7 +59,7 @@ void	remove_quotes(char *str)
 int	handle_arg_parsing_2nd(t_cmd *cmd, t_token **tokens, int *i, t_shell *shell)
 {
 	if ((*tokens)->type == TOKEN_DOUBLE_QUOTE || (*tokens)->type != TOKEN_SINGLE_QUOTE)
-		variable_exp_double(*tokens, (*tokens)->content, shell);
+		variable_exp_double(*tokens, (*tokens)->content, shell); // should NOT expand if there is single quote in a word ex. hello'$PATH'
 	// else if ((*tokens)->type != TOKEN_SINGLE_QUOTE)
 	// 	variable_exp_double((*tokens), (*tokens)->content, shell);
 	// remove_quotes((*tokens)->content);
@@ -62,7 +77,6 @@ t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i)
 	new_cmd = init_cmd();
 	if (!new_cmd)
 		return (NULL); // Handle error
-	// printf("index in pipe %i\n", *i);
 	cmd->argv[*i] = NULL;
 	cmd->pipe_out = 1;
 	cmd->next = new_cmd;

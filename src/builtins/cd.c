@@ -27,25 +27,38 @@ static void	update_pwd(char *old_pwd, t_shell *shell)
 	else
 		perror("getcwd");
 }
-
 void	builtin_cd(char **args, t_shell *shell)
 {
 	char	*path;
 	char	old_pwd[1024];
+	int		arg_count = 0;
 
+	while (args[arg_count])
+		arg_count++;
+	if (arg_count > 2)
+	{
+		fprintf(stderr, "cd: too many arguments\n");
+		shell->last_exit_status = 1;
+		return;
+	}
 	if (!getcwd(old_pwd, sizeof(old_pwd)))
 	{
 		perror("getcwd");
-		return ;
+		shell->last_exit_status = 1;
+		return;
 	}
 	path = get_cd_path(args, shell);
 	if (!path)
-		return ;
+	{
+		shell->last_exit_status = 1;
+		return;
+	}
 	if (chdir(path) != 0)
 	{
 		perror("cd");
-		return ;
+		shell->last_exit_status = 1;
+		return;
 	}
 	update_pwd(old_pwd, shell);
-	// printf("old_pwd: %s\n", old_pwd);
+	shell->last_exit_status = 0;
 }
