@@ -2,3 +2,27 @@
 - handle different type of words (single q, double q, no q) in the same word
 - norminette
 - exit codes
+
+- we have to handle syntax errors better(they also create memleaks!!) !: test these to comapre to bash: 
+|
+| echo oi
+| |
+| $
+| >
+>
+>>
+>>>
+<
+<<
+echo hi <
+cat    <| ls
+echo hi | >
+echo hi | > >>
+echo hi | < |
+echo hi |   |
+echo hi |  "|"
+
+
+- we have to fix the STD-ERR through our entire minishell, we are over halfway there!
+- and ofcourse all correct exitcodes.
+- here and there tiny memleaks
