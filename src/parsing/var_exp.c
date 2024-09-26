@@ -6,25 +6,19 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/25 17:42:27 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/26 13:24:39 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "var_exp.h"
 
-int	is_var_char(char c)
+char	*var_exp_exit(int *i, t_shell *shell)
 {
-	return (ft_isalnum(c) || c == '_');
-}
+	char	*expansion;
 
-int	find_var_len(char *var)
-{
-	int	i;
-
-	i = 0;
-	while (var[i] && is_var_char(var[i]))
-		i++;
-	return (i);
+	(*i) += 2;
+	expansion = ft_itoa(shell->last_exit_status);
+	return (expansion);
 }
 
 char	*variable_exp(char *str, int *i, t_shell *shell)
@@ -41,74 +35,122 @@ char	*variable_exp(char *str, int *i, t_shell *shell)
 	free (var);
 	*i += len;
 	return (expansion);
-
 }
 
-char	*append_str(char *og, char *to_append)
-{
-	char	*str;
+// int	handle_variable(char **new_str, char *str, int *i, t_shell *shell)
+// {
+// 	char	*expansion;
+// 	char	*tmp;
 
-	str = ft_strjoin(og, to_append);
-	if (!str)
-		return (NULL);
-	return (str);
-}
+// 	(*i)++;
+// 	expansion = variable_exp(str, i, shell);
+// 	if (!expansion)
+// 	{
+// 		free(*new_str);
+// 		return (0);
+// 	}
+// 	tmp = *new_str;
+// 	*new_str = append_str(tmp, expansion);
+// 	free(tmp);
+// 	if (!*new_str)
+// 		return (0);
+// 	return (1);
+// }
 
-char	*var_exp_exit(int *i, t_shell *shell)
-{
-	char	*expansion;
+// int	handle_exit_status(char **new_str, int *i, t_shell *shell)
+// {
+// 	char	*expansion;
+// 	char	*tmp;
 
-	(*i) += 2;
-	expansion = ft_itoa(shell->last_exit_status);
-	return (expansion);
-}
+// 	expansion = var_exp_exit(i, shell);
+// 	if (!expansion)
+// 	{
+// 		free(*new_str);
+// 		return (0);
+// 	}
+// 	tmp = *new_str;
+// 	*new_str = append_str(tmp, expansion);
+// 	free(tmp);
+// 	free(expansion);
+// 	if (!*new_str)
+// 		return (0);
+// 	return (1);
+// }
 
-void	variable_exp_dollar(t_token *token, char *str, t_shell *shell)
-{
-	int		i;
-	char	*expansion;
-	char	*new_str;
+// int	handle_dollar_sign(char **new_str, char *str, int *i, t_shell *shell)
+// {
+// 	char	*tmp;
+// 	char	*substr;
 
-	i = 0;
-	expansion = NULL;
-	new_str = ft_strdup("");
-	//error handling
-	if (str[i] == '$' && str[i + 1])
-	{
-		if (str[i + 1] == '?')
-		{
-			expansion = var_exp_exit(&i, shell);
-		}
-		else
-		{
-			i++;
-			expansion = variable_exp(str, &i, shell);
-			if (!expansion)
-			{
-				printf("expansion variable not found\n");
-				// free (token->content);
-				// token->content = "";
-				// return ;
-			}
-		}
-		new_str = append_str(new_str, expansion);
-		new_str = append_str(new_str, &str[i]);
-		token->content = new_str;
-		// printf("token->cont %s\n", token->content);
-		free (str);
-	}
-}
+// 	if (str[*i + 1] == '?')
+// 		return (handle_exit_status(new_str, i, shell));
+// 	else if (is_var_char(str[*i + 1]))
+// 		return (handle_variable(new_str, str, i, shell));
+// 	tmp = *new_str;
+// 	substr = ft_strndup(&str[*i], 1);
+// 	if (!substr)
+// 	{
+// 		free(tmp);
+// 		return (0);
+// 	}
+// 	*new_str = append_str(tmp, substr);
+// 	free(tmp);
+// 	free(substr);
+// 	if (!*new_str)
+// 		return (0);
+// 	(*i)++;
+// 	return (1);
+// }
 
-int	until_dollar(char *str)
-{
-	int	i;
+// int	handle_non_dollar(char **new_str, char *str, int *i)
+// {
+// 	int		len;
+// 	char	*tmp;
+// 	char	*substr;
 
-	i = 0;
-	while (str[i] && str[i] != '$')
-		i++;
-	return (i);
-}
+// 	len = until_dollar(&str[*i]);
+// 	if (len != 0)
+// 	{
+// 		tmp = *new_str;
+// 		substr = ft_strndup(&str[*i], len);
+// 		if (!substr)
+// 		{
+// 			free(tmp);
+// 			return (0);
+// 		}
+// 		*new_str = append_str(tmp, substr);
+// 		free(tmp);
+// 		free(substr);
+// 		if (!*new_str)
+// 			return (0);
+// 	}
+// 	*i += len;
+// 	return (1);
+// }
 
+// int	variable_exp_double(t_token *token, char *str, t_shell *shell)
+// {
+// 	int		i;
+// 	char	*new_str;
+
+// 	i = 0;
+// 	new_str = ft_strdup("");
+// 	while (str[i])
+// 	{
+// 		if (str[i] == '$')
+// 		{
+// 			if (!handle_dollar_sign(&new_str, str, &i, shell))
+// 				return (0);
+// 		}
+// 		else
+// 		{
+// 			if (!handle_non_dollar(&new_str, str, &i))
+// 				return (0);
+// 		}
+// 	}
+// 	token->content = new_str;
+// 	return (1);
+// }
 
 int	variable_exp_double(t_token *token, char *str, t_shell *shell)
 {
@@ -132,8 +174,9 @@ int	variable_exp_double(t_token *token, char *str, t_shell *shell)
 				expansion = var_exp_exit(&i, shell);
 				if (!expansion)
 				{
-					free (new_str);
-					return (0);
+					token->content = new_str;
+					// free (new_str);
+					return (1);
 				}
 				tmp = new_str;
 				new_str = append_str(tmp, expansion);
@@ -146,10 +189,11 @@ int	variable_exp_double(t_token *token, char *str, t_shell *shell)
 			{
 				i++;
 				expansion = variable_exp(str, &i, shell);
-				if (!expansion)
+				if (!expansion && !str[i])
 				{
-					free (new_str);
-					return (0);
+					token->content = new_str;
+					// free (new_str);
+					return (1);
 				}
 				tmp = new_str;
 				new_str = append_str(tmp, expansion);
@@ -194,8 +238,7 @@ int	variable_exp_double(t_token *token, char *str, t_shell *shell)
 				// free(token->content);
 		}
 		i += len;
-		token->content = new_str;
 	}
+	token->content = new_str;
 	return (1);
 }
-

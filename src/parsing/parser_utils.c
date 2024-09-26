@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/25 17:40:14 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/26 14:09:48 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,10 @@ int	handle_arg_parsing_2nd(t_cmd *cmd, t_token **tokens, int *i, t_shell *shell)
 	// else if ((*tokens)->type != TOKEN_SINGLE_QUOTE)
 	// 	variable_exp_double((*tokens), (*tokens)->content, shell);
 	// remove_quotes((*tokens)->content);
+
+	if ((*tokens)->content[0] == '\0') // ducktape solution to having empty expansions in the cmd line, gives wrong exitcode if only $nonexistent
+		return (1);
+
 	cmd->argv[*i] = ft_strdup((*tokens)->content);
 	// free ((*tokens)->content); //is getting freed at a later state in free_tokens()
 	// (*tokens)->content = NULL;

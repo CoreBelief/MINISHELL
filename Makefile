@@ -9,10 +9,10 @@ SRCS_DIR = src
 OBJ_DIR = obj
 
 SRCS = $(addprefix $(SRCS_DIR)/, main.c prompt.c error.c signals.c memory.c parsing/tokenizer.c \
-parsing/tokenizer_utils.c parsing/parser.c parsing/parser_utils.c parsing/parser_redirects.c \
-execution/executor.c execution/redirections.c execution/process.c execution/path.c builtins/echo.c builtins/cd.c \
-builtins/pwd.c builtins/export.c builtins/unset.c builtins/env.c builtins/exit.c \
-builtins/builtins.c environ/environ.c parsing/var_exp.c utils/ft_strjoin3.c \
+parsing/tokenizer_utils.c parsing/var_exp.c parsing/var_exp_utils.c parsing/parser.c parsing/parser_utils.c \
+parsing/parser_redirects.c execution/executor.c execution/redirections.c execution/process.c execution/path.c \
+builtins/echo.c builtins/cd.c builtins/pwd.c builtins/export.c builtins/unset.c builtins/env.c builtins/exit.c \
+builtins/builtins.c environ/environ.c utils/ft_strjoin3.c \
 utils/ft_strcmp.c utils/ft_strcpy.c utils/ft_strncpy.c utils/ft_strndup.c)
 
 OBJS = $(patsubst $(SRCS_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
