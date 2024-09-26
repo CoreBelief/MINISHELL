@@ -6,7 +6,7 @@
 /*   By: rdl <rdl@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 17:29:22 by rdl           #+#    #+#                 */
-/*   Updated: 2024/09/26 19:20:04 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/26 19:45:09 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,31 @@ void		builtin_cd(char **args, t_shell *shell);
 
 static char	*get_cd_path(char **args, t_shell *shell)
 {
+	char *home_path;
+
 	if (!args[1] || ft_strcmp(args[1], "~") == 0)
-		return (ft_get_env("HOME", shell));
+	{
+		home_path = ft_get_env("HOME", shell);
+		if (!home_path)
+		{
+			print_error("cd", ": HOME not set\n");
+			return (NULL);
+		}
+		return (home_path);
+	}
 	else if (ft_strcmp(args[1], "-") == 0)
-		return (ft_get_env("OLDPWD", shell));
+	{
+		char *oldpwd = ft_get_env("OLDPWD", shell);
+		if (!oldpwd)
+		{
+			print_error("cd", ": OLDPWD not set\n");
+			return (NULL);
+		}
+		return (oldpwd);
+	}
 	return (args[1]);
 }
+
 
 static void	update_pwd(char *old_pwd, t_shell *shell)
 {
