@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 12:32:28 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 12:33:01 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/26 15:49:59 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int	ft_strcmp(const char *s1, const char *s2)
 		return (-1);
 	if (!s2)
 		return (1);
-
 	while (*s1 && (*s1 == *s2))
 	{
 		s1++;

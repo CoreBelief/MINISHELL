@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/17 14:52:57 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 15:46:39 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/26 15:51:26 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ int	handle_redirection_parsing(t_cmd *cmd, t_token **token)
 {
 	cmd->redir[cmd->redirect_count].type = (*token)->type;
 	(*token) = (*token)->next;
-	if (token && *token && ((*token)->type == TOKEN_WORD || (*token)->type == TOKEN_DOUBLE_QUOTE || (*token)->type == TOKEN_SINGLE_QUOTE))
+	if (token && *token && ((*token)->type == TOKEN_WORD || \
+	(*token)->type == TOKEN_DOUBLE_QUOTE || \
+	(*token)->type == TOKEN_SINGLE_QUOTE))
 	{
 		cmd->redir[cmd->redirect_count].file = ft_strdup((*token)->content);
 		if (!cmd->redir[cmd->redirect_count].file)
