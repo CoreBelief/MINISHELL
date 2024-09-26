@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 17:23:30 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/26 17:35:43 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,41 @@ void	execute_external(t_cmd *cmd, t_shell *shell);
 void	setup_pipes(t_cmd *cmd, int pipe_fds[2]);
 void	execute_command(t_shell *shell);
 
+// void	execute_external(t_cmd *cmd, t_shell *shell)
+// {
+// 	char	*path;
+
+// 	path = find_command_in_path(cmd->argv[0], shell);
+// 	if (!path)
+// 	{
+// 		if (shell->last_exit_status == 127)
+// 			print_command_not_found(cmd->argv[0]);
+// 		else if (shell->last_exit_status == 126)
+// 		{
+// 			if (errno == EISDIR)
+// 				ft_putstr_fd(" Is a directory\n", 2);
+// 			else if (errno == EACCES)
+// 				ft_putstr_fd(" Permission denied\n", 2);
+// 			else
+// 				ft_putstr_fd(" Error opening file\n", 2);
+// 		}
+// 		exit(shell->last_exit_status);
+// 	}
+// 	execve(path, cmd->argv, shell->env);
+// 	perror("minishell: execve failed\n");
+// 	if (errno == EACCES)
+// 	{
+// 		ft_putstr_fd(" Permission denied\n", 2);
+// 		shell->last_exit_status = 126;
+// 	}
+// 	else if (errno == ENOENT)
+// 	{
+// 		ft_putstr_fd("No such file or directory\n", 2);
+// 		shell->last_exit_status = 127;
+// 	}
+// 	free(path);
+// 	exit(shell->last_exit_status);
+// }
 
 void	execute_external(t_cmd *cmd, t_shell *shell)
 {
@@ -27,16 +62,29 @@ void	execute_external(t_cmd *cmd, t_shell *shell)
 
 	path = find_executable(cmd->argv[0], shell);
 	if (!path)
-	{	
-		// printf("Executable for %s not found, PID: %d\n", cmd->argv[0], getpid());
-		print_command_not_found(cmd->argv[0]);
-		shell->last_exit_status = 127;
-		exit(EXIT_FAILURE);
+	{
+		if (!path)
+		{
+			shell->last_exit_status = 127;
+			print_command_not_found(cmd->argv[0]);
+			exit(shell->last_exit_status);
+		}
 	}
-	// printf("Child process PID %d executing %s\n", getpid(), cmd->argv[0]);
 	execve(path, cmd->argv, shell->env);
 	perror("minishell: execve failed\n");
-	exit(EXIT_FAILURE);
+	if (errno == ENOENT)
+	{
+		print_error(path, "No such file or directory\n");
+		shell->last_exit_status = 127;
+	}
+	if (errno == EACCES)
+	{
+		ft_putstr_fd(" Permission denied\n", 2);
+		shell->last_exit_status = 126;
+	}
+	free(path);
+	exit(shell->last_exit_status);
+
 }
 
 void	setup_pipes(t_cmd *cmd, int pfds[2])
@@ -93,9 +141,10 @@ static pid_t execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 
 
 
-void cleanup_heredoc_files(t_cmd *cmd)
+
+void	cleanup_heredoc_files(t_cmd *cmd)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < cmd->redirect_count)

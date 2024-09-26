@@ -3,9 +3,16 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
+#include "minishell.h"
 
 // only the first error handler is implemented but not correctly.... the rest are just placeholders
 
+
+void	print_error(char *cmd, char *msg)
+{
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(msg, 2);
+}
 
 // Function to print command not found error
 void	print_command_not_found(char *command)

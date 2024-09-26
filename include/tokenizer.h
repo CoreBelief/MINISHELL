@@ -13,7 +13,6 @@ void	tokenize_double(char *input, int *i, t_token **head);
 void	tokenize_word(char *input, int *i, t_token **head);
 int		is_whitespace(char c);
 bool	is_special_token(char c);
-void	free_tokens(t_token **head);
 
 void	print_token_list(t_token *head);
 

@@ -1,0 +1,4 @@
+- decide how to handle unclosed quotes
+- handle different type of words (single q, double q, no q) in the same word
+- norminette
+- exit codes

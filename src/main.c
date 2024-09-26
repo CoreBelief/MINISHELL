@@ -20,20 +20,23 @@ static void	process_input(char *line, t_shell *shell)
 		tokens = tokenizer(line);
 		if (!tokens)
 		{
+			free_tokens(&tokens);
 			shell->last_exit_status = 1;
 			return ;
 		}
 		// print_token_list(tokens);
 		shell->commands = parse_command_from_tokens(tokens, shell);
 		if (!shell->commands)
-		{	
+		{
 			shell->last_exit_status = 1;
 			free_tokens(&tokens);
+			free_command_list(&shell->commands);
 			return ;
 		}
+		// print_cmd_list(shell->commands);
 		free_tokens(&tokens);
 		execute_command(shell);
-        free_command_list(&shell->commands);
+		free_command_list(&shell->commands);
 	}
 }
 
@@ -66,8 +69,13 @@ void	minishell_loop(t_shell *shell)
 		free(line);
 	}
 }
-
-
+void	free_shell(t_shell *shell)
+{
+	if (shell->env)
+	{
+		ft_free_str_array(shell->env);
+	}
+}
 
 void	init_shell(t_shell *shell)
 {
@@ -91,6 +99,7 @@ int	main(int argc, char **argv, char **envp)
 		return (EXIT_FAILURE);
 	}
 	minishell_loop(&shell);
+	free_shell(&shell);
 	return (shell.last_exit_status);
 }
 
