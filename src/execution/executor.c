@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 14:01:50 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/26 17:27:47 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	execute_external(t_cmd *cmd, t_shell *shell)
 	perror("minishell: execve failed\n");
 	if (errno == ENOENT)
 	{
-		print_error(2, "Minishell:", path, "No such file or directory\n");
+		print_error(path, "No such file or directory\n");
 		shell->last_exit_status = 127;
 	}
 	if (errno == EACCES)

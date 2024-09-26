@@ -8,11 +8,10 @@
 // only the first error handler is implemented but not correctly.... the rest are just placeholders
 
 
-void	print_error(int fd, char *msg1, char *cmd, char *msg2)
+void	print_error(char *cmd, char *msg)
 {
-	ft_putstr_fd(msg1, fd);
-	ft_putstr_fd(cmd, fd);
-	ft_putstr_fd(msg2, fd);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(msg, 2);
 }
 
 // Function to print command not found error
