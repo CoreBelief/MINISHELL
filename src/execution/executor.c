@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 17:35:43 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/26 18:05:24 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,44 +99,44 @@ void	setup_pipes(t_cmd *cmd, int pfds[2])
 	}
 }
 
-static pid_t fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
+static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
 {
-    pid_t pid;
+	pid_t	pid;
 
-    pid = fork();
-    if (pid == -1)
-    {
-        perror("minishell: fork");
-        exit(EXIT_FAILURE);
-    }
-    else if (pid == 0)  // Child process
-    {
-        execute_child_process(cmd, pfds, *prev_prd, shell);
-    }
-    else  // Parent process
-    {
-        signal(SIGINT, SIG_IGN);
-        parent_proc(cmd, pfds, prev_prd);
-    }
-    return pid;  // Return the PID of the forked process
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("minishell: fork");
+		exit(EXIT_FAILURE);
+	}
+	else if (pid == 0)  // Child process
+	{
+		child_proc(cmd, pfds, *prev_prd, shell);
+	}
+	else  // Parent process
+	{
+		signal(SIGINT, SIG_IGN);
+		parent_proc(cmd, pfds, prev_prd);
+	}
+	return pid;  // Return the PID of the forked process
 }
 
-static pid_t execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
+static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 {
-    int pipe_fds[2];
-    pid_t pid = -1;  // Store the PID of the forked process
+	int		pipe_fds[2];
+	pid_t	pid;
 
-    if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 && cmd->pipe_in == -1)
-    {
-        execute_builtin(cmd, shell);
-    }
-    else
-    {
-        setup_pipes(cmd, pipe_fds);
-        pid = fork_and_execute(cmd, pipe_fds, prev_prd, shell);  // Capture the PID of the process
-    }
-
-    return pid;  // Return the PID of the last process
+	pid = -1;  // Store the PID of the forked process
+	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 && cmd->pipe_in == -1)
+	{
+		execute_builtin(cmd, shell);
+	}
+	else
+	{
+		setup_pipes(cmd, pipe_fds);
+		pid = fork_and_execute(cmd, pipe_fds, prev_prd, shell);  // Capture the PID of the process
+	}
+	return pid;  // Return the PID of the last process
 }
 
 
@@ -144,65 +144,72 @@ static pid_t execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 
 void	cleanup_heredoc_files(t_cmd *cmd)
 {
-	int	i;
+	int		i;
+	t_cmd	*cur;
 
 	i = 0;
-	while (i < cmd->redirect_count)
+	cur = cmd;
+	while (cur)
 	{
-		if (cmd->redir[i].type == TOKEN_HEREDOC)
+		while (i < cur->redirect_count)
 		{
-			unlink(cmd->redir[i].file);
-			// free(cmd->redir[i].file);
+			if (cur->redir[i].type == TOKEN_HEREDOC)
+			{
+				unlink(cur->redir[i].file);
+				// free(cur->redir[i].file);
+			}
+			i++;
 		}
-		i++;
+		cur = cur->next;
 	}
 }
-static void wait_for_children(t_shell *shell, pid_t last_pid)
+
+static void	wait_for_children(t_shell *shell, pid_t last_pid)
 {
-    int status;
-    pid_t pid;
+	int status;
+	pid_t pid;
 
-    // Wait for all child processes to finish
-    while ((pid = waitpid(-1, &status, WUNTRACED)) > 0)
-    {
-        // If this is the last command's PID, update shell->last_exit_status
-        if (pid == last_pid)
-        {
-            if (WIFSIGNALED(status))
-            {
-                shell->last_exit_status = 128 + WTERMSIG(status);
-                if (WTERMSIG(status) == SIGQUIT)
-                    ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
-                    else if (WTERMSIG(status) == SIGINT)
-                    ft_putstr_fd("\n", STDERR_FILENO);
-            }
-            else if (WIFEXITED(status))
-                shell->last_exit_status = WEXITSTATUS(status);
-        }
-    }
+	// Wait for all child processes to finish
+	while ((pid = waitpid(-1, &status, WUNTRACED)) > 0)
+	{
+		// If this is the last command's PID, update shell->last_exit_status
+		if (pid == last_pid)
+		{
+			if (WIFSIGNALED(status))
+			{
+				shell->last_exit_status = 128 + WTERMSIG(status);
+				if (WTERMSIG(status) == SIGQUIT)
+					ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+					else if (WTERMSIG(status) == SIGINT)
+					ft_putstr_fd("\n", STDERR_FILENO);
+			}
+			else if (WIFEXITED(status))
+				shell->last_exit_status = WEXITSTATUS(status);
+		}
+	}
 
-    if (pid == -1 && errno != ECHILD)
-        perror("waitpid");
+	if (pid == -1 && errno != ECHILD)
+		perror("waitpid");
 }
 
-void execute_command(t_shell *shell)
+void	execute_command(t_shell *shell)
 {
-    t_cmd *cur_cmd;
-    int prev_prd = -1;
-    pid_t last_pid = -1;  // Store the PID of the last command
+	t_cmd *cur_cmd;
+	int prev_prd = -1;
+	pid_t last_pid = -1;  // Store the PID of the last command
 
-    cur_cmd = shell->commands;
-    while (cur_cmd)
-    {
-        // Execute each command and capture the PID of the last command
-        last_pid = execute_single_command(cur_cmd, &prev_prd, shell);
-        cleanup_heredoc_files(cur_cmd);
-        cur_cmd = cur_cmd->next;
-    }
+	cur_cmd = shell->commands;
+	while (cur_cmd)
+	{
+		// Execute each command and capture the PID of the last command
+		last_pid = execute_single_command(cur_cmd, &prev_prd, shell);
+		cur_cmd = cur_cmd->next;
+	}
 
-    // After all commands are executed, wait for all children
-    wait_for_children(shell, last_pid);  
-    setup_signals_shell();
-    // Pass the last command's PID
+	// After all commands are executed, wait for all children
+	wait_for_children(shell, last_pid); 
+	cleanup_heredoc_files(shell->commands);
+	setup_signals_shell();
+	// Pass the last command's PID
 }
 

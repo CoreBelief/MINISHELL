@@ -76,7 +76,7 @@ void handle_output_redirection(int pfds[2], t_cmd *cmd)
 	}
 }
 
-void close_pipe_ends(int pfds[2])
+void	close_pipe_ends(int pfds[2])
 {
 	close(pfds[0]);
 	close(pfds[1]);
@@ -86,25 +86,18 @@ void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
 {
 	setup_signals_child();
 	signal(SIGPIPE, SIG_IGN); //sneaky peaky fix?
-	
 	if (cmd->redirect_count)
 		setup_redirections(cmd);
-
 	handle_input_redirection(prev_prd, cmd);
-
 	handle_output_redirection(pfds, cmd);
-
 	close_pipe_ends(pfds);
-
 	if (is_builtin(cmd->argv[0]))
 	{
 		execute_builtin(cmd, shell);
 		exit(shell->last_exit_status);
 	}
 	else
-	{
 		execute_external(cmd, shell);
-	}
 	exit(EXIT_FAILURE);
 }
 
@@ -112,10 +105,7 @@ void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 {
 	// Close the previous pipe's read end if it exists
 	if (*prev_prd != -1)
-	{
 		close(*prev_prd);
-	}
-
 	// If the current command is piping out, handle the pipe
 	if (cmd->pipe_out == 1 && cmd->output == -1)
 	{
@@ -126,7 +116,6 @@ void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 	else
 	{
 		*prev_prd = -1;  // No more pipes, reset prev_prd
-		
 		// Close both ends of the pipe if it's the last command in the pipeline
 		if (pfds[0] != -1)
 			close(pfds[0]);  // Ensure the read end is closed
@@ -138,23 +127,23 @@ void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 
 
 
-void	execute_child_process(t_cmd *cmd, int *pipe_fds,
-			int prev_pipe_read, t_shell *shell)
-{
-	// if this is gone the function can be removed
+// void	execute_child_process(t_cmd *cmd, int *pipe_fds,
+// 			int prev_pipe_read, t_shell *shell)
+// {
+// 	// if this is gone the function can be removed
 
 
-	// char	*path;
+// 	// char	*path;
 
-	// path = find_command_in_path(cmd->argv[0], shell); // export VAR=hej | smth doesn't work
-	// if (path == NULL)
-	// {
-	// 	print_command_not_found(cmd->argv[0]);
-	// 	exit(127);
-	// }
+// 	// path = find_command_in_path(cmd->argv[0], shell); // export VAR=hej | smth doesn't work
+// 	// if (path == NULL)
+// 	// {
+// 	// 	print_command_not_found(cmd->argv[0]);
+// 	// 	exit(127);
+// 	// }
 
-	child_proc(cmd, pipe_fds, prev_pipe_read, shell);
-}
+// 	child_proc(cmd, pipe_fds, prev_pipe_read, shell);
+// }
 
 void	wait_for_children(t_shell *shell)
 {
