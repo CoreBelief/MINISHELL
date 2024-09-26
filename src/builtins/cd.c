@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   cd.c                                               :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: rdl <rdl@student.codam.nl>                   +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/09/26 17:29:22 by rdl           #+#    #+#                 */
+/*   Updated: 2024/09/26 17:29:32 by rdl           ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 #include "environ.h"
 #include <unistd.h>
@@ -27,6 +39,7 @@ static void	update_pwd(char *old_pwd, t_shell *shell)
 	else
 		perror("getcwd");
 }
+
 void	builtin_cd(char **args, t_shell *shell)
 {
 	char	*path;

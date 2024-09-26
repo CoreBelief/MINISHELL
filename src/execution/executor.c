@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/24 21:15:37 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/26 17:23:30 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,6 @@ static void wait_for_children(t_shell *shell, pid_t last_pid)
         {
             if (WIFSIGNALED(status))
             {
-                // Command was terminated by a signal
                 shell->last_exit_status = 128 + WTERMSIG(status);
                 if (WTERMSIG(status) == SIGQUIT)
                     ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
@@ -129,16 +128,14 @@ static void wait_for_children(t_shell *shell, pid_t last_pid)
                     ft_putstr_fd("\n", STDERR_FILENO);
             }
             else if (WIFEXITED(status))
-            {
-                // Command exited normally
                 shell->last_exit_status = WEXITSTATUS(status);
-            }
         }
     }
 
     if (pid == -1 && errno != ECHILD)
         perror("waitpid");
 }
+
 void execute_command(t_shell *shell)
 {
     t_cmd *cur_cmd;

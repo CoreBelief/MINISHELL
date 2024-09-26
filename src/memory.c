@@ -30,19 +30,6 @@ void	free_command(t_cmd *cmd)
 	free(cmd);
 }
 
-// void	free_command_list(t_cmd **head)
-// {
-// 	t_cmd	*tmp;
-
-// 	if (!head || !*head)
-// 		return ;
-// 	while (*head)
-// 	{
-// 		tmp = *head;
-// 		free_command(tmp);
-// 		*head = (*head)->next;
-// 	}	
-// }
 void	free_command_list(t_cmd **head)
 { //does this fix the vallgrind error??
 	t_cmd	*tmp;

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/21 11:00:43 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/17 14:38:58 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/26 17:22:33 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,4 @@ void	setup_redirections(t_cmd *cmd)
 		redirect_stream(cmd->input, TOKEN_REDIRECT_IN);
 	if (cmd->output != -1)
 		redirect_stream(cmd->output, TOKEN_REDIRECT_OUT);
-	// if (cmd->redir[cur - 1].type == TOKEN_REDIRECT_IN || cmd->redir[cur - 1].type == TOKEN_HEREDOC)
-	// 	redirect_stream(cmd->input, cmd->redir[cur - 1].type);
-	// else if (cmd->redir[cur - 1].type == TOKEN_REDIRECT_OUT || 
-	// cmd->redir[cur - 1].type == TOKEN_REDIRECT_APPEND)
-	// 	redirect_stream(cmd->output, cmd->redir[cur - 1].type);
 }
