@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 12:36:10 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 13:22:48 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/26 19:49:56 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,20 @@ int	until_dollar(char *str)
 	while (str[i] && str[i] != '$')
 		i++;
 	return (i);
+}
+
+char	*variable_exp(char *str, int *i, t_shell *shell)
+{
+	int		len;
+	char	*expansion;
+	char	*var;
+
+	len = find_var_len(&str[*i]);
+	var = ft_strndup(&str[*i], len);
+	if (!var)
+		return (NULL);
+	expansion = ft_get_env(var, shell);
+	free (var);
+	*i += len;
+	return (expansion);
 }
