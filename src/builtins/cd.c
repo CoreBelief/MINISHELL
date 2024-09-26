@@ -6,7 +6,7 @@
 /*   By: rdl <rdl@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 17:29:22 by rdl           #+#    #+#                 */
-/*   Updated: 2024/09/26 17:29:32 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/26 19:20:04 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	builtin_cd(char **args, t_shell *shell)
 		arg_count++;
 	if (arg_count > 2)
 	{
-		fprintf(stderr, "cd: too many arguments\n");
+		print_error("cd", ": too many arguments\n");
 		shell->last_exit_status = 1;
 		return;
 	}

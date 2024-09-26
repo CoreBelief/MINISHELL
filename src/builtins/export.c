@@ -5,12 +5,16 @@
 #include <stdlib.h>
 #include "structs.h"
 
+void		builtin_export(char **args, t_shell *shell);
+static void	print_sorted_env(t_shell *shell);
+static int	is_valid_identifier(const char *str);
+static void handle_value_assignment(char *arg, char *equal_sign, t_shell *shell);
+static void process_identifier(char *arg, char *equal_sign, t_shell *shell);
+static void	print_sorted_env(t_shell *shell);
+static void	sort_env(char **sorted_env, int size);
 
 // too much functions in one file
 // split it into multiple files?
-
-void	builtin_export(char **args, t_shell *shell);
-static void	print_sorted_env(t_shell *shell);
 
 static int	is_valid_identifier(const char *str)
 {
@@ -112,7 +116,6 @@ static void	sort_env(char **sorted_env, int size)
 	}
 }
 
-// gives issues if export VAR=""hej"" 2 quotes are shon, but i guess we should remove them in parser/tokenizer
 static void	print_sorted_env(t_shell *shell)
 {
 	char	**sorted_env;
@@ -136,22 +139,3 @@ static void	print_sorted_env(t_shell *shell)
 	}
 	free(sorted_env);
 }
-
-// static void	print_sorted_env(t_shell *shell)
-// {
-// 	char	**sorted_env;
-// 	int		i;
-
-// 	sorted_env = malloc(sizeof(char *) * (shell->env_size + 1));
-// 	if (!sorted_env)
-// 		return ;
-// 	i = -1;
-// 	while (++i < shell->env_size)
-// 		sorted_env[i] = shell->env[i];
-// 	sorted_env[i] = NULL;
-// 	sort_env(sorted_env, shell->env_size);
-// 	i = -1;
-// 	while (++i < shell->env_size)
-// 		printf("declare -x %s\n", sorted_env[i]);
-// 	free(sorted_env);
-// }

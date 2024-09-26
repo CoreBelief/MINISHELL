@@ -21,7 +21,6 @@ int	tokenize_pipe(int *i, t_token **head)
 	return (1);
 }
 
-// have to fix if there are 2 consecutive commands in handle_word function
 t_token	*tokenizer(char *input)
 {
 	t_token	*head;
@@ -33,7 +32,6 @@ t_token	*tokenizer(char *input)
 	len = ft_strlen(input);
 	while (input[i] != '\0' && i < len)
 	{
-		// printf("entered and index is==%i and it is ==%s  input[i]==%c\n", i, input, input[i]);
 		while (is_whitespace(input[i]))
 			i++;
 		if (input[i] == '\0')

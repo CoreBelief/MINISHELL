@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/21 11:00:43 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 17:37:10 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/26 19:01:21 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,6 @@ static void	handle_file_opening(int *fd, char *target, t_token_type type)
 		perror("Error opening file for redirection");
 		exit(EXIT_FAILURE);
 	}
-	// printf("fd opened: %i\n", *fd);
-	// printf("target %s\n", target);
-
 }
 
 static void	redirect_stream(int fd, t_token_type type)
@@ -51,7 +48,6 @@ static void	redirect_stream(int fd, t_token_type type)
 			close(fd);
 			exit(EXIT_FAILURE);
 		}
-		// printf("fd to close %i\n", fd);
 		close (fd);
 	}
 	else if (type == TOKEN_REDIRECT_OUT || type == TOKEN_REDIRECT_APPEND)

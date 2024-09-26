@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 17:35:43 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/26 18:47:23 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,42 +19,6 @@
 void	execute_external(t_cmd *cmd, t_shell *shell);
 void	setup_pipes(t_cmd *cmd, int pipe_fds[2]);
 void	execute_command(t_shell *shell);
-
-// void	execute_external(t_cmd *cmd, t_shell *shell)
-// {
-// 	char	*path;
-
-// 	path = find_command_in_path(cmd->argv[0], shell);
-// 	if (!path)
-// 	{
-// 		if (shell->last_exit_status == 127)
-// 			print_command_not_found(cmd->argv[0]);
-// 		else if (shell->last_exit_status == 126)
-// 		{
-// 			if (errno == EISDIR)
-// 				ft_putstr_fd(" Is a directory\n", 2);
-// 			else if (errno == EACCES)
-// 				ft_putstr_fd(" Permission denied\n", 2);
-// 			else
-// 				ft_putstr_fd(" Error opening file\n", 2);
-// 		}
-// 		exit(shell->last_exit_status);
-// 	}
-// 	execve(path, cmd->argv, shell->env);
-// 	perror("minishell: execve failed\n");
-// 	if (errno == EACCES)
-// 	{
-// 		ft_putstr_fd(" Permission denied\n", 2);
-// 		shell->last_exit_status = 126;
-// 	}
-// 	else if (errno == ENOENT)
-// 	{
-// 		ft_putstr_fd("No such file or directory\n", 2);
-// 		shell->last_exit_status = 127;
-// 	}
-// 	free(path);
-// 	exit(shell->last_exit_status);
-// }
 
 void	execute_external(t_cmd *cmd, t_shell *shell)
 {
@@ -109,38 +73,30 @@ static pid_t fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *she
         perror("minishell: fork");
         exit(EXIT_FAILURE);
     }
-    else if (pid == 0)  // Child process
-    {
-        execute_child_process(cmd, pfds, *prev_prd, shell);
-    }
-    else  // Parent process
+    else if (pid == 0)
+	    child_proc(cmd, pfds, *prev_prd, shell);
+    else
     {
         signal(SIGINT, SIG_IGN);
         parent_proc(cmd, pfds, prev_prd);
     }
-    return pid;  // Return the PID of the forked process
+    return pid;
 }
 
 static pid_t execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 {
     int pipe_fds[2];
-    pid_t pid = -1;  // Store the PID of the forked process
+    pid_t pid = -1;
 
     if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 && cmd->pipe_in == -1)
-    {
         execute_builtin(cmd, shell);
-    }
     else
     {
         setup_pipes(cmd, pipe_fds);
-        pid = fork_and_execute(cmd, pipe_fds, prev_prd, shell);  // Capture the PID of the process
+        pid = fork_and_execute(cmd, pipe_fds, prev_prd, shell);
     }
-
-    return pid;  // Return the PID of the last process
+    return pid;
 }
-
-
-
 
 void	cleanup_heredoc_files(t_cmd *cmd)
 {
@@ -162,10 +118,8 @@ static void wait_for_children(t_shell *shell, pid_t last_pid)
     int status;
     pid_t pid;
 
-    // Wait for all child processes to finish
     while ((pid = waitpid(-1, &status, WUNTRACED)) > 0)
     {
-        // If this is the last command's PID, update shell->last_exit_status
         if (pid == last_pid)
         {
             if (WIFSIGNALED(status))
@@ -180,7 +134,6 @@ static void wait_for_children(t_shell *shell, pid_t last_pid)
                 shell->last_exit_status = WEXITSTATUS(status);
         }
     }
-
     if (pid == -1 && errno != ECHILD)
         perror("waitpid");
 }
@@ -189,20 +142,16 @@ void execute_command(t_shell *shell)
 {
     t_cmd *cur_cmd;
     int prev_prd = -1;
-    pid_t last_pid = -1;  // Store the PID of the last command
+    pid_t last_pid = -1;
 
     cur_cmd = shell->commands;
     while (cur_cmd)
     {
-        // Execute each command and capture the PID of the last command
         last_pid = execute_single_command(cur_cmd, &prev_prd, shell);
         cleanup_heredoc_files(cur_cmd);
         cur_cmd = cur_cmd->next;
     }
-
-    // After all commands are executed, wait for all children
     wait_for_children(shell, last_pid);  
     setup_signals_shell();
-    // Pass the last command's PID
 }
 

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/26 14:09:48 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/26 19:01:04 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,10 @@ int	handle_arg_parsing_2nd(t_cmd *cmd, t_token **tokens, int *i, t_shell *shell)
 			return (0);
 		free (tmp);
 	}
-	// tmp = NULL;
-	// else if ((*tokens)->type != TOKEN_SINGLE_QUOTE)
-	// 	variable_exp_double((*tokens), (*tokens)->content, shell);
-	// remove_quotes((*tokens)->content);
-
 	if ((*tokens)->content[0] == '\0') // ducktape solution to having empty expansions in the cmd line, gives wrong exitcode if only $nonexistent
 		return (1);
 
 	cmd->argv[*i] = ft_strdup((*tokens)->content);
-	// free ((*tokens)->content); //is getting freed at a later state in free_tokens()
-	// (*tokens)->content = NULL;
 	if (!cmd->argv[*i])
 		return (0);
 	(*i)++;
@@ -75,17 +68,15 @@ t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i)
 
 	new_cmd = init_cmd();
 	if (!new_cmd)
-		return (NULL); // Handle error
+		return (NULL);
 	cmd->argv[*i] = NULL;
 	cmd->pipe_out = 1;
 	cmd->next = new_cmd;
 	new_cmd->pipe_in = 1;
 	*i = 0;
-	// printf("cur_cmd in pipe pars %s\n", (cmd)->argv[0]);
 	return (new_cmd);
 }
 
-//DEUG FUNCTION
 void	print_cmd_list(t_cmd *head)
 {
 	int			i = 0;
@@ -114,19 +105,3 @@ void	print_cmd_list(t_cmd *head)
 	}
 	printf("\n");
 }
-
-// gives seg fault if the input ends with a pipe, it tires to access 
-// cur_cmd->argv[0] which doesnt exists
-// i think if it ends with a pipe it is waiting for that command from stdin. 
-// void	set_cmd_paths(t_cmd *cur_cmd)
-// {
-// 	while (cur_cmd)
-// 	{
-// 		// printf("hello1\n");
-// 		cur_cmd->path = ft_strdup(cur_cmd->argv[0]);
-// 		if (!cur_cmd->path)
-// 			return ; // Handle error
-// 		cur_cmd = cur_cmd->next;
-// 		// printf("hello\n");
-// 	}
-// }

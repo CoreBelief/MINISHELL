@@ -5,7 +5,12 @@
 #include <ctype.h>
 #include <string.h>
 #include "parser.h"
+static int is_space(char c);
+static int is_digit(char c);
+static int is_valid_number(const char *str, long *number);
+void builtin_exit(char **args);
 
+//change to correct error codes in builtin_exit
 static int is_space(char c) 
 {
     return (c == ' ' || (c >= '\t' && c <= '\r'));
@@ -16,7 +21,7 @@ static int is_digit(char c)
     return (c >= '0' && c <= '9');
 }
 
-int is_valid_number(const char *str, long *number) 
+static int is_valid_number(const char *str, long *number) 
 {
     int i = 0;
     int sign = 1;
@@ -31,23 +36,23 @@ int is_valid_number(const char *str, long *number)
         i++;
     }
     if (!is_digit(str[i])) 
-        return 0; // Invalid number
+        return 0;
     while (str[i] != '\0') 
     {
         if (!is_digit(str[i])) 
-            return 0; // Non-digit character found
+            return 0;
         int digit = str[i] - '0';
         if (result > (ULONG_MAX - digit) / 10) 
-            return 0; // Overflow detected
+            return 0;
         result = result * 10 + digit;
         i++;
     }
     if (sign == -1 && result > (unsigned long)LONG_MAX + 1) 
-        return 0; // Underflow detected
+        return 0;
     if (sign == 1 && result > (unsigned long)LONG_MAX) 
-        return 0; // Overflow detected
+        return 0;
     *number = sign * (long)result;
-    return 1; // Valid number
+    return 1;
 }
 
 void builtin_exit(char **args) 
@@ -61,14 +66,14 @@ void builtin_exit(char **args)
     remove_quotes(args[1]);
     if (args[2]) 
     {
-        fprintf(stderr, "minishell: exit: too many arguments\n");
+        ft_putstr_fd("exit: too many arguments\n", 2); //make more integrated?
         exit(1);
     }
     numeric_status = is_valid_number(args[1], &exit_status);
     if (!numeric_status) 
     {
-        fprintf(stderr, "minishell: exit: %s: numeric argument required\n", args[1]);
-        exit(2);  // Changed from 255 to 2 to match the desired behavior
+        print_exit_numeric_error(args[1]);
+        exit(2);
     }
     exit((int)(exit_status & 255));
 }

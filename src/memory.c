@@ -35,9 +35,8 @@ void	free_command(t_cmd *cmd)
 }
 
 void	free_command_list(t_cmd **head)
-{ //does this fix the vallgrind error??
+{
 	t_cmd	*tmp;
-	t_cmd	*next_node;
 
 	if (!head || !*head)
 		return ;
@@ -49,9 +48,6 @@ void	free_command_list(t_cmd **head)
 	}
 	*head = NULL;
 }
-
-
-
 
 void	ft_free_str_array(char **arr)
 {

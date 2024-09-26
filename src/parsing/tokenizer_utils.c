@@ -6,14 +6,13 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/25 16:16:08 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/26 18:59:59 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tokenizer.h"
 #include "minishell.h"
 
-// maybe needs to return smth indicating error
 void	tokenize_redirection(char *input, int *i, t_token **head)
 {
 	if (input[*i] == '>' || input[*i] == '<')
@@ -36,7 +35,6 @@ void	tokenize_redirection(char *input, int *i, t_token **head)
 		}
 	}
 }
-// maybe needs to return smth indicating error
 void	tokenize_single(char *input, int *i, t_token **head)
 {
 	int		start;
@@ -54,7 +52,6 @@ void	tokenize_single(char *input, int *i, t_token **head)
 		(*i)++;
 	}
 }
-// maybe needs to return smth indicating error
 void	tokenize_double(char *input, int *i, t_token **head)
 {
 	int		start;
@@ -71,13 +68,6 @@ void	tokenize_double(char *input, int *i, t_token **head)
 		add_token(head, content, TOKEN_DOUBLE_QUOTE);
 		(*i)++;
 	}
-// 	else // to print if unclosed ", not sure how we want to handle this case
-// 	{
-// 		start--;
-// 		content = ft_strndup(&input[start], *i - start);
-// 		add_token(head, content, TOKEN_DOUBLE_QUOTE);
-// 		(*i)++;
-// 	}
 }
 
 bool	is_special_token(char c)
@@ -85,28 +75,6 @@ bool	is_special_token(char c)
 	return (c == '|' || c == '<' || c == '>');
 }
 
-
-//the special token thing fucks it up if there are 2 consecutive commands or not????
-//smth weird might not be here 
-
-
-// void	tokenize_word(char *input, int *i, t_token **head)
-// {
-// 	int		start;
-// 	char	*content;
-
-// 	start = *i;
-// 	content = NULL;
-// 	while (input[*i] && !is_whitespace(input[*i]) && 
-// 	!is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
-// 		(*i)++;
-// 	content = ft_strndup(&input[start], *i - start);
-// 	add_token(head, content, TOKEN_WORD);
-// 	if (!is_special_token(input[*i]) && input[*i] != '\'' && input[*i] != '"')
-// 		(*i)++;
-// }
-
-// maybe needs to return smth indicating error
 void tokenize_word(char *input, int *i, t_token **head)
 {
 	int start = *i;

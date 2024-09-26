@@ -24,7 +24,6 @@ static void	process_input(char *line, t_shell *shell)
 			shell->last_exit_status = 1;
 			return ;
 		}
-		// print_token_list(tokens);
 		shell->commands = parse_command_from_tokens(tokens, shell);
 		if (!shell->commands)
 		{
@@ -33,7 +32,6 @@ static void	process_input(char *line, t_shell *shell)
 			free_command_list(&shell->commands);
 			return ;
 		}
-		// print_cmd_list(shell->commands);
 		free_tokens(&tokens);
 		execute_command(shell);
 		free_command_list(&shell->commands);
@@ -52,8 +50,7 @@ void	minishell_loop(t_shell *shell)
 		prompt = create_prompt();
 		if (!prompt)
 		{
-			// fprintf(stderr, "Error: Failed to create prompt\n"); //cannot use fprintf
-			write(STDERR_FILENO, "Error: Failed to create prompt\n", 31);
+			write(STDERR_FILENO, "Error: Failed to create prompt\n", 31); //make this line more congruent with the rest of the code
             shell->last_exit_status = 1; 
 			break ;
 		}
