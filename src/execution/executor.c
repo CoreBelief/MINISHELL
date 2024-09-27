@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 18:47:23 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/27 17:58:50 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,36 +20,71 @@ void	execute_external(t_cmd *cmd, t_shell *shell);
 void	setup_pipes(t_cmd *cmd, int pipe_fds[2]);
 void	execute_command(t_shell *shell);
 
+static int is_directory(char *path)
+{
+    struct stat statbuf;
+    if (stat(path, &statbuf) != 0) 
+        return 0;  // Couldn't retrieve file info (may not exist or be inaccessible)
+    return S_ISDIR(statbuf.st_mode);  // Return 1 if it's a directory
+}
+
+
 void	execute_external(t_cmd *cmd, t_shell *shell)
 {
 	char	*path;
 
+	// Step 1: Find the executable path
 	path = find_executable(cmd->argv[0], shell);
+
+	// Step 2: Check if the path was found or if it is NULL
 	if (!path)
 	{
-		if (!path)
+		// Check if the file exists but is not executable
+		if (access(cmd->argv[0], F_OK) == -1)
 		{
-			shell->last_exit_status = 127;
-			print_command_not_found(cmd->argv[0]);
-			exit(shell->last_exit_status);
+			print_error(cmd->argv[0], "No such file or directory\n");
+			shell->last_exit_status = 127;  // Set status for "file not found"
 		}
+		else if (access(cmd->argv[0], X_OK) == -1)
+		{
+			print_error(cmd->argv[0], "Permission denied\n");
+			shell->last_exit_status = 126;  // Set status for "permission denied"
+		}
+		exit(shell->last_exit_status);
 	}
+
+	// Step 3: Check if the resolved path is a directory
+	if (is_directory(path))
+	{
+		shell->last_exit_status = 126;  // Set exit status for "Is a directory"
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": Is a directory\n", 2);
+		free(path);  // Clean up allocated memory
+		exit(shell->last_exit_status);  // Exit with status 126 (not executable)
+	}
+
+	// Step 4: Execute the command if it's not a directory
 	execve(path, cmd->argv, shell->env);
 	perror("minishell: execve failed\n");
+
+	// Step 5: Handle specific error codes for execve failure
 	if (errno == ENOENT)
 	{
 		print_error(path, "No such file or directory\n");
 		shell->last_exit_status = 127;
 	}
-	if (errno == EACCES)
+	else if (errno == EACCES)
 	{
-		ft_putstr_fd(" Permission denied\n", 2);
-		shell->last_exit_status = 126;
+		ft_putstr_fd(" ", 2);  // Add a space between the filename and the message
+        ft_putstr_fd("Permission denied\n", 2);
+        shell->last_exit_status = 126;
 	}
-	free(path);
-	exit(shell->last_exit_status);
 
+	free(path);  // Free the allocated path
+	exit(shell->last_exit_status);  // Exit with the correct status
 }
+
+
 
 void	setup_pipes(t_cmd *cmd, int pfds[2])
 {
@@ -137,6 +172,7 @@ static void wait_for_children(t_shell *shell, pid_t last_pid)
     if (pid == -1 && errno != ECHILD)
         perror("waitpid");
 }
+
 
 void execute_command(t_shell *shell)
 {

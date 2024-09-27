@@ -1,25 +1,25 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        ::::::::            */
-/*   var_exp.c                                          :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 18:58:04 by rdl           ########   odam.nl         */
-/*                                                                            */
-/* ************************************************************************** */
+	/* ************************************************************************** */
+	/*                                                                            */
+	/*                                                        ::::::::            */
+	/*   var_exp.c                                          :+:    :+:            */
+	/*                                                     +:+                    */
+	/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+	/*                                                   +#+                      */
+	/*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
+	/*   Updated: 2024/09/26 18:58:04 by rdl           ########   odam.nl         */
+	/*                                                                            */
+	/* ************************************************************************** */
 
-#include "var_exp.h"
+	#include "var_exp.h"
 
-char	*var_exp_exit(int *i, t_shell *shell)
-{
-	char	*expansion;
+	char	*var_exp_exit(int *i, t_shell *shell)
+	{
+		char	*expansion;
 
-	(*i) += 2;
-	expansion = ft_itoa(shell->last_exit_status);
-	return (expansion);
-}
+		(*i) += 2;
+		expansion = ft_itoa(shell->last_exit_status);
+		return (expansion);
+	}
 
 char	*variable_exp(char *str, int *i, t_shell *shell)
 {
@@ -31,65 +31,91 @@ char	*variable_exp(char *str, int *i, t_shell *shell)
 	var = ft_strndup(&str[*i], len);
 	if (!var)
 		return (NULL);
+
+	// Retrieve the environment variable value
 	expansion = ft_get_env(var, shell);
 	free (var);
+
+	// If the variable is not set, return an empty string instead of NULL
+	if (!expansion)
+		expansion = ft_strdup("");  // Prevents segmentation fault in case of unset variables
+
 	*i += len;
 	return (expansion);
 }
 
-int	variable_exp_double(t_token *token, char *str, t_shell *shell)
-{
-	int		i;
-	int		len;
-	char	*expansion;
-	char	*new_str;
-	char	*tmp;
-	char	*substr;
 
-	i = 0;
-	expansion = NULL;
-	new_str = ft_strdup("");
-	while (str[i])
+	int	variable_exp_double(t_token *token, char *str, t_shell *shell)
 	{
-		if (str[i] == '$')
+		int		i;
+		int		len;
+		char	*expansion;
+		char	*new_str;
+		char	*tmp;
+		char	*substr;
+
+		i = 0;
+		expansion = NULL;
+		new_str = ft_strdup("");
+		while (str[i])
 		{
-			if (str[i + 1] == '?')
+			if (str[i] == '$')
 			{
-				expansion = var_exp_exit(&i, shell);
-				if (!expansion)
+				if (str[i + 1] == '?')
 				{
-					token->content = new_str;
-					// free (new_str);
-					return (1);
+					expansion = var_exp_exit(&i, shell);
+					if (!expansion)
+					{
+						token->content = new_str;
+						// free (new_str);
+						return (1);
+					}
+					tmp = new_str;
+					new_str = append_str(tmp, expansion);
+					free(tmp);
+					free(expansion);
+					if (!new_str)
+						return (0);
 				}
-				tmp = new_str;
-				new_str = append_str(tmp, expansion);
-				free(tmp);
-				free(expansion);
-				if (!new_str)
-					return (0);
-			}
-			else if (is_var_char(str[i + 1]))
-			{
-				i++;
-				expansion = variable_exp(str, &i, shell);
-				if (!expansion && !str[i])
+				else if (is_var_char(str[i + 1]))
 				{
-					token->content = new_str;
-					// free (new_str);
-					return (1);
+					i++;
+					expansion = variable_exp(str, &i, shell);
+					if (!expansion && !str[i])
+					{
+						token->content = new_str;
+						// free (new_str);
+						return (1);
+					}
+					tmp = new_str;
+					new_str = append_str(tmp, expansion);
+					free(tmp);
+					if (!new_str)
+						return (0);
+					// i += len;
 				}
-				tmp = new_str;
-				new_str = append_str(tmp, expansion);
-				free(tmp);
-				if (!new_str)
-					return (0);
-				// i += len;
+				else
+				{
+					tmp = new_str;
+					substr = ft_strndup(&str[i], 1);
+					if (!substr)
+					{
+						free (tmp);
+						return (0);
+					}
+					new_str = append_str(tmp, substr);
+					free (tmp);
+					free (substr);
+					if (!new_str)
+						return (0);
+					i++;
+				}
 			}
-			else
+			len = until_dollar(&str[i]);
+			if (len != 0)
 			{
 				tmp = new_str;
-				substr = ft_strndup(&str[i], 1);
+				substr = ft_strndup(&str[i], len);
 				if (!substr)
 				{
 					free (tmp);
@@ -100,29 +126,11 @@ int	variable_exp_double(t_token *token, char *str, t_shell *shell)
 				free (substr);
 				if (!new_str)
 					return (0);
-				i++;
+				// if (token->content)
+					// free(token->content);
 			}
+			i += len;
 		}
-		len = until_dollar(&str[i]);
-		if (len != 0)
-		{
-			tmp = new_str;
-			substr = ft_strndup(&str[i], len);
-			if (!substr)
-			{
-				free (tmp);
-				return (0);
-			}
-			new_str = append_str(tmp, substr);
-			free (tmp);
-			free (substr);
-			if (!new_str)
-				return (0);
-			// if (token->content)
-				// free(token->content);
-		}
-		i += len;
+		token->content = new_str;
+		return (1);
 	}
-	token->content = new_str;
-	return (1);
-}
