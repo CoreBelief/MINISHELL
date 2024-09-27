@@ -39,33 +39,77 @@ static void	process_input(char *line, t_shell *shell)
 }
 
 
-void	minishell_loop(t_shell *shell)
-{
-	char	*line;
-	char	*prompt;
 
-	setup_signals_shell();
-	while (1)
-	{
-		prompt = create_prompt();
-		if (!prompt)
-		{
-			write(STDERR_FILENO, "Error: Failed to create prompt\n", 31); //make this line more congruent with the rest of the code
-            shell->last_exit_status = 1; 
-			break ;
-		}
-		line = readline(prompt);
-		free(prompt);
-		if (!line)
-		{	
-			shell->last_exit_status = 0;
-			printf("exit\n");
-			break ;
-		}
-		process_input(line, shell);
-		free(line);
-	}
+
+
+void minishell_loop(t_shell *shell)
+{
+    char *line;
+    char *prompt;
+
+    setup_signals_shell();
+
+    while (1)
+    {
+        // Create the prompt
+        prompt = create_prompt();
+        if (!prompt)
+        {
+            ft_putendl_fd("Error: Failed to create prompt", STDERR_FILENO);
+            shell->last_exit_status = 1; // Error creating prompt, set exit code to 1
+            break;
+        }
+
+        // Handle input based on whether it's from a terminal (interactive) or not (script)
+        if (isatty(fileno(stdin)))
+        {
+            // Interactive mode: read input using readline
+            line = readline(prompt);
+        }
+        else
+        {
+            // Non-interactive mode: read input from script or file
+            line = readline(prompt); // Still using readline to maintain consistency
+        }
+
+        free(prompt); // Free the prompt after it's used
+
+        // If no input (EOF or error)
+        if (!line)
+        {
+            // For interactive mode, exit with status 0
+            if (isatty(fileno(stdin)))
+            {
+                shell->last_exit_status = 0; // In interactive mode, return 0 when exiting
+            }
+            else
+            {
+                // In non-interactive mode, keep the last exit status as it was
+                // Do not set exit status to 1 unless there was an actual error
+            }
+
+            ft_putendl_fd("exit", STDOUT_FILENO);
+            break;
+        }
+
+        // Process the input line (should update shell->last_exit_status based on the command's outcome)
+        process_input(line, shell);
+
+        free(line); // Free the input line after processing
+    }
+
+    // Ensure that when we reach the end of a non-interactive session (script), the exit code is correct
+    if (!isatty(fileno(stdin)) && shell->last_exit_status == 0)
+    {
+        // If no errors occurred in non-interactive mode (like in a script), exit with status 0
+        shell->last_exit_status = 0;
+    }
 }
+
+
+
+
+
 void	free_shell(t_shell *shell)
 {
 	if (shell->env)

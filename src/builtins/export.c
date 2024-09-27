@@ -59,7 +59,7 @@ static void process_identifier(char *arg, char *equal_sign, t_shell *shell)
 		identifier = arg;
 	if (!is_valid_identifier(identifier))
 	{
-		dprintf(2, "export: `%s`: not a valid identifier\n", arg);
+		print_error(arg, ": not a valid identifier\n"); //should we have the command name here(export?)
 		shell->last_exit_status = 1;
 		if (equal_sign != NULL)
 			free(identifier);

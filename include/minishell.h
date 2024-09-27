@@ -6,12 +6,14 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/23 14:05:56 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/27 16:34:17 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
+
+#include "../src/finalgnl/get_next_line.h"
 
 # include "utils.h"
 # include <unistd.h>

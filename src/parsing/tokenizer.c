@@ -11,10 +11,10 @@ int	is_whitespace(char c)
 
 int	tokenize_pipe(int *i, t_token **head)
 {
-	if (*i == 0)  // invalid input if it starts with pipe, i think there might be a better solution later in parser maybe
+	if (*i == 0) 
 	{
-		printf("syntex error, pipe");
-		return (0);
+		printf("syntax error near unexpected token `|'\n");
+		return (0); //here we should return an error code (2)?
 	}
 	add_token(head, ft_strdup("|"), TOKEN_PIPE);
 	(*i)++;
