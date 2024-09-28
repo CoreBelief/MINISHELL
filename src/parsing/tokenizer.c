@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 12:20:09 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 13:57:40 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	tokenize_pipe(int *i, t_token **head)
 }
 
 // have to fix if there are 2 consecutive commands in handle_word function
-t_token	*tokenizer(char *input)
+t_token	*tokenizer(char *input, t_shell *shell)
 {
 	t_token	*head;
 	int		i;
@@ -55,12 +55,8 @@ t_token	*tokenizer(char *input)
 		}
 		else if (input[i] == '<' || input[i] == '>')
 			tokenize_redirection(input, &i, &head);
-		else if (input[i] == '\'')
-			tokenize_single(input, &i, &head);
-		else if (input[i] == '"')
-			tokenize_double(input, &i, &head);
 		else
-			tokenize_word(input, &i, &head);
+			tokenize_word(input, &i, &head, shell);
 	}
 	return (head);
 }

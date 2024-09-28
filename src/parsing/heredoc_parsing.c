@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 15:46:18 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 15:50:31 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 16:51:56 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,28 +42,30 @@ int	open_hdfile(char *target)
 	return (hd_fd);
 }
 
-int	write_to_hdfd(t_token *token, char *delim, t_shell *shell, int hdfd)
+int	write_to_hdfd(char *delim, t_shell *shell, int hdfd)
 {
-	char	*tmp;
+	// char	*tmp;
+	char	*content;
+	char	*expansion;
 
 	while (1)
 	{
-		token->content = readline("> ");
-		if (!token->content || ft_strcmp(token->content, delim) == 0)
+		content = readline("> ");
+		if (!content || ft_strcmp(content, delim) == 0)
 			break ;
-		tmp = token->content;
-		if (!variable_exp_double(token, tmp, shell))
+		expansion = variable_exp_double(content, shell);
+		if (!expansion)
 		{
-			free(tmp);
+			free(content);
 			free(delim);
 			return (0);
 		}
-		write(hdfd, token->content, strlen(token->content));
+		write(hdfd, expansion, ft_strlen(expansion));
 		write(hdfd, "\n", 1);
-		free (tmp);
-		free(token->content);
+		free(expansion);
+		free(content);
 	}
-	free (delim);
+	// free (delim);
 	close(hdfd);
 	return (1);
 }
@@ -81,7 +83,7 @@ int	handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 		delim = (*token)->content;
 		tmp_file = create_filename(cmd->redirect_count);
 		hered_fd = open_hdfile(tmp_file);
-		if (!write_to_hdfd(*token, delim, shell, hered_fd))
+		if (!write_to_hdfd(delim, shell, hered_fd))
 			return (0);
 		cmd->redir[cmd->redirect_count].file = tmp_file;
 		if (!cmd->redir[cmd->redirect_count].file)

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:19:51 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 15:47:56 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 16:58:25 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	remove_quotes(char *str);
 void	set_cmd_paths(t_cmd *cur_cmd);
 t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i);
 int		handle_arg_parsing(t_cmd *cmd, t_token *tokens, int *i);
-int		handle_arg_parsing_2nd(t_cmd *cmd, t_token **tokens, int *i, t_shell *shell);
+int		handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i);
 
 /* parser_redirects */
 int		is_redirect_token(int token_type);
@@ -32,7 +32,7 @@ int		handle_redirection_parsing(t_cmd *cmd, t_token **token);
 /* heredoc_parsing */
 char	*create_filename(int redir_count);
 int		open_hdfile(char *target);
-int		write_to_hdfd(t_token *token, char *delim, t_shell *shell, int hdfd);
+int		write_to_hdfd(char *delim, t_shell *shell, int hdfd);
 int		handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell);
 
 

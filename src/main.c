@@ -17,7 +17,7 @@ static void	process_input(char *line, t_shell *shell)
 	if (line && *line)
 	{
 		add_history(line);
-		tokens = tokenizer(line);
+		tokens = tokenizer(line, shell);
 		if (!tokens)
 		{
 			free_tokens(&tokens);

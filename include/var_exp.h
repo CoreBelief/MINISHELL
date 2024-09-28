@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:36:31 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 19:55:22 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 15:25:22 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int		handle_exit_status(char **new_str, int *i, t_shell *shell);
 int		handle_variable(char **new_str, char *str, int *i, t_shell *shell);
 int		handle_dollar(char **new_str, char *str, int *i, t_shell *shell);
 int		handle_non_dollar(char **new_str, char *str, int *i);
-int		variable_exp_double(t_token *token, char *str, t_shell *shell);
+char	*variable_exp_double(char *str, t_shell *shell);
 
 /* var_exp_ utils */
 int		is_var_char(char c);

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 12:18:28 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 16:52:45 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ int	handle_non_dollar(char **new_str, char *str, int *i)
 	return (1);
 }
 
-int	variable_exp_double(t_token *token, char *str, t_shell *shell)
+char	*variable_exp_double(char *str, t_shell *shell)
 {
 	int		i;
 	char	*new_str;
@@ -118,7 +118,7 @@ int	variable_exp_double(t_token *token, char *str, t_shell *shell)
 	i = 0;
 	new_str = ft_strdup("");
 	if (!new_str)
-		return (0);
+		return (NULL);
 	while (str[i])
 	{
 		if (str[i] == '$')
@@ -128,14 +128,14 @@ int	variable_exp_double(t_token *token, char *str, t_shell *shell)
 				return (0);
 			if (tmp == new_str)
 			{
-				token->content = new_str;
-				return (1);
+				return (new_str);
 			}
 		}
 		else
+		{
 			if (!handle_non_dollar(&new_str, str, &i))
-				return (0);
+				return (NULL);
+		}
 	}
-	token->content = new_str;
-	return (1);
+	return (new_str);
 }
