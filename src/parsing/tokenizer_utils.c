@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 16:56:53 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 19:08:33 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,10 +117,12 @@ int	no_quotes_state(char *input, char **res, int *i, t_shell *shell)
 		return (0);
 	tmp = *res;
 	expansion = variable_exp_double(content, shell);
+	free (content);
 	if (!expansion)
 		return (0);
 	*res = append_str(tmp, expansion);
 	free(tmp);
+	free (expansion);
 	if (!*res)
 		return (0);
 	return (1);

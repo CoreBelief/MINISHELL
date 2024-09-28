@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 18:53:27 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 19:25:13 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 		setup_pipes(cmd, pipe_fds);
 		pid = fork_and_execute(cmd, pipe_fds, prev_prd, shell);  // Capture the PID of the process
 	}
-	return pid;  // Return the PID of the last process
+	return (pid);  // Return the PID of the last process
 }
 
 

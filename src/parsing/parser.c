@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 16:58:18 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 19:20:49 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell)
 	else if (is_redirect_token((*tok)->type))
 	{
 		if ((*cur_cmd)->redirect_count >= MAX_REDIRECTS)
-			return (0); //implement error handling
+			return (0);
 		if ((*tok)->type == TOKEN_HEREDOC)
 		{
 			if (!(handle_heredoc_parsing(*cur_cmd, tok, shell)))

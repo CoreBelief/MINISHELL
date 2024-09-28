@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 15:46:18 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 16:51:56 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 19:22:26 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,14 @@ int	open_hdfile(char *target)
 	{
 		perror("minishell: open");
 		free(target);
-		// free_all()
-		exit(EXIT_FAILURE);
+		return (-1);
+		// exit(EXIT_FAILURE);
 	}
 	return (hd_fd);
 }
 
 int	write_to_hdfd(char *delim, t_shell *shell, int hdfd)
 {
-	// char	*tmp;
 	char	*content;
 	char	*expansion;
 
@@ -54,16 +53,16 @@ int	write_to_hdfd(char *delim, t_shell *shell, int hdfd)
 		if (!content || ft_strcmp(content, delim) == 0)
 			break ;
 		expansion = variable_exp_double(content, shell);
+		free(content);
 		if (!expansion)
 		{
-			free(content);
-			free(delim);
+			// free(delim);
 			return (0);
 		}
+		// free(delim);
 		write(hdfd, expansion, ft_strlen(expansion));
 		write(hdfd, "\n", 1);
 		free(expansion);
-		free(content);
 	}
 	// free (delim);
 	close(hdfd);
@@ -83,6 +82,8 @@ int	handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 		delim = (*token)->content;
 		tmp_file = create_filename(cmd->redirect_count);
 		hered_fd = open_hdfile(tmp_file);
+		if (hered_fd == -1)
+			return (0);
 		if (!write_to_hdfd(delim, shell, hered_fd))
 			return (0);
 		cmd->redir[cmd->redirect_count].file = tmp_file;

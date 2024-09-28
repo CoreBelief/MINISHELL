@@ -70,7 +70,7 @@ char	*find_executable(char *command, t_shell *shell)
 
 void	check_file_status(char *path, t_shell *shell)
 {
-	struct stat st;
+	struct stat	st;
 
 	if (stat(path, &st) != 0)
 	{
@@ -78,6 +78,7 @@ void	check_file_status(char *path, t_shell *shell)
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
 		free(path);
+		free_command_list(&shell->commands);
 		exit(shell->last_exit_status);
 	}
 	if (S_ISDIR(st.st_mode))
@@ -86,6 +87,7 @@ void	check_file_status(char *path, t_shell *shell)
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": Is a directory\n", 2);
 		free(path);
+		free_command_list(&shell->commands);
 		exit(shell->last_exit_status);
 	}
 	if (!(st.st_mode & S_IXUSR))
@@ -94,6 +96,7 @@ void	check_file_status(char *path, t_shell *shell)
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": Permission denied\n", 2);
 		free(path);
+		free_command_list(&shell->commands);
 		exit(shell->last_exit_status);
 	}
 }
