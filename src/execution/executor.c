@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 12:25:34 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 18:53:27 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,35 +56,64 @@ void	execute_command(t_shell *shell);
 // 	exit(shell->last_exit_status);
 // }
 
+// void	execute_external(t_cmd *cmd, t_shell *shell)
+// {
+// 	char	*path;
+
+// 	// check_path(cmd->argv[0], shell);
+// 	path = find_executable(cmd->argv[0], shell);
+// 	// printf("path %s\n", path);
+// 	if (!path)
+// 	{
+// 		// check_path(cmd->argv[0], shell);
+// 		if (!path)
+// 		{
+// 			shell->last_exit_status = 127;
+// 			print_command_not_found(cmd->argv[0]);
+// 			exit(shell->last_exit_status);
+// 		}
+// 	}
+// 	execve(path, cmd->argv, shell->env);
+// 	perror("minishell: execve failed\n");
+// 	if (errno == ENOENT)
+// 	{
+// 		write(2, " No such file or directory\n", 28);
+// 		shell->last_exit_status = 127;
+// 	}
+// 	if (errno == EACCES)
+// 	{
+// 		ft_putstr_fd(" Permission denied\n", 2);
+// 		shell->last_exit_status = 126;
+// 	}
+// 	free(path);
+// 	exit(shell->last_exit_status);
+
+// }
+
+
 void	execute_external(t_cmd *cmd, t_shell *shell)
 {
 	char	*path;
 
+	if (!cmd->argv[0])
+	{
+		shell->last_exit_status = 0;// for empty cmds
+		exit(shell->last_exit_status);
+	}
 	path = find_executable(cmd->argv[0], shell);
 	if (!path)
 	{
-		if (!path)
-		{
-			shell->last_exit_status = 127;
-			print_command_not_found(cmd->argv[0]);
-			exit(shell->last_exit_status);
-		}
-	}
-	execve(path, cmd->argv, shell->env);
-	perror("minishell: execve failed\n");
-	if (errno == ENOENT)
-	{
-		print_error(path, "No such file or directory\n");
 		shell->last_exit_status = 127;
+		ft_putstr_fd(cmd->argv[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
+		exit(shell->last_exit_status);
 	}
-	if (errno == EACCES)
-	{
-		ft_putstr_fd(" Permission denied\n", 2);
-		shell->last_exit_status = 126;
-	}
+	check_file_status(path, shell);
+	execve(path, cmd->argv, shell->env);
+	shell->last_exit_status = 126;
+	perror(path);
 	free(path);
 	exit(shell->last_exit_status);
-
 }
 
 void	setup_pipes(t_cmd *cmd, int pfds[2])
