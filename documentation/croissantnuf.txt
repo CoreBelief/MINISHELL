@@ -1,4 +1,4 @@
 - decide how to handle unclosed quotes
-- handle different type of words (single q, double q, no q) in the same word
+- leaks
+- structured error handling throughout the program andmaking sure no leaks if exitiong in the middle of the program
 - norminette
-- exit codes
