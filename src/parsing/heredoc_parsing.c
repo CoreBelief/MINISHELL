@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 15:46:18 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 19:22:26 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 20:01:31 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,13 @@ int	write_to_hdfd(char *delim, t_shell *shell, int hdfd)
 	while (1)
 	{
 		content = readline("> ");
-		if (!content || ft_strcmp(content, delim) == 0)
+		if (!content)
 			break ;
+		if (ft_strcmp(content, delim) == 0)
+		{
+			free (content);
+			break ;
+		}
 		expansion = variable_exp_double(content, shell);
 		free(content);
 		if (!expansion)

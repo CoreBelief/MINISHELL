@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 19:08:33 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 19:58:16 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,7 @@ int	double_quotes_state(char *input, char **res, int *i, t_shell *shell)
 	content = *res;
 	*res = append_str(content, expansion);
 	free (content);
+	free (expansion);
 	if (!*res)
 		return (0);
 	(*i)++; // move past last double quote
@@ -222,7 +223,11 @@ int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
 			}
 		}
 	}
-	add_token(head, result, TOKEN_WORD);
+	if (!add_token(head, result, TOKEN_WORD))
+	{
+		free (result);
+		return (0);
+	}
 	return (1);
 }
 

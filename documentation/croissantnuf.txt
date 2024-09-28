@@ -2,3 +2,5 @@
 - leaks
 - structured error handling throughout the program andmaking sure no leaks if exitiong in the middle of the program
 - norminette
+- alot of leaks in section SYNTAX_ERRORS in mstest vm 
+- exit codes in redirs and also other places
