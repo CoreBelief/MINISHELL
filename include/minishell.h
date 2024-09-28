@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/23 14:05:56 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 12:26:22 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,11 @@
 # include "memory.h"
 # include "executor.h"
 # include "var_exp.h"
-# include "environ.h"
 # include "signals.h"
 # include "redirections.h"
 # include "error.h"
+# include "path.h"
+# include "utils.h"
 
 # define MAX_ARGS 1024
 # define MAX_REDIRECTS 10

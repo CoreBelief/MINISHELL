@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 19:55:58 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 12:18:28 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	handle_exit_status(char **new_str, int *i, t_shell *shell)
 	char	*expansion;
 	char	*tmp;
 
-	(*i)+= 2;
+	(*i) += 2;
 	expansion = ft_itoa(shell->last_exit_status);
 	if (!expansion)
 	{

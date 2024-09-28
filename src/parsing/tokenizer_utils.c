@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/25 16:16:08 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 12:19:37 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	tokenize_redirection(char *input, int *i, t_token **head)
 		}
 	}
 }
+
 // maybe needs to return smth indicating error
 void	tokenize_single(char *input, int *i, t_token **head)
 {
@@ -54,6 +55,7 @@ void	tokenize_single(char *input, int *i, t_token **head)
 		(*i)++;
 	}
 }
+
 // maybe needs to return smth indicating error
 void	tokenize_double(char *input, int *i, t_token **head)
 {
@@ -84,7 +86,6 @@ bool	is_special_token(char c)
 {
 	return (c == '|' || c == '<' || c == '>');
 }
-
 
 //the special token thing fucks it up if there are 2 consecutive commands or not????
 //smth weird might not be here 

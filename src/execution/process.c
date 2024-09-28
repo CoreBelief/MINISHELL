@@ -1,14 +1,11 @@
 #include "minishell.h"
-#include <errno.h>
-#include "error.h"
-#include "path.h"
 
 void	child_proc(t_cmd *cmd, int pipe_fds[2],
 			int prev_pipe_read, t_shell *shell);
 void	parent_proc(t_cmd *cmd, int pipe_fds[2],
 			int *prev_pipe_read);
-void	execute_child_process(t_cmd *cmd, int *pipe_fds,
-			int prev_pipe_read, t_shell *shell);
+// void	execute_child_process(t_cmd *cmd, int *pipe_fds,
+// 			int prev_pipe_read, t_shell *shell);
 
 
 //in exec_single_cmd if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 && cmd->pipe_in == -1)
@@ -50,7 +47,7 @@ void	execute_child_process(t_cmd *cmd, int *pipe_fds,
 // 	exit(EXIT_FAILURE);
 // }
 
-void handle_input_redirection(int prev_prd, t_cmd *cmd)
+void	handle_input_redirection(int prev_prd, t_cmd *cmd)
 {
 	if (prev_prd != -1 && cmd->input == -1)
 	{
@@ -63,7 +60,7 @@ void handle_input_redirection(int prev_prd, t_cmd *cmd)
 	}
 }
 
-void handle_output_redirection(int pfds[2], t_cmd *cmd)
+void	handle_output_redirection(int pfds[2], t_cmd *cmd)
 {
 	if (cmd->pipe_out == 1 && cmd->output == -1)
 	{

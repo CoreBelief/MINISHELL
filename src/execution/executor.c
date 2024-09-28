@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 18:05:24 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 12:25:34 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,15 +110,13 @@ static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *she
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)  // Child process
-	{
 		child_proc(cmd, pfds, *prev_prd, shell);
-	}
 	else  // Parent process
 	{
 		signal(SIGINT, SIG_IGN);
 		parent_proc(cmd, pfds, prev_prd);
 	}
-	return pid;  // Return the PID of the forked process
+	return (pid);  // Return the PID of the forked process
 }
 
 static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
@@ -127,7 +125,8 @@ static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 	pid_t	pid;
 
 	pid = -1;  // Store the PID of the forked process
-	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 && cmd->pipe_in == -1)
+	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 \
+	&& cmd->pipe_in == -1)
 	{
 		execute_builtin(cmd, shell);
 	}

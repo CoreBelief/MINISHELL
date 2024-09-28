@@ -1,6 +1,16 @@
-#include "tokenizer.h"
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   tokenizer.c                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/09/28 12:20:09 by eeklund       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "minishell.h"
 
 int	is_whitespace(char c)
 {
@@ -81,4 +91,3 @@ t_token	*add_token(t_token **head, char *content, t_token_type type)
 	}
 	return (new_token);
 }
-

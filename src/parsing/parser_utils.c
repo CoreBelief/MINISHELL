@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/26 14:09:48 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/28 12:21:25 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,13 @@ void	remove_quotes(char *str)
 {
 	int		i;
 	int		j;
-	int		in_quotes = 0;
-	char	quote_char = 0;
+	int		in_quotes;
+	char	quote_char;
 
 	i = 0;
 	j = 0;
+	in_quotes = 0;
+	quote_char = 0;
 	if (!str)
 		return ;
 	while (str[i])
@@ -46,7 +48,8 @@ int	handle_arg_parsing_2nd(t_cmd *cmd, t_token **tokens, int *i, t_shell *shell)
 	char	*tmp;
 
 	tmp = (*tokens)->content;
-	if ((*tokens)->type == TOKEN_DOUBLE_QUOTE || (*tokens)->type != TOKEN_SINGLE_QUOTE)
+	if ((*tokens)->type == TOKEN_DOUBLE_QUOTE || \
+	(*tokens)->type != TOKEN_SINGLE_QUOTE)
 	{
 		if (!variable_exp_double(*tokens, tmp, shell))
 			return (0);
@@ -59,7 +62,6 @@ int	handle_arg_parsing_2nd(t_cmd *cmd, t_token **tokens, int *i, t_shell *shell)
 
 	if ((*tokens)->content[0] == '\0') // ducktape solution to having empty expansions in the cmd line, gives wrong exitcode if only $nonexistent
 		return (1);
-
 	cmd->argv[*i] = ft_strdup((*tokens)->content);
 	// free ((*tokens)->content); //is getting freed at a later state in free_tokens()
 	// (*tokens)->content = NULL;
@@ -88,13 +90,14 @@ t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i)
 //DEUG FUNCTION
 void	print_cmd_list(t_cmd *head)
 {
-	int			i = 0;
+	int			i;
 	int			j;
 
 	printf("inside print cmd_lst\n");
+	i = 0;
 	while (head)
 	{
-		printf("redir count:%i\n",head->redirect_count);
+		printf("redir count:%i\n", head->redirect_count);
 		while (head->argv && head->argv[i])
 		{
 			printf("arg: %s\n", head->argv[i]);
