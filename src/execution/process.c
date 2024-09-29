@@ -1,7 +1,4 @@
 #include "minishell.h"
-#include <errno.h>
-#include "error.h"
-#include "path.h"
 
 void	child_proc(t_cmd *cmd, int pipe_fds[2],
 			int prev_pipe_read, t_shell *shell);
@@ -24,7 +21,7 @@ void handle_input_redirection(int prev_prd, t_cmd *cmd)
 	}
 }
 
-void handle_output_redirection(int pfds[2], t_cmd *cmd)
+void	handle_output_redirection(int pfds[2], t_cmd *cmd)
 {
 	if (cmd->pipe_out == 1 && cmd->output == -1)
 	{
@@ -37,7 +34,7 @@ void handle_output_redirection(int pfds[2], t_cmd *cmd)
 	}
 }
 
-void close_pipe_ends(int pfds[2])
+void	close_pipe_ends(int pfds[2])
 {
 	close(pfds[0]);
 	close(pfds[1]);
@@ -50,22 +47,16 @@ void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
 	
 	if (cmd->redirect_count)
 		setup_redirections(cmd);
-
 	handle_input_redirection(prev_prd, cmd);
-
 	handle_output_redirection(pfds, cmd);
-
 	close_pipe_ends(pfds);
-
 	if (is_builtin(cmd->argv[0]))
 	{
 		execute_builtin(cmd, shell);
 		exit(shell->last_exit_status);
 	}
 	else
-	{
 		execute_external(cmd, shell);
-	}
 	exit(EXIT_FAILURE);
 }
 

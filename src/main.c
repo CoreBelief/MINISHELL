@@ -17,7 +17,7 @@ static void	process_input(char *line, t_shell *shell)
 	if (line && *line)
 	{
 		add_history(line);
-		tokens = tokenizer(line);
+		tokens = tokenizer(line, shell);
 		if (!tokens)
 		{
 			free_tokens(&tokens);
@@ -51,60 +51,48 @@ void minishell_loop(t_shell *shell)
 
     while (1)
     {
-        // Create the prompt
-        prompt = create_prompt();
-        if (!prompt)
-        {
-            ft_putendl_fd("Error: Failed to create prompt", STDERR_FILENO);
-            shell->last_exit_status = 1; // Error creating prompt, set exit code to 1
-            break;
-        }
-
-        // Handle input based on whether it's from a terminal (interactive) or not (script)
         if (isatty(fileno(stdin)))
         {
-            // Interactive mode: read input using readline
+            // Interactive mode: create and display the prompt
+            prompt = create_prompt();
+            if (!prompt)
+            {
+                ft_putendl_fd("Error: Failed to create prompt", STDERR_FILENO);
+                shell->last_exit_status = 1;
+                break;
+            }
             line = readline(prompt);
+            free(prompt);
         }
         else
         {
-            // Non-interactive mode: read input from script or file
-            line = readline(prompt); // Still using readline to maintain consistency
+            // Non-interactive mode: read input using get_next_line
+            line = get_next_line(fileno(stdin));
+            if (line)
+            {
+                // Remove newline character if present
+                size_t len = ft_strlen(line);
+                if (len > 0 && line[len - 1] == '\n')
+                    line[len - 1] = '\0';
+            }
         }
-
-        free(prompt); // Free the prompt after it's used
 
         // If no input (EOF or error)
         if (!line)
         {
-            // For interactive mode, exit with status 0
             if (isatty(fileno(stdin)))
-            {
-                shell->last_exit_status = 0; // In interactive mode, return 0 when exiting
-            }
-            else
-            {
-                // In non-interactive mode, keep the last exit status as it was
-                // Do not set exit status to 1 unless there was an actual error
-            }
-
-            ft_putendl_fd("exit", STDOUT_FILENO);
+                ft_putendl_fd("exit", STDOUT_FILENO); // Print "exit" in interactive mode
             break;
         }
 
-        // Process the input line (should update shell->last_exit_status based on the command's outcome)
+        // Process the input line
         process_input(line, shell);
 
         free(line); // Free the input line after processing
     }
-
-    // Ensure that when we reach the end of a non-interactive session (script), the exit code is correct
-    if (!isatty(fileno(stdin)) && shell->last_exit_status == 0)
-    {
-        // If no errors occurred in non-interactive mode (like in a script), exit with status 0
-        shell->last_exit_status = 0;
-    }
 }
+
+
 
 
 
@@ -126,6 +114,23 @@ void	init_shell(t_shell *shell)
 	shell->env_size = 0;
 }
 
+void increment_shlvl(t_shell *shell) {
+    char *shlvl_str = ft_get_env("SHLVL", shell);  // Fetch the current SHLVL value
+    int shlvl = 1;  // Default to 1 if not found
+
+    if (shlvl_str != NULL) {
+        shlvl = ft_atoi(shlvl_str);  // Convert string to int
+        shlvl += 1;  // Increment the SHLVL value
+    }
+
+    // Create a string for the new SHLVL value
+    char new_shlvl[16];  // Assuming 16 bytes is enough for the integer + null terminator
+    snprintf(new_shlvl, sizeof(new_shlvl), "%d", shlvl); // have to change this line
+
+    // Update the SHLVL environment variable
+    ft_set_env("SHLVL", new_shlvl, shell);  // 1 to overwrite any existing value
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
@@ -139,6 +144,8 @@ int	main(int argc, char **argv, char **envp)
 		perror("error init env");
 		return (EXIT_FAILURE);
 	}
+    increment_shlvl(&shell);
+
 	minishell_loop(&shell);
 	free_shell(&shell);
 	return (shell.last_exit_status);

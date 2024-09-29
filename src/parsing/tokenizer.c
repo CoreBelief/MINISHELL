@@ -1,6 +1,16 @@
-#include "tokenizer.h"
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   tokenizer.c                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/09/29 17:16:01 by rdl           ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "minishell.h"
 
 int	is_whitespace(char c)
 {
@@ -21,7 +31,8 @@ int	tokenize_pipe(int *i, t_token **head)
 	return (1);
 }
 
-t_token	*tokenizer(char *input)
+// have to fix if there are 2 consecutive commands in handle_word function
+t_token	*tokenizer(char *input, t_shell *shell)
 {
 	t_token	*head;
 	int		i;
@@ -43,12 +54,8 @@ t_token	*tokenizer(char *input)
 		}
 		else if (input[i] == '<' || input[i] == '>')
 			tokenize_redirection(input, &i, &head);
-		else if (input[i] == '\'')
-			tokenize_single(input, &i, &head);
-		else if (input[i] == '"')
-			tokenize_double(input, &i, &head);
 		else
-			tokenize_word(input, &i, &head);
+			tokenize_word(input, &i, &head, shell);
 	}
 	return (head);
 }
@@ -79,4 +86,3 @@ t_token	*add_token(t_token **head, char *content, t_token_type type)
 	}
 	return (new_token);
 }
-

@@ -1,12 +1,21 @@
-#include "environ.h"
-#include "utils.h"
-#include <stdlib.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   environ.c                                          :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/09/28 12:25:53 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/09/28 12:25:56 by eeklund       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 
 int			init_env(t_shell *shell, char **envp);
 char		*ft_get_env(const char *name, t_shell *shell);
-static int 	ft_add_env(char *new_var, t_shell *shell);
+static int	ft_add_env(char *new_var, t_shell *shell);
 int			ft_set_env(const char *name, const char *value, t_shell *shell);
 int			ft_unset_env(const char *name, t_shell *shell);
 

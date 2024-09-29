@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   cd.c                                               :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: rdl <rdl@student.codam.nl>                   +#+                     */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 17:29:22 by rdl           #+#    #+#                 */
-/*   Updated: 2024/09/26 19:45:09 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/29 02:16:18 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,25 +71,25 @@ void	builtin_cd(char **args, t_shell *shell)
 	{
 		print_error("cd", ": too many arguments\n");
 		shell->last_exit_status = 1;
-		return;
+		return ;
 	}
 	if (!getcwd(old_pwd, sizeof(old_pwd)))
 	{
 		perror("getcwd");
 		shell->last_exit_status = 1;
-		return;
+		return ;
 	}
 	path = get_cd_path(args, shell);
 	if (!path)
 	{
 		shell->last_exit_status = 1;
-		return;
+		return ;
 	}
 	if (chdir(path) != 0)
 	{
 		perror("cd");
 		shell->last_exit_status = 1;
-		return;
+		return ;
 	}
 	update_pwd(old_pwd, shell);
 	shell->last_exit_status = 0;
