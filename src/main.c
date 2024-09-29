@@ -93,11 +93,6 @@ void minishell_loop(t_shell *shell)
 }
 
 
-
-
-
-
-
 void	free_shell(t_shell *shell)
 {
 	if (shell->env)
@@ -131,13 +126,30 @@ void increment_shlvl(t_shell *shell) {
     ft_set_env("SHLVL", new_shlvl, shell);  // 1 to overwrite any existing value
 }
 
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	t_shell	shell;
+
+// 	(void)argc;
+// 	(void)argv;
+
+// 	init_shell(&shell);
+// 	if (!init_env(&shell, envp))
+// 	{
+// 		perror("error init env");
+// 		return (EXIT_FAILURE);
+// 	}
+//     increment_shlvl(&shell);
+
+// 	minishell_loop(&shell);
+// 	free_shell(&shell);
+// 	return (shell.last_exit_status);
+// }
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
-
-	(void)argc;
-	(void)argv;
-
+	
 	init_shell(&shell);
 	if (!init_env(&shell, envp))
 	{
@@ -146,6 +158,23 @@ int	main(int argc, char **argv, char **envp)
 	}
     increment_shlvl(&shell);
 
+	if (argc > 1 && strcmp(argv[1], "-c") == 0)
+	{
+		// Non-interactive mode with -c: execute the command given in argv[2]
+		if (argc > 2)
+		{
+			process_input(argv[2], &shell);
+			free_shell(&shell);
+			return (shell.last_exit_status);
+		}
+		else
+		{
+			ft_putendl_fd("Error: -c requires an argument", STDERR_FILENO);
+			return (EXIT_FAILURE);
+		}
+	}
+
+	// Interactive or script mode
 	minishell_loop(&shell);
 	free_shell(&shell);
 	return (shell.last_exit_status);
