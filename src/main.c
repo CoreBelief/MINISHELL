@@ -126,25 +126,6 @@ void increment_shlvl(t_shell *shell) {
     ft_set_env("SHLVL", new_shlvl, shell);  // 1 to overwrite any existing value
 }
 
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	t_shell	shell;
-
-// 	(void)argc;
-// 	(void)argv;
-
-// 	init_shell(&shell);
-// 	if (!init_env(&shell, envp))
-// 	{
-// 		perror("error init env");
-// 		return (EXIT_FAILURE);
-// 	}
-//     increment_shlvl(&shell);
-
-// 	minishell_loop(&shell);
-// 	free_shell(&shell);
-// 	return (shell.last_exit_status);
-// }
 
 int	main(int argc, char **argv, char **envp)
 {

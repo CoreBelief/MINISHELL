@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/29 20:02:25 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/29 20:46:26 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,30 +110,6 @@ static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 }
 
 
-// static pid_t execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
-// {
-//     int     pipe_fds[2];
-//     pid_t   pid;
-
-//     pid = -1;  // Store the PID of the forked process
-
-//     // If the command is a built-in that should run in the parent process
-//     if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 && cmd->pipe_in == -1)
-//     {
-//         // Execute the built-in directly in the parent process
-//         shell->last_exit_status = execute_builtin(cmd, shell);  // Update last_exit_status directly after execution
-//     }
-//     else
-//     {
-//         // If it's an external command or a piped command, fork a child process
-//         setup_pipes(cmd, pipe_fds);
-//         pid = fork_and_execute(cmd, pipe_fds, prev_prd, shell);  // Capture the PID of the process
-//     }
-
-//     return (pid);  // Return the PID of the last process (if it exists, otherwise -1)
-// }
-
-
 
 void	cleanup_heredoc_files(t_cmd *cmd)
 {
@@ -205,25 +181,4 @@ void execute_command(t_shell *shell)
     cleanup_heredoc_files(shell->commands);
     setup_signals_shell();
 }
-
-// void	execute_command(t_shell *shell)
-// {
-// 	t_cmd *cur_cmd;
-// 	int prev_prd = -1;
-// 	pid_t last_pid = -1;  // Store the PID of the last command
-
-// 	cur_cmd = shell->commands;
-// 	while (cur_cmd)
-// 	{
-// 		// Execute each command and capture the PID of the last command
-// 		last_pid = execute_single_command(cur_cmd, &prev_prd, shell);
-// 		cur_cmd = cur_cmd->next;
-// 	}
-
-// 	// After all commands are executed, wait for all children
-// 	wait_for_children(shell, last_pid); 
-// 	cleanup_heredoc_files(shell->commands);
-// 	setup_signals_shell();
-// 	// Pass the last command's PID
-// }
 
