@@ -14,7 +14,7 @@ parsing/parser_redirects.c parsing/heredoc_parsing.c execution/executor.c execut
 execution/process.c execution/path.c builtins/echo.c builtins/cd.c builtins/pwd.c builtins/export.c \
 builtins/unset.c builtins/env.c builtins/exit.c builtins/builtins.c environ/environ.c utils/ft_strjoin3.c \
 utils/ft_strcmp.c utils/ft_strcpy.c utils/ft_strncpy.c utils/ft_strndup.c finalgnl/get_next_line.c \
-finalgnl/get_next_line_utils.c finalgnl/malloc_mock.c finalgnl/utils.c )
+finalgnl/get_next_line_utils.c)
 
 OBJS = $(patsubst $(SRCS_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
