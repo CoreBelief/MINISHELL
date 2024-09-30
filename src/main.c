@@ -41,56 +41,131 @@ static void	process_input(char *line, t_shell *shell)
 
 
 
-
-void minishell_loop(t_shell *shell)
+void	minishell_loop(t_shell *shell)
 {
-    char *line;
-    char *prompt;
+    char *line = NULL;
+    char *prompt = NULL;
+    int original_stdout;
+    FILE *terminal;
 
     setup_signals_shell();
 
+    // Save the original stdout
+    original_stdout = dup(STDOUT_FILENO);
+    
+    // Open the controlling terminal
+    terminal = fopen("/dev/tty", "w");
+    if (!terminal) {
+        perror("Failed to open terminal");
+        return;
+    }
+
     while (1)
     {
+        // Restore stdout to the terminal for readline
+        dup2(fileno(terminal), STDOUT_FILENO);
+
         if (isatty(STDIN_FILENO))
         {
-            // Interactive mode: create and display the prompt
+            // Interactive mode
             prompt = create_prompt();
             if (!prompt)
             {
-                ft_putendl_fd("Error: Failed to create prompt", STDERR_FILENO);
+                fprintf(terminal, "Error: Failed to create prompt\n");
                 shell->last_exit_status = 1;
                 break;
             }
+            
             line = readline(prompt);
             free(prompt);
+
+            if (!line) // EOF (Ctrl+D)
+            {
+                fprintf(terminal, "exit\n");
+                break;
+            }
+
+            add_history(line);
         }
         else
         {
-            // Non-interactive mode: read input using get_next_line
+            // Non-interactive mode
             line = get_next_line(STDIN_FILENO);
-            if (line)
-            {
-                // Remove newline character if present
-                size_t len = ft_strlen(line);
-                if (len > 0 && line[len - 1] == '\n')
-                    line[len - 1] = '\0';
-            }
+            if (!line) // EOF or error
+                break;
+
+            // Remove newline character if present
+            size_t len = ft_strlen(line);
+            if (len > 0 && line[len - 1] == '\n')
+                line[len - 1] = '\0';
         }
 
-        // If no input (EOF or error)
-        if (!line)
-        {
-            if (isatty(STDIN_FILENO))
-                ft_putendl_fd("exit", STDOUT_FILENO); // Print "exit" in interactive mode
-            break;
-        }
+        // Restore original stdout for command execution
+        dup2(original_stdout, STDOUT_FILENO);
 
         // Process the input line
         process_input(line, shell);
 
-        free(line); // Free the input line after processing
+        free(line);
+        line = NULL;
     }
+
+    if (line)
+        free(line);
+    
+    fclose(terminal);
+    close(original_stdout);
 }
+
+// void minishell_loop(t_shell *shell)
+// {
+//     char *line;
+//     char *prompt;
+
+//     setup_signals_shell();
+
+//     while (1)
+//     {
+//         if (isatty(STDIN_FILENO))
+//         {
+//             // Interactive mode: create and display the prompt
+//             prompt = create_prompt();
+//             if (!prompt)
+//             {
+//                 ft_putendl_fd("Error: Failed to create prompt", STDERR_FILENO);
+//                 shell->last_exit_status = 1;
+//                 break;
+//             }
+//             line = readline(prompt);
+//             free(prompt);
+//         }
+//         else
+//         {
+//             // Non-interactive mode: read input using get_next_line
+//             line = get_next_line(STDIN_FILENO);
+//             if (line)
+//             {
+//                 // Remove newline character if present
+//                 size_t len = ft_strlen(line);
+//                 if (len > 0 && line[len - 1] == '\n')
+//                     line[len - 1] = '\0';
+//             }
+//         }
+
+//         // If no input (EOF or error)
+//         if (!line)
+//         {
+//             if (isatty(STDIN_FILENO))
+//                 ft_putendl_fd("exit", STDOUT_FILENO); // Print "exit" in interactive mode
+//             break;
+//         }
+
+//         // Process the input line
+//         process_input(line, shell);
+
+//         free(line); // Free the input line after processing
+//     }
+// }
 
 
 void	free_shell(t_shell *shell)

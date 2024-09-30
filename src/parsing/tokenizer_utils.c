@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/29 17:15:40 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 15:16:18 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ bool	is_special_token(char c)
 	return (c == '|' || c == '<' || c == '>');
 }
 
-//the special token thing fucks it up if there are 2 consecutive commands or not????
+//the special token thing fucks it up
+// if there are 2 consecutive commands or not????
 //smth weird might not be here 
 
 
@@ -134,7 +135,7 @@ int	double_quotes_state(char *input, char **res, int *i, t_shell *shell)
 	char	*content;
 	char	*expansion;
 
-	(*i)++; // move past the first double quote
+	(*i)++;
 	start = *i;
 	while (input[*i] && input [*i] != '"')
 		(*i)++;
@@ -156,7 +157,7 @@ int	double_quotes_state(char *input, char **res, int *i, t_shell *shell)
 	free (expansion);
 	if (!*res)
 		return (0);
-	(*i)++; // move past last double quote
+	(*i)++;
 	return (1);
 }
 
@@ -166,7 +167,7 @@ int	single_quotes_state(char *input, char **res, int *i)
 	char	*content;
 	char	*tmp;
 
-	(*i)++; // move past the first single qoute
+	(*i)++;
 	start = *i;
 	while (input[*i] && input[*i] != '\'')
 		(*i)++;
@@ -184,7 +185,7 @@ int	single_quotes_state(char *input, char **res, int *i)
 	free (tmp);
 	if (!*res)
 		return (0);
-	(*i)++; // move past the last single quote
+	(*i)++;
 	return (1);
 }
 
@@ -195,7 +196,8 @@ int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
 	result = ft_strdup("");
 	if (!result)
 		return (0);
-	while (input[*i] && !is_whitespace(input[*i]) && !is_special_token(input[*i]))
+	while (input[*i] && !is_whitespace(input[*i]) && \
+	!is_special_token(input[*i]))
 	{
 		if (input[*i] == '"')
 		{
@@ -229,28 +231,6 @@ int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
 	}
 	return (1);
 }
-
-/* 
-if there is no space between execpt if special character, the tokenizer should keep reading? but how to handle if different sorts of types, 
-how to handle the characters inside the different types?, expanding before parser? not relying on the tokens? just read until there is a space or a special character? 
-different states of how to read the input, depening on if your inside double quotes, single or nothing, even though they are together? 
-so just one for all the types handeling it in the tokenizer? and just sending the finished product to the parser as 1 whole word, all expanded and quotes removed?
-
-no quotes:
-- special characters: 
-	- " "  --> go in to double quote state
-	- ' '  --> go in to single quote state
-	- >, < --> redirection
-	- |    --> pipe
-	- $    --> variable expansion
-
-double
-- special characters:
-	- $ --> expansion
-
-single
-- handle everything as literal characters 
-*/
 
 void	print_token_list(t_token *head)
 {
