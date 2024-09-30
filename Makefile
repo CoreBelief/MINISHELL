@@ -1,9 +1,7 @@
 NAME = minishell
-CC = gcc -g
-CFLAGS =  -Wall -Wextra -Werror  -Iinclude -Isrc/libft -I/usr/local/opt/readline/include 
-# this is for mac -I/usr/local/opt/readline/include
-LDFLAGS = -g -L/usr/local/opt/readline/lib -lreadline
-#and the LDFLAGS is also for mac so can be removed on linux computer
+CC = gcc
+CFLAGS = -Wall -Wextra -Werror -Iinclude -Isrc/libft -I/usr/local/opt/readline/include
+LDFLAGS = -L/usr/local/opt/readline/lib -lreadline
 LIBS = -lreadline
 SRCS_DIR = src
 OBJ_DIR = obj
@@ -23,27 +21,45 @@ OBJ_SUBDIRS = $(sort $(dir $(OBJS)))
 LIBFT_DIR = src/lib_FT
 LIBFT = $(LIBFT_DIR)/libft.a
 
+# Color codes for pretty output
+YELLOW = \033[33m
+GREEN = \033[32m
+BLUE = \033[34m
+RESET = \033[0m
+
+# Nice loading screen with colors
 all: $(LIBFT) $(NAME)
+	@echo "$(GREEN)Compilation complete!$(RESET)"
 
 $(LIBFT):
-	make -C $(LIBFT_DIR)
+	@echo "$(BLUE)Building libft...$(RESET)"
+	@make -C $(LIBFT_DIR) > /dev/null
+	@echo "$(GREEN)libft built!$(RESET)"
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $@ $(LIBS) $(LDFLAGS)
+	@echo "$(YELLOW)Linking $(NAME)...$(RESET)"
+	@$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $@ $(LIBS) $(LDFLAGS) > /dev/null
+	@echo "$(GREEN)$(NAME) created successfully!$(RESET)"
 
+# Compile objects with a progress bar
 $(OBJ_DIR)/%.o: $(SRCS_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@echo -n "$(YELLOW).$(RESET)"  # Simple loading dot for each file
+	@$(CC) $(CFLAGS) -c $< -o $@ > /dev/null
 
 clean:
-	make -C $(LIBFT_DIR) clean
-	rm -f $(OBJS)
+	@echo "$(BLUE)Cleaning object files...$(RESET)"
+	@make -C $(LIBFT_DIR) clean > /dev/null
+	@rm -f $(OBJS)
 	@rmdir $(OBJ_SUBDIRS) 2>/dev/null || true
+	@echo "$(GREEN)Cleaned successfully!$(RESET)"
 
 fclean: clean
-	make -C $(LIBFT_DIR) fclean
-	rm -rf $(OBJ_DIR)
-	rm -f $(NAME)
+	@echo "$(BLUE)Performing full clean...$(RESET)"
+	@make -C $(LIBFT_DIR) fclean > /dev/null
+	@rm -rf $(OBJ_DIR)
+	@rm -f $(NAME)
+	@echo "$(GREEN)Fully cleaned!$(RESET)"
 
 re: fclean all
 
