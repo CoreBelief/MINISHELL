@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   path.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/09/30 19:21:40 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/09/30 19:24:08 by eeklund       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*search_paths(char **paths, char *command);
@@ -44,36 +56,24 @@ char	*find_executable(char *command, t_shell *shell)
 	return (full_path);
 }
 
+static void	handle_error(t_shell *shell, char *path, int status, char *message)
+{
+	shell->last_exit_status = status;
+	ft_putstr_fd(path, 2);
+	ft_putstr_fd(message, 2);
+	free(path);
+	free_command_list(&shell->commands);
+	exit(shell->last_exit_status);
+}
+
 void	check_file_status(char *path, t_shell *shell)
 {
 	struct stat	st;
 
-	if (stat(path, &st) != 0) //illegal function? it seems legal....
-	{
-		shell->last_exit_status = 127;
-		ft_putstr_fd(path, 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
-		free(path);
-		free_command_list(&shell->commands);
-		exit(shell->last_exit_status);
-	}
+	if (stat(path, &st) != 0)
+		handle_error(shell, path, 127, ": No such file or directory\n");
 	if (S_ISDIR(st.st_mode))
-	{
-		shell->last_exit_status = 126;
-		ft_putstr_fd(path, 2);
-		ft_putstr_fd(": Is a directory\n", 2);
-		free(path);
-		free_command_list(&shell->commands);
-		exit(shell->last_exit_status);
-	}
+		handle_error(shell, path, 126, ": Is a directory\n");
 	if (!(st.st_mode & S_IXUSR))
-	{
-		shell->last_exit_status = 126;
-		ft_putstr_fd(path, 2);
-		ft_putstr_fd(": Permission denied\n", 2);
-		free(path);
-		free_command_list(&shell->commands);
-		exit(shell->last_exit_status);
-	}
+		handle_error(shell, path, 126, ": Permission denied\n");
 }
-

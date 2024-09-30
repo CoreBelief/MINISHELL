@@ -6,36 +6,53 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 16:20:28 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 19:06:02 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-int	is_whitespace(char c);
-int	tokenize_pipe(int *i, t_token **head);
-t_token	*tokenizer(char *input, t_shell *shell);
-t_token	*add_token(t_token **head, char *content, t_token_type type);
+#include "tokenizer.h"
 
-int	is_whitespace(char c)
-{
-	if ((c >= 9 && c <= 13) || c == 32)
-		return (1);
-	return (0);
-}
+int		tokenize_pipe(int *i, t_token **head);
+void	tokenize_redirection(char *input, int *i, t_token **head);
+t_token	*tokenizer(char *input, t_shell *shell);
 
 int	tokenize_pipe(int *i, t_token **head)
 {
-	if (*i == 0) 
+	if (*i == 0)
 	{
 		printf("syntax error near unexpected token `|'\n");
 		return (0); //here we should return an error code (2)?
 	}
-	add_token(head, ft_strdup("|"), TOKEN_PIPE);
+	if (!add_token(head, ft_strdup("|"), TOKEN_PIPE))
+		return (0);
 	(*i)++;
 	return (1);
 }
 
-// have to fix if there are 2 consecutive commands in handle_word function
+void	tokenize_redirection(char *input, int *i, t_token **head)
+{
+	if (input[*i] == '>' || input[*i] == '<')
+	{
+		if (input[*i + 1] == input[*i])
+		{
+			if (input[*i] == '>')
+				add_token(head, ft_strdup(">>"), TOKEN_REDIRECT_APPEND);
+			else
+				add_token(head, ft_strdup("<<"), TOKEN_HEREDOC);
+			(*i) = (*i) + 2;
+		}
+		else
+		{
+			if (input[*i] == '>')
+				add_token(head, ft_strdup(">"), TOKEN_REDIRECT_OUT);
+			else
+				add_token(head, ft_strdup("<"), TOKEN_REDIRECT_IN);
+			(*i)++;
+		}
+	}
+}
+
 t_token	*tokenizer(char *input, t_shell *shell)
 {
 	t_token	*head;
@@ -62,31 +79,4 @@ t_token	*tokenizer(char *input, t_shell *shell)
 			tokenize_word(input, &i, &head, shell);
 	}
 	return (head);
-}
-
-t_token	*add_token(t_token **head, char *content, t_token_type type)
-{
-	t_token	*new_token;
-	t_token	*current;
-
-	new_token = malloc(sizeof(t_token));
-	if (!new_token)
-	{
-		free (content);
-		// content = NULL;
-		return (NULL);
-	}
-	new_token->content = content;
-	new_token->type = type;
-	new_token->next = NULL;
-	if (*head == NULL)
-		*head = new_token;
-	else
-	{
-		current = *head;
-		while (current->next)
-			current = current->next;
-		current->next = new_token;
-	}
-	return (new_token);
 }

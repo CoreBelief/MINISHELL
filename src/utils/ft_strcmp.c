@@ -6,12 +6,13 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 12:32:28 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 16:22:33 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 19:20:02 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
-int	ft_strcmp(const char *s1, const char *s2);
+
+// int	ft_strcmp(const char *s1, const char *s2);
 
 int	ft_strcmp(const char *s1, const char *s2)
 {

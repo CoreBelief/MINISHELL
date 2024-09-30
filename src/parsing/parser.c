@@ -6,15 +6,16 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 16:16:18 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 17:57:12 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-t_cmd	*init_cmd(void);
-static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell);
-t_cmd	*parse_command_from_tokens(t_token *tokens, t_shell *shell);
+t_cmd		*init_cmd(void);
+static int	handle_token(t_token **tok, t_cmd **cur_cmd, \
+int *i, t_shell *shell);
+t_cmd		*parse_command_from_tokens(t_token *tokens, t_shell *shell);
 
 t_cmd	*init_cmd(void)
 {

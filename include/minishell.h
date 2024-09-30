@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/29 17:16:43 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 19:26:53 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@
 # include "error.h"
 # include "path.h"
 # include "utils.h"
+# include "process.h"
 
 # define MAX_ARGS 1024
 # define MAX_REDIRECTS 10
