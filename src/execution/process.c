@@ -44,7 +44,7 @@ void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
 {
 	setup_signals_child();
 	signal(SIGPIPE, SIG_IGN);
-	
+
 	if (cmd->redirect_count)
 		setup_redirections(cmd);
 	handle_input_redirection(prev_prd, cmd);
