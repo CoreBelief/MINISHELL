@@ -44,7 +44,6 @@ static void handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
 		value[ft_strlen(value) - 1] = '\0';
 		value++;
 	}
-	// printf("val: %s\n", value);
 	ft_set_env(arg, value, shell);
 	*equal_sign = '=';
 }

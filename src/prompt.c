@@ -10,10 +10,15 @@
 #define COLOR_CYAN "\001\033[1;36m\002"
 #define COLOR_YELLOW "\001\033[1;33m\002"
 #define COLOR_RESET "\001\033[0m\002"
+//too many functions in fil, maybe make separte git file?
+static char	*get_username(void);
+static char	*get_current_dir(void);
+static char	*append_to_prompt(char *prompt, char *str);
+static int	check_git_in_dir(char *dir_path);
+static char	*get_parent_dir(char *path);
+static int	is_git_repo(void);
+char	*create_prompt(void);
 
-
-//too many functions in one file!!!!
-// check if header is up to date
 
 static char	*get_username(void)
 {

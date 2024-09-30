@@ -6,11 +6,15 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/29 17:16:01 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 16:20:28 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+int	is_whitespace(char c);
+int	tokenize_pipe(int *i, t_token **head);
+t_token	*tokenizer(char *input, t_shell *shell);
+t_token	*add_token(t_token **head, char *content, t_token_type type);
 
 int	is_whitespace(char c)
 {

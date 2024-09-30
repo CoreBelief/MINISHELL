@@ -14,6 +14,15 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+static void	process_input(char *line, t_shell *shell); //maybe we move this to different file?
+void minishell_loop(t_shell *shell);
+void	free_shell(t_shell *shell); //move this to memory.c ?
+void	init_shell(t_shell *shell); //move this also somewhere else?
+void ft_custom_itoa(int n, char *str, int max_len); //this one can use its own file inside utils maybe?
+void increment_shlvl(t_shell *shell); //not sure yet where to place this?
+int	main(int argc, char **argv, char **envp); //main can be shorter and split up maybe? maybe its fine
+
+
 static void	process_input(char *line, t_shell *shell)
 {
 	t_token		*tokens;
@@ -43,32 +52,25 @@ static void	process_input(char *line, t_shell *shell)
 }
 
 void minishell_loop(t_shell *shell)
-{
+{ //function too long needs splitting up!
     char *line = NULL;
     char *prompt = NULL;
     int original_stdout;
     int terminal_fd;
 
     setup_signals_shell();
-
-    // Save the original stdout
     original_stdout = dup(STDOUT_FILENO);
-    
-    // Open the controlling terminal
     terminal_fd = open("/dev/tty", O_WRONLY);
-    if (terminal_fd == -1) {
+    if (terminal_fd == -1)
+    {
         perror("Failed to open terminal");
         return;
     }
-
     while (1)
     {
-        // Restore stdout to the terminal for readline
         dup2(terminal_fd, STDOUT_FILENO);
-
         if (isatty(STDIN_FILENO))
         {
-            // Interactive mode
             prompt = create_prompt();
             if (!prompt)
             {
@@ -76,44 +78,31 @@ void minishell_loop(t_shell *shell)
                 shell->last_exit_status = 1;
                 break;
             }
-            
             line = readline(prompt);
             free(prompt);
-
-            if (!line) // EOF (Ctrl+D)
+            if (!line) 
             {
                 ft_putstr_fd("exit\n", terminal_fd);
                 break;
             }
-
             add_history(line);
         }
         else
         {
-            // Non-interactive mode
             line = get_next_line(STDIN_FILENO);
-            if (!line) // EOF or error
+            if (!line)
                 break;
-
-            // Remove newline character if present
             size_t len = ft_strlen(line);
             if (len > 0 && line[len - 1] == '\n')
                 line[len - 1] = '\0';
         }
-
-        // Restore original stdout for command execution
         dup2(original_stdout, STDOUT_FILENO);
-
-        // Process the input line
         process_input(line, shell);
-
         free(line);
         line = NULL;
     }
-
     if (line)
         free(line);
-    
     close(terminal_fd);
     close(original_stdout);
 }
@@ -134,33 +123,30 @@ void	init_shell(t_shell *shell)
 	shell->env_size = 0;
 }
 
-void ft_custom_itoa(int n, char *str, int max_len) {
+void ft_custom_itoa(int n, char *str, int max_len)
+{ //needs to be norm proof... maybe we can use regualr itoa??
     int i = 0;
     int is_negative = 0;
     
-    if (n == 0) {
+    if (n == 0)
+    {
         str[i++] = '0';
         str[i] = '\0';
         return;
     }
-    
-    if (n < 0) {
+    if (n < 0)
+    {
         is_negative = 1;
         n = -n;
     }
-    
-    while (n != 0 && i < max_len - 1) {
+    while (n != 0 && i < max_len - 1)
+    {
         str[i++] = (n % 10) + '0';
         n = n / 10;
     }
-    
-    if (is_negative && i < max_len - 1) {
+    if (is_negative && i < max_len - 1)
         str[i++] = '-';
-    }
-    
     str[i] = '\0';
-    
-    // Reverse the string
     int start = 0;
     int end = i - 1;
     while (start < end) {
@@ -172,25 +158,22 @@ void ft_custom_itoa(int n, char *str, int max_len) {
     }
 }
 
-void increment_shlvl(t_shell *shell) {
-    char *shlvl_str = ft_get_env("SHLVL", shell);  // Fetch the current SHLVL value
-    int shlvl = 1;  // Default to 1 if not found
-
-    if (shlvl_str != NULL) {
-        shlvl = ft_atoi(shlvl_str);  // Convert string to int
-        shlvl += 1;  // Increment the SHLVL value
+void increment_shlvl(t_shell *shell)
+{
+    char *shlvl_str = ft_get_env("SHLVL", shell);
+    int shlvl = 1;
+    if (shlvl_str != NULL)
+    {
+        shlvl = ft_atoi(shlvl_str);
+        shlvl += 1;
     }
-
-    // Create a string for the new SHLVL value
-    char new_shlvl[16];  // Assuming 16 bytes is enough for the integer + null terminator
-    ft_custom_itoa(shlvl, new_shlvl, sizeof(new_shlvl));  // Convert int to string using custom function
-
-    // Update the SHLVL environment variable
-    ft_set_env("SHLVL", new_shlvl, shell);  // 1 to overwrite any existing value
+    char new_shlvl[16];
+    ft_custom_itoa(shlvl, new_shlvl, sizeof(new_shlvl));//find out why custom itoa and why not regular ft_itoa
+    ft_set_env("SHLVL", new_shlvl, shell);
 }
 
 int	main(int argc, char **argv, char **envp)
-{
+{//how to save 1 line??
 	t_shell	shell;
 	
 	init_shell(&shell);
@@ -200,10 +183,8 @@ int	main(int argc, char **argv, char **envp)
 		return (EXIT_FAILURE);
 	}
     increment_shlvl(&shell);
-
 	if (argc > 1 && strcmp(argv[1], "-c") == 0)
 	{
-		// Non-interactive mode with -c: execute the command given in argv[2]
 		if (argc > 2)
 		{
 			process_input(argv[2], &shell);
@@ -216,8 +197,6 @@ int	main(int argc, char **argv, char **envp)
 			return (EXIT_FAILURE);
 		}
 	}
-
-	// Interactive or script mode
 	minishell_loop(&shell);
 	free_shell(&shell);
 	return (shell.last_exit_status);

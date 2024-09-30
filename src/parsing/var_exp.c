@@ -6,11 +6,18 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/29 17:16:13 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 16:22:14 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-	#include "var_exp.h"
+#include "var_exp.h"
+int	handle_exit_status(char **new_str, int *i, t_shell *shell);
+int	handle_variable(char **new_str, char *str, int *i, t_shell *shell);
+int	handle_dollar(char **new_str, char *str, int *i, t_shell *shell);
+int	handle_non_dollar(char **new_str, char *str, int *i);
+char	*variable_exp_double(char *str, t_shell *shell);
+
+
 
 int	handle_exit_status(char **new_str, int *i, t_shell *shell)
 {
@@ -127,9 +134,7 @@ char	*variable_exp_double(char *str, t_shell *shell)
 			if (!handle_dollar(&new_str, str, &i, shell))
 				return (0);
 			if (tmp == new_str)
-			{
 				return (new_str);
-			}
 		}
 		else
 		{
