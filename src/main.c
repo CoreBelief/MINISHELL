@@ -41,7 +41,6 @@ static void	process_input(char *line, t_shell *shell)
 
 
 
-
 void minishell_loop(t_shell *shell)
 {
     char *line;
@@ -51,7 +50,7 @@ void minishell_loop(t_shell *shell)
 
     while (1)
     {
-        if (isatty(fileno(stdin)))
+        if (isatty(STDIN_FILENO))
         {
             // Interactive mode: create and display the prompt
             prompt = create_prompt();
@@ -67,7 +66,7 @@ void minishell_loop(t_shell *shell)
         else
         {
             // Non-interactive mode: read input using get_next_line
-            line = get_next_line(fileno(stdin));
+            line = get_next_line(STDIN_FILENO);
             if (line)
             {
                 // Remove newline character if present
@@ -80,7 +79,7 @@ void minishell_loop(t_shell *shell)
         // If no input (EOF or error)
         if (!line)
         {
-            if (isatty(fileno(stdin)))
+            if (isatty(STDIN_FILENO))
                 ft_putendl_fd("exit", STDOUT_FILENO); // Print "exit" in interactive mode
             break;
         }
@@ -91,6 +90,57 @@ void minishell_loop(t_shell *shell)
         free(line); // Free the input line after processing
     }
 }
+
+
+// void minishell_loop(t_shell *shell)
+// {
+//     char *line;
+//     char *prompt;
+
+//     setup_signals_shell();
+
+//     while (1)
+//     {
+//         if (isatty(fileno(stdin)))
+//         {
+//             // Interactive mode: create and display the prompt
+//             prompt = create_prompt();
+//             if (!prompt)
+//             {
+//                 ft_putendl_fd("Error: Failed to create prompt", STDERR_FILENO);
+//                 shell->last_exit_status = 1;
+//                 break;
+//             }
+//             line = readline(prompt);
+//             free(prompt);
+//         }
+//         else
+//         {
+//             // Non-interactive mode: read input using get_next_line
+//             line = get_next_line(fileno(stdin));
+//             if (line)
+//             {
+//                 // Remove newline character if present
+//                 size_t len = ft_strlen(line);
+//                 if (len > 0 && line[len - 1] == '\n')
+//                     line[len - 1] = '\0';
+//             }
+//         }
+
+//         // If no input (EOF or error)
+//         if (!line)
+//         {
+//             if (isatty(fileno(stdin)))
+//                 ft_putendl_fd("exit", STDOUT_FILENO); // Print "exit" in interactive mode
+//             break;
+//         }
+
+//         // Process the input line
+//         process_input(line, shell);
+
+//         free(line); // Free the input line after processing
+//     }
+// }
 
 
 void	free_shell(t_shell *shell)
