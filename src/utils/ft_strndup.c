@@ -6,11 +6,13 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 12:31:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/26 12:32:03 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/30 16:23:11 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	*ft_strndup(const char *s1, size_t n);
 
 char	*ft_strndup(const char *s1, size_t n)
 {

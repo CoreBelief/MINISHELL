@@ -6,14 +6,18 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/29 17:15:14 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 16:15:43 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+void	remove_quotes(char *str);
+int	handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i);
+t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i);
+void	print_cmd_list(t_cmd *head);
 
 void	remove_quotes(char *str)
-{
+{ // function too long
 	int		i;
 	int		j;
 	int		in_quotes;
@@ -45,7 +49,7 @@ void	remove_quotes(char *str)
 
 int	handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i)
 {
-	if ((*tokens)->content[0] == '\0') // ducktape solution to having empty expansions in the cmd line, gives wrong exitcode if only $nonexistent
+	if ((*tokens)->content[0] == '\0') 
 		return (1);
 	cmd->argv[*i] = ft_strdup((*tokens)->content);
 	if (!cmd->argv[*i])
@@ -85,9 +89,7 @@ void	print_cmd_list(t_cmd *head)
 			i++;
 		}
 		if (head->redirect_count != 0)
-		{
 			printf("redirecttype == %i target file == %s\n", head->redir->type, head->redir->file);
-		}
 		printf("  Pipe In: %d, Pipe Out: %d\n", head->pipe_in, head->pipe_out);
 		j = 0;
 		for (j = 0; j < head->redirect_count; j++)

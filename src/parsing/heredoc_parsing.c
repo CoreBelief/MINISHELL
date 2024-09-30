@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 15:46:18 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 20:01:31 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/30 16:14:14 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	open_hdfile(char *target)
 		perror("minishell: open");
 		free(target);
 		return (-1);
-		// exit(EXIT_FAILURE);
 	}
 	return (hd_fd);
 }
@@ -61,15 +60,12 @@ int	write_to_hdfd(char *delim, t_shell *shell, int hdfd)
 		free(content);
 		if (!expansion)
 		{
-			// free(delim);
 			return (0);
 		}
-		// free(delim);
 		write(hdfd, expansion, ft_strlen(expansion));
 		write(hdfd, "\n", 1);
 		free(expansion);
 	}
-	// free (delim);
 	close(hdfd);
 	return (1);
 }

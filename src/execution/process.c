@@ -79,22 +79,3 @@ void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 	}
 }
 
-void	wait_for_children(t_shell *shell)
-{
-	int		status;
-	pid_t	last_pid;
-
-	while ((last_pid = waitpid(-1, &status, WUNTRACED)) > 0)
-	{
-		if (WIFSIGNALED(status))
-		{
-			shell->last_exit_status = 128 + WTERMSIG(status);
-			if (WTERMSIG(status) == SIGQUIT)
-				ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
-		}
-		else if (WIFEXITED(status))
-			shell->last_exit_status = WEXITSTATUS(status);
-	}
-	if (last_pid == -1 && errno != ECHILD)
-		perror("waitpid");
-}

@@ -4,7 +4,7 @@ char	*search_paths(char **paths, char *command);
 char	*find_executable(char *command, t_shell *shell);
 char	*find_command_in_path(char *command, t_shell *shell);
 
-
+//function too long
 char	*search_paths(char **paths, char *command)
 {
 	int		i;
@@ -21,30 +21,6 @@ char	*search_paths(char **paths, char *command)
 	}
 	return (NULL);
 }
-
-// char	*find_executable(char *command, t_shell *shell)
-// {
-// 	char		*path_env;
-// 	char		**paths;
-// 	char		*full_path;
-
-// 	// if (access(command, X_OK) == 0)
-// 	// 	return (ft_strdup(command));
-// 	path_env = ft_get_env("PATH", shell);
-// 	// printf("path_env: %s\n", path_env);
-// 	if (!path_env)
-// 		return (ft_strdup(command));
-// 	paths = ft_split(path_env, ':');
-// 	// printf("paths: %s\n", paths[0]);
-// 	if (!paths)
-// 		return (ft_strdup(command));
-// 	full_path = search_paths(paths, command);
-// 	// printf("full_path: %s\n", full_path);
-// 	ft_free_str_array(paths);
-// 	if (full_path)
-// 		return (full_path);
-// 	return (NULL);
-// }
 
 char	*find_executable(char *command, t_shell *shell)
 {
@@ -72,7 +48,7 @@ void	check_file_status(char *path, t_shell *shell)
 {
 	struct stat	st;
 
-	if (stat(path, &st) != 0)
+	if (stat(path, &st) != 0) //illegal function? it seems legal....
 	{
 		shell->last_exit_status = 127;
 		ft_putstr_fd(path, 2);

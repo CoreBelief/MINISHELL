@@ -6,11 +6,16 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 12:36:10 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 16:42:05 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/30 16:21:11 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+int	is_var_char(char c);
+int	find_var_len(char *var);
+char	*append_str(char *og, char *to_append);
+int	until_dollar(char *str);
+char	*variable_exp(char *str, int *i, t_shell *shell);
 
 int	is_var_char(char c)
 {

@@ -4,12 +4,11 @@
 #include <ctype.h>
 #include <string.h>
 #include "parser.h"
-
-// Function prototypes
-static int is_space(char c);
-static int is_digit(char c);
-static int is_valid_number(const char *str, long *number);
-void builtin_exit(char **args);
+//function too many lines! make shorter or split up!
+static int	is_space(char c);
+static int	is_digit(char c);
+static int	is_valid_number(const char *str, long *number);
+void		builtin_exit(char **args);
 
 // Helper function to check for spaces
 // static int is_space(char c) {
@@ -102,38 +101,39 @@ static int is_digit(char c)
     return (c >= '0' && c <= '9');
 }
 
-int is_valid_number(const char *str, long *number) 
+static int	is_valid_number(const char *str, long *number)
 {
-    int i = 0;
-    int sign = 1;
-    unsigned long result = 0;
+	int				i;
+	int				sign;
+	unsigned long	result;
 
-    while (is_space(str[i])) 
-        i++;
-    if (str[i] == '+' || str[i] == '-') 
-    {
-        if (str[i] == '-') 
-            sign = -1;
-        i++;
-    }
-    if (!is_digit(str[i])) 
-        return 0; // Invalid number
-    while (str[i] != '\0') 
-    {
-        if (!is_digit(str[i])) 
-            return 0; // Non-digit character found
-        int digit = str[i] - '0';
-        if (result > (ULONG_MAX - digit) / 10) 
-            return 0; // Overflow detected
-        result = result * 10 + digit;
-        i++;
-    }
-    if (sign == -1 && result > (unsigned long)LONG_MAX + 1) 
-        return 0; // Underflow detected
-    if (sign == 1 && result > (unsigned long)LONG_MAX) 
-        return 0; // Overflow detected
-    *number = sign * (long)result;
-    return 1; // Valid number
+	i = 0;
+	sign = 1;
+	result = 0;
+	while (is_space(str[i]))
+		i++;
+	if (str[i] == '+' || str[i] == '-')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	if (!is_digit(str[i]))
+		return (0);
+	while (str[i] != '\0')
+	{
+		if (!is_digit(str[i]))
+			return (0);
+		if (result > (ULONG_MAX - (str[i] - '0')) / 10)
+			return (0);
+		result = result * 10 + (str[i] - '0');
+		i++;
+	}
+	if ((sign == -1 && result > (unsigned long)LONG_MAX + 1)
+		|| (sign == 1 && result > (unsigned long)LONG_MAX))
+		return (0);
+	*number = sign * (long)result;
+	return (1);
 }
 
 void builtin_exit(char **args) 

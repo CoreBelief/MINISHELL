@@ -4,10 +4,9 @@
 #include <string.h>
 
 void	builtin_unset(char **args, t_shell *shell);
-static int	is_valid_first_char(char c); //multiple static functions that ere double
+static int	is_valid_first_char(char c); 
 static int	is_valid_variable_char(char c);
 static int	is_valid_variable_name(const char *name);
-
 
 static int	is_valid_first_char(char c)
 {
@@ -36,6 +35,7 @@ static int	is_valid_variable_name(const char *name)
 	}
 	return (1);
 }
+
 void builtin_unset(char **args, t_shell *shell)
 {
     int i = 1;
@@ -45,7 +45,7 @@ void builtin_unset(char **args, t_shell *shell)
 
     while (args[i])
     {
-        if (is_valid_variable_name(args[i]))  // You'd need to implement this function
+        if (is_valid_variable_name(args[i]))
             ft_unset_env(args[i], shell);
         i++;
     }
