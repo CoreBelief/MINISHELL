@@ -6,7 +6,7 @@
 /*   By: rdl <rdl@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 19:24:35 by rdl           #+#    #+#                 */
-/*   Updated: 2024/09/26 19:24:39 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 15:08:38 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,20 @@
 
 volatile sig_atomic_t g_received_signal = 0;
 
+void suppress_broken_pipe_message(void) {
+    int saved_errno = errno;
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = SIG_IGN;
+    sigemptyset(&sa.sa_mask);
+
+    if (sigaction(SIGPIPE, &sa, NULL) == -1) {
+        perror("Error setting up SIGPIPE handler");
+        exit(EXIT_FAILURE);
+    }
+
+    errno = saved_errno;
+}
 
 static void handle_signal(int sig)
 {
@@ -47,7 +61,8 @@ static int setup_signal(int signum, void (*handler)(int), int flags)
 
 
 void setup_signals_shell(void)
-{
+{   
+    suppress_broken_pipe_message();
     if (setup_signal(SIGINT, handle_signal, SA_RESTART) == -1)  
     {
         perror("Error setting up SIGINT handler");

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/29 20:46:26 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 15:38:37 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,29 +20,74 @@ void	execute_external(t_cmd *cmd, t_shell *shell);
 void	setup_pipes(t_cmd *cmd, int pipe_fds[2]);
 void	execute_command(t_shell *shell);
 
-void	execute_external(t_cmd *cmd, t_shell *shell)
+void execute_external(t_cmd *cmd, t_shell *shell)
 {
-	char	*path;
+    char *path;
 
-	if (!cmd->argv[0])
-	{
-		shell->last_exit_status = 0;// for empty cmds
-		exit(shell->last_exit_status);
-	}
-	path = find_executable(cmd->argv[0], shell);
-	if (!path)
-	{
-		shell->last_exit_status = 127;
-		ft_putstr_fd(cmd->argv[0], 2);
-		ft_putstr_fd(": command not found\n", 2);
-		exit(shell->last_exit_status);
-	}
-	check_file_status(path, shell);
-	execve(path, cmd->argv, shell->env);
-	shell->last_exit_status = 126;
-	perror(path);
-	free(path);
-	exit(shell->last_exit_status);
+    if (!cmd->argv[0])
+    {
+        shell->last_exit_status = 0;// for empty cmds
+        exit(shell->last_exit_status);
+    }
+    path = find_executable(cmd->argv[0], shell);
+    if (!path)
+    {
+        shell->last_exit_status = 127;
+        ft_putstr_fd(cmd->argv[0], 2);
+        ft_putstr_fd(": command not found\n", 2);
+        exit(shell->last_exit_status);
+    }
+    check_file_status(path, shell);
+
+    // Special handling for bash
+    if (strcmp(cmd->argv[0], "bash") == 0)
+    {
+        // Set PS1 to ensure bash displays a prompt
+        setenv("PS1", "\\u@\\h:\\w\\$ ", 1);
+
+        // Force bash into interactive mode
+        char *new_argv[4];
+        new_argv[0] = "bash";
+        new_argv[1] = "-i";
+        new_argv[2] = NULL;
+        
+        // Restore standard input to the controlling terminal
+        int tty_fd = open("/dev/tty", O_RDWR);
+        if (tty_fd != -1)
+        {
+            dup2(tty_fd, STDIN_FILENO);
+            close(tty_fd);
+        }
+
+        execve(path, new_argv, shell->env);
+    }
+    else
+    {
+        // Redirect stderr to /dev/null for non-bash commands
+        int dev_null = open("/dev/null", O_WRONLY);
+        if (dev_null != -1)
+        {
+            dup2(dev_null, STDERR_FILENO);
+            close(dev_null);
+        }
+
+        execve(path, cmd->argv, shell->env);
+    }
+    
+    // If execve fails, restore stderr
+    dup2(STDERR_FILENO, 2);
+
+    if (errno == EPIPE)
+    {
+        shell->last_exit_status = 141;  // SIGPIPE signal number + 128
+        free(path);
+        exit(shell->last_exit_status);
+    }
+
+    shell->last_exit_status = 126;
+    perror(path);
+    free(path);
+    exit(shell->last_exit_status);
 }
 
 void	setup_pipes(t_cmd *cmd, int pfds[2])

@@ -9,6 +9,10 @@
 #include <sys/wait.h>
 #include "environ.h"
 #include "signal.h"
+#include <fcntl.h>
+#include <termios.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 static void	process_input(char *line, t_shell *shell)
 {
@@ -38,17 +42,12 @@ static void	process_input(char *line, t_shell *shell)
 	}
 }
 
-
-
-#include <fcntl.h>
-#include <termios.h>
-
 void minishell_loop(t_shell *shell)
 {
     char *line = NULL;
     char *prompt = NULL;
     int original_stdout;
-    FILE *terminal;
+    int terminal_fd;
 
     setup_signals_shell();
 
@@ -56,8 +55,8 @@ void minishell_loop(t_shell *shell)
     original_stdout = dup(STDOUT_FILENO);
     
     // Open the controlling terminal
-    terminal = fopen("/dev/tty", "w");
-    if (!terminal) {
+    terminal_fd = open("/dev/tty", O_WRONLY);
+    if (terminal_fd == -1) {
         perror("Failed to open terminal");
         return;
     }
@@ -65,7 +64,7 @@ void minishell_loop(t_shell *shell)
     while (1)
     {
         // Restore stdout to the terminal for readline
-        dup2(fileno(terminal), STDOUT_FILENO);
+        dup2(terminal_fd, STDOUT_FILENO);
 
         if (isatty(STDIN_FILENO))
         {
@@ -73,7 +72,7 @@ void minishell_loop(t_shell *shell)
             prompt = create_prompt();
             if (!prompt)
             {
-                fprintf(terminal, "Error: Failed to create prompt\n");
+                ft_putstr_fd("Error: Failed to create prompt\n", terminal_fd);
                 shell->last_exit_status = 1;
                 break;
             }
@@ -83,7 +82,7 @@ void minishell_loop(t_shell *shell)
 
             if (!line) // EOF (Ctrl+D)
             {
-                fprintf(terminal, "exit\n");
+                ft_putstr_fd("exit\n", terminal_fd);
                 break;
             }
 
@@ -115,7 +114,7 @@ void minishell_loop(t_shell *shell)
     if (line)
         free(line);
     
-    fclose(terminal);
+    close(terminal_fd);
     close(original_stdout);
 }
 
@@ -135,22 +134,6 @@ void	init_shell(t_shell *shell)
 	shell->env_size = 0;
 }
 
-// void increment_shlvl(t_shell *shell) {
-//     char *shlvl_str = ft_get_env("SHLVL", shell);  // Fetch the current SHLVL value
-//     int shlvl = 1;  // Default to 1 if not found
-
-//     if (shlvl_str != NULL) {
-//         shlvl = ft_atoi(shlvl_str);  // Convert string to int
-//         shlvl += 1;  // Increment the SHLVL value
-//     }
-
-//     // Create a string for the new SHLVL value
-//     char new_shlvl[16];  // Assuming 16 bytes is enough for the integer + null terminator
-//     snprintf(new_shlvl, sizeof(new_shlvl), "%d", shlvl); // have to change this line
-
-//     // Update the SHLVL environment variable
-//     ft_set_env("SHLVL", new_shlvl, shell);  // 1 to overwrite any existing value
-// }
 void ft_custom_itoa(int n, char *str, int max_len) {
     int i = 0;
     int is_negative = 0;
