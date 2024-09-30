@@ -51,7 +51,7 @@ void minishell_loop(t_shell *shell)
 
     while (1)
     {
-        if (isatty(fileno(stdin)))
+        if (isatty(STDIN_FILENO))
         {
             // Interactive mode: create and display the prompt
             prompt = create_prompt();
@@ -67,7 +67,7 @@ void minishell_loop(t_shell *shell)
         else
         {
             // Non-interactive mode: read input using get_next_line
-            line = get_next_line(fileno(stdin));
+            line = get_next_line(STDIN_FILENO);
             if (line)
             {
                 // Remove newline character if present
@@ -80,7 +80,7 @@ void minishell_loop(t_shell *shell)
         // If no input (EOF or error)
         if (!line)
         {
-            if (isatty(fileno(stdin)))
+            if (isatty(STDIN_FILENO))
                 ft_putendl_fd("exit", STDOUT_FILENO); // Print "exit" in interactive mode
             break;
         }
