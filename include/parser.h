@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:19:51 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 16:58:25 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/01 17:45:49 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int		handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i);
 
 /* parser_redirects */
 int		is_redirect_token(int token_type);
-int		handle_redirection_parsing(t_cmd *cmd, t_token **token);
+int		handle_redirection_parsing(t_cmd *cmd, t_token **token, t_shell *shell);
 
 /* heredoc_parsing */
 char	*create_filename(int redir_count);
