@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 19:29:05 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/01 18:59:36 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	execute_external(t_cmd *cmd, t_shell *shell)
 
 	if (!cmd->argv[0])
 	{
-		shell->last_exit_status = 0;
+		shell->last_exit_status = 0;// for empty cmds
 		exit(shell->last_exit_status);
 	}
 	path = find_executable(cmd->argv[0], shell);
@@ -37,45 +37,12 @@ void	execute_external(t_cmd *cmd, t_shell *shell)
 		exit(shell->last_exit_status);
 	}
 	check_file_status(path, shell);
-	if (strcmp(cmd->argv[0], "bash") == 0)
-	{
-		ft_set_env("PS1", "\\u@\\h:\\w\\$ ", shell);
-		char *new_argv[4];
-		new_argv[0] = "bash";
-		new_argv[1] = "-i";
-		new_argv[2] = NULL;
-		int tty_fd = open("/dev/tty", O_RDWR);
-		if (tty_fd != -1)
-		{
-			dup2(tty_fd, STDIN_FILENO);
-			close(tty_fd);
-		}
-
-		execve(path, new_argv, shell->env);
-	}
-	else
-	{
-		int dev_null = open("/dev/null", O_WRONLY);
-		if (dev_null != -1)
-		{
-			dup2(dev_null, STDERR_FILENO);
-			close(dev_null);
-		}
-		execve(path, cmd->argv, shell->env);
-	}
-	dup2(STDERR_FILENO, 2);
-	if (errno == EPIPE)
-	{
-		shell->last_exit_status = 141;
-		free(path);
-		exit(shell->last_exit_status);
-	}
+	execve(path, cmd->argv, shell->env);
 	shell->last_exit_status = 126;
 	perror(path);
 	free(path);
 	exit(shell->last_exit_status);
 }
-
 void	setup_pipes(t_cmd *cmd, int pfds[2])
 {
 	if (cmd->pipe_out == 1)

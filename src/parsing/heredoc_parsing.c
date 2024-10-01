@@ -6,11 +6,12 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 15:46:18 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 16:14:14 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/01 20:26:56 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "signal.h"
 
 char	*create_filename(int redir_count)
 {
@@ -47,7 +48,7 @@ int	write_to_hdfd(char *delim, t_shell *shell, int hdfd)
 	char	*expansion;
 
 	while (1)
-	{
+	{	
 		content = readline("> ");
 		if (!content)
 			break ;
@@ -69,6 +70,7 @@ int	write_to_hdfd(char *delim, t_shell *shell, int hdfd)
 	close(hdfd);
 	return (1);
 }
+
 
 int	handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 {

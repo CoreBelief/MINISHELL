@@ -61,7 +61,7 @@ void minishell_loop(t_shell *shell)
     int terminal_fd;
 
     setup_signals_shell();
-    original_stdout = dup(STDOUT_FILENO);
+    original_stdout = dup(STDOUT_FILENO); //illegalll!!!
     terminal_fd = open("/dev/tty", O_WRONLY);
     if (terminal_fd == -1)
     {
