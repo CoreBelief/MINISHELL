@@ -6,19 +6,17 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:25:53 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/28 12:25:56 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/09/30 19:31:35 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 int			init_env(t_shell *shell, char **envp);
 char		*ft_get_env(const char *name, t_shell *shell);
 static int	ft_add_env(char *new_var, t_shell *shell);
 int			ft_set_env(const char *name, const char *value, t_shell *shell);
 int			ft_unset_env(const char *name, t_shell *shell);
-
 
 int	init_env(t_shell *shell, char **envp)
 {
@@ -48,10 +46,9 @@ int	init_env(t_shell *shell, char **envp)
 	return (1);
 }
 
-
 char	*ft_get_env(const char *name, t_shell *shell)
 {
-	int	i;
+	int		i;
 	size_t	len;
 
 	if (!name)
@@ -60,7 +57,8 @@ char	*ft_get_env(const char *name, t_shell *shell)
 	len = ft_strlen(name);
 	while (shell->env && shell->env[i])
 	{
-		if (ft_strncmp(shell->env[i], name, len) == 0 && shell->env[i][len] == '=')
+		if (ft_strncmp(shell->env[i], name, len) == 0 && \
+		shell->env[i][len] == '=')
 			return (shell->env[i] + len + 1);
 		i++;
 	}
@@ -94,14 +92,13 @@ static int	ft_add_env(char *new_var, t_shell *shell)
 	return (1);
 }
 
-int ft_set_env(const char *name, const char *value, t_shell *shell)
+int	ft_set_env(const char *name, const char *value, t_shell *shell)
 {
-	char *new_var;
-	int i;
+	char	*new_var;
+	int		i;
 
 	if (!name || !value)
 		return (0);
-
 	new_var = ft_strjoin3(name, "=", value);
 	if (!new_var)
 		return (0);
@@ -120,14 +117,13 @@ int ft_set_env(const char *name, const char *value, t_shell *shell)
 	return (ft_add_env(new_var, shell));
 }
 
-int ft_unset_env(const char *name, t_shell *shell)
+int	ft_unset_env(const char *name, t_shell *shell)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	if (!name)
 		return (0);
-
 	i = 0;
 	while (shell->env && shell->env[i])
 	{

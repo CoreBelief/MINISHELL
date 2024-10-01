@@ -1,15 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   export.c                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/09/30 19:32:27 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/09/30 19:34:14 by eeklund       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "builtins.h"
 #include "minishell.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include "structs.h"
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include "structs.h"
 
 void		builtin_export(char **args, t_shell *shell);
 static void	print_sorted_env(t_shell *shell);
 static int	is_valid_identifier(const char *str);
-static void handle_value_assignment(char *arg, char *equal_sign, t_shell *shell);
-static void process_identifier(char *arg, char *equal_sign, t_shell *shell);
+static void	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell);
+static void	process_identifier(char *arg, char *equal_sign, t_shell *shell);
 static void	print_sorted_env(t_shell *shell);
 static void	sort_env(char **sorted_env, int size);
 
@@ -32,14 +43,14 @@ static int	is_valid_identifier(const char *str)
 	return (1);
 }
 
-static void handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
+static void	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
 {
-	char *value;
+	char	*value;
 
 	*equal_sign = '\0';
 	value = equal_sign + 1;
-	if ((value[0] == '"' && value[ft_strlen(value) - 1] == '"') ||
-		(value[0] == '\'' && value[ft_strlen(value) - 1] == '\''))
+	if ((value[0] == '"' && value[ft_strlen(value) - 1] == '"') || \
+	(value[0] == '\'' && value[ft_strlen(value) - 1] == '\''))
 	{
 		value[ft_strlen(value) - 1] = '\0';
 		value++;
@@ -48,9 +59,9 @@ static void handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
 	*equal_sign = '=';
 }
 
-static void process_identifier(char *arg, char *equal_sign, t_shell *shell)
+static void	process_identifier(char *arg, char *equal_sign, t_shell *shell)
 {
-	char *identifier;
+	char	*identifier;
 
 	if (equal_sign != NULL)
 		identifier = ft_strndup(arg, equal_sign - arg);
@@ -64,7 +75,6 @@ static void process_identifier(char *arg, char *equal_sign, t_shell *shell)
 			free(identifier);
 		return ;
 	}
-
 	if (equal_sign != NULL)
 		handle_value_assignment(arg, equal_sign, shell);
 	else
@@ -73,7 +83,6 @@ static void process_identifier(char *arg, char *equal_sign, t_shell *shell)
 	if (equal_sign != NULL)
 		free(identifier);
 }
-
 
 void	builtin_export(char **args, t_shell *shell)
 {

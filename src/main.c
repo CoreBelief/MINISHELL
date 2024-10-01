@@ -15,12 +15,12 @@
 #include <unistd.h>
 
 static void	process_input(char *line, t_shell *shell); //maybe we move this to different file?
-void minishell_loop(t_shell *shell);
-void	free_shell(t_shell *shell); //move this to memory.c ?
-void	init_shell(t_shell *shell); //move this also somewhere else?
-void ft_custom_itoa(int n, char *str, int max_len); //this one can use its own file inside utils maybe?
-void increment_shlvl(t_shell *shell); //not sure yet where to place this?
-int	main(int argc, char **argv, char **envp); //main can be shorter and split up maybe? maybe its fine
+void		minishell_loop(t_shell *shell);
+void		free_shell(t_shell *shell); //move this to memory.c ?
+void		init_shell(t_shell *shell); //move this also somewhere else?
+void		ft_custom_itoa(int n, char *str, int max_len); //this one can use its own file inside utils maybe?
+int			increment_shlvl(t_shell *shell); //not sure yet where to place this?
+int			main(int argc, char **argv, char **envp); //main can be shorter and split up maybe? maybe its fine
 
 
 static void	process_input(char *line, t_shell *shell)
@@ -34,17 +34,19 @@ static void	process_input(char *line, t_shell *shell)
 		if (!tokens)
 		{
 			free_tokens(&tokens);
-			shell->last_exit_status = 1;
+			// shell->last_exit_status = 1;
 			return ;
 		}
+		// print_token_list(tokens);
 		shell->commands = parse_command_from_tokens(tokens, shell);
 		if (!shell->commands)
 		{
-			shell->last_exit_status = 1;
+			// shell->last_exit_status = 1;
 			free_tokens(&tokens);
 			free_command_list(&shell->commands);
 			return ;
 		}
+		// print_cmd_list(shell->commands);
 		free_tokens(&tokens);
 		execute_command(shell);
 		free_command_list(&shell->commands);
@@ -78,6 +80,7 @@ void minishell_loop(t_shell *shell)
                 shell->last_exit_status = 1;
                 break;
             }
+            
             line = readline(prompt);
             free(prompt);
             if (!line) 
@@ -125,64 +128,119 @@ void	init_shell(t_shell *shell)
 
 void ft_custom_itoa(int n, char *str, int max_len)
 { //needs to be norm proof... maybe we can use regualr itoa??
-    int i = 0;
-    int is_negative = 0;
-    
-    if (n == 0)
-    {
-        str[i++] = '0';
-        str[i] = '\0';
-        return;
-    }
-    if (n < 0)
-    {
-        is_negative = 1;
-        n = -n;
-    }
-    while (n != 0 && i < max_len - 1)
-    {
-        str[i++] = (n % 10) + '0';
-        n = n / 10;
-    }
-    if (is_negative && i < max_len - 1)
-        str[i++] = '-';
-    str[i] = '\0';
-    int start = 0;
-    int end = i - 1;
-    while (start < end) {
-        char temp = str[start];
-        str[start] = str[end];
-        str[end] = temp;
-        start++;
-        end--;
-    }
+	int i = 0;
+	int is_negative = 0;
+
+	if (n == 0)
+	{
+		str[i++] = '0';
+		str[i] = '\0';
+		return;
+	}
+	if (n < 0)
+	{
+		is_negative = 1;
+		n = -n;
+	}
+	while (n != 0 && i < max_len - 1)
+	{
+		str[i++] = (n % 10) + '0';
+		n = n / 10;
+	}
+	if (is_negative && i < max_len - 1)
+		str[i++] = '-';
+	str[i] = '\0';
+	int start = 0;
+	int end = i - 1;
+	while (start < end) {
+		char temp = str[start];
+		str[start] = str[end];
+		str[end] = temp;
+		start++;
+		end--;
+	}
 }
 
-void increment_shlvl(t_shell *shell)
+static int	countnum(long n)
 {
-    char *shlvl_str = ft_get_env("SHLVL", shell);
-    int shlvl = 1;
-    if (shlvl_str != NULL)
-    {
-        shlvl = ft_atoi(shlvl_str);
-        shlvl += 1;
-    }
-    char new_shlvl[16];
-    ft_custom_itoa(shlvl, new_shlvl, sizeof(new_shlvl));//find out why custom itoa and why not regular ft_itoa
-    ft_set_env("SHLVL", new_shlvl, shell);
+	int	count;
+
+	if (n == 0)
+		return (1);
+	count = 0;
+	if (n < 0)
+	{
+		count++;
+		n = -n;
+	}
+	while (n > 0)
+	{
+		n = n / 10;
+		count++;
+	}
+	return (count);
+}
+
+char	*ft_itoa(int n)
+{
+	char	*intstring;
+	int		len;
+	long	num;
+	int		i;
+
+	num = (long)n;
+	len = countnum(num);
+	intstring = (char *) malloc ((len + 1) * (sizeof(char)));
+	if (!intstring)
+		return (NULL);
+	i = 0;
+	if (num < 0)
+		num = -num;
+	intstring[len] = '\0';
+	while (i < len)
+	{
+		intstring[len - 1 - i] = (num % 10) + '0';
+		num = num / 10;
+		i++;
+	}
+	if (n < 0)
+		intstring[0] = '-';
+	return (intstring);
+}
+
+int	increment_shlvl(t_shell *shell)
+{
+	char	*shlvl_str;
+	char	*new_shlvl;
+	int		shlvl;
+
+	shlvl = 1;
+	shlvl_str = ft_get_env("SHLVL", shell);
+	if (shlvl_str != NULL)
+	{
+		shlvl = ft_atoi(shlvl_str);
+		shlvl += 1;
+	}
+	new_shlvl = ft_itoa(shlvl);
+	// ft_custom_itoa(shlvl, new_shlvl, sizeof(new_shlvl));//find out why custom itoa and why not regular ft_itoa
+	if (!ft_set_env("SHLVL", new_shlvl, shell))
+	{
+		free (new_shlvl);
+		return (0);
+	}
+	free (new_shlvl);
+	return (1);
 }
 
 int	main(int argc, char **argv, char **envp)
-{//how to save 1 line??
+{
 	t_shell	shell;
-	
+
 	init_shell(&shell);
 	if (!init_env(&shell, envp))
-	{
-		perror("error init env");
+		return (perror("error init env"), EXIT_FAILURE);
+	if (!increment_shlvl(&shell))
 		return (EXIT_FAILURE);
-	}
-    increment_shlvl(&shell);
 	if (argc > 1 && strcmp(argv[1], "-c") == 0)
 	{
 		if (argc > 2)

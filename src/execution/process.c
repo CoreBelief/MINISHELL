@@ -1,14 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   process.c                                          :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/09/30 19:20:16 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/09/30 19:25:52 by eeklund       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	child_proc(t_cmd *cmd, int pipe_fds[2],
 			int prev_pipe_read, t_shell *shell);
 void	parent_proc(t_cmd *cmd, int pipe_fds[2],
 			int *prev_pipe_read);
-void	execute_child_process(t_cmd *cmd, int *pipe_fds,
-			int prev_pipe_read, t_shell *shell);
 
-
-void handle_input_redirection(int prev_prd, t_cmd *cmd)
+void	handle_input_redirection(int prev_prd, t_cmd *cmd)
 {
 	if (prev_prd != -1 && cmd->input == -1)
 	{
@@ -44,7 +53,6 @@ void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
 {
 	setup_signals_child();
 	signal(SIGPIPE, SIG_IGN);
-	
 	if (cmd->redirect_count)
 		setup_redirections(cmd);
 	handle_input_redirection(prev_prd, cmd);
@@ -67,7 +75,7 @@ void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 	if (cmd->pipe_out == 1 && cmd->output == -1)
 	{
 		close(pfds[1]);
-		*prev_prd = pfds[0]; 
+		*prev_prd = pfds[0];
 	}
 	else
 	{
@@ -78,4 +86,3 @@ void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 			close(pfds[1]);
 	}
 }
-

@@ -6,15 +6,16 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 16:16:18 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/01 17:45:16 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-t_cmd	*init_cmd(void);
-static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell);
-t_cmd	*parse_command_from_tokens(t_token *tokens, t_shell *shell);
+t_cmd		*init_cmd(void);
+static int	handle_token(t_token **tok, t_cmd **cur_cmd, \
+int *i, t_shell *shell);
+t_cmd		*parse_command_from_tokens(t_token *tokens, t_shell *shell);
 
 t_cmd	*init_cmd(void)
 {
@@ -58,7 +59,7 @@ static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell)
 			if (!(handle_heredoc_parsing(*cur_cmd, tok, shell)))
 				return (0);
 		}
-		else if (!handle_redirection_parsing(*cur_cmd, tok))
+		else if (!handle_redirection_parsing(*cur_cmd, tok, shell))
 			return (0);
 	}
 	else if ((*tok)->type == TOKEN_PIPE)
@@ -88,5 +89,7 @@ t_cmd	*parse_command_from_tokens(t_token *tokens, t_shell *shell)
 		tokens = tokens->next;
 	}
 	cur_cmd->argv[i] = NULL;
+	if (!head)
+		shell->last_exit_status = 1;
 	return (head);
 }

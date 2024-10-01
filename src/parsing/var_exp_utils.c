@@ -6,20 +6,36 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 12:36:10 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 16:21:11 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 19:18:46 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-int	is_var_char(char c);
-int	find_var_len(char *var);
+
+int		handle_variable(char **new_str, char *str, int *i, t_shell *shell);
+int		find_var_len(char *var);
 char	*append_str(char *og, char *to_append);
-int	until_dollar(char *str);
+int		until_dollar(char *str);
 char	*variable_exp(char *str, int *i, t_shell *shell);
 
-int	is_var_char(char c)
+int	handle_variable(char **new_str, char *str, int *i, t_shell *shell)
 {
-	return (ft_isalnum(c) || c == '_');
+	char	*expansion;
+	char	*tmp;
+
+	(*i)++;
+	expansion = variable_exp(str, i, shell);
+	if (!expansion)
+	{
+		// token->content = new_str;
+		return (1);
+	}
+	tmp = *new_str;
+	*new_str = append_str(tmp, expansion);
+	free(tmp);
+	if (!new_str)
+		return (0);
+	return (1);
 }
 
 int	find_var_len(char *var)
@@ -27,7 +43,7 @@ int	find_var_len(char *var)
 	int	i;
 
 	i = 0;
-	while (var[i] && is_var_char(var[i]))
+	while (var[i] && (ft_isalnum(var[i]) || var[i] == '_'))
 		i++;
 	return (i);
 }
@@ -50,7 +66,14 @@ int	until_dollar(char *str)
 
 	i = 0;
 	while (str[i] && str[i] != '$')
-		i++;
+	{
+		if (str[i] == '\\' && str[i + 1] && str[i + 1] == '$')
+			i += 2;
+		else if (str[i] == '$')
+			return (i);
+		else
+			i++;
+	}
 	return (i);
 }
 

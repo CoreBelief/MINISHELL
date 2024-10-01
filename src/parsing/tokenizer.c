@@ -6,36 +6,55 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 16:20:28 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/01 17:41:35 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-int	is_whitespace(char c);
-int	tokenize_pipe(int *i, t_token **head);
-t_token	*tokenizer(char *input, t_shell *shell);
-t_token	*add_token(t_token **head, char *content, t_token_type type);
+#include "tokenizer.h"
 
-int	is_whitespace(char c)
-{
-	if ((c >= 9 && c <= 13) || c == 32)
-		return (1);
-	return (0);
-}
+int		tokenize_pipe(int *i, t_token **head);
+int		tokenize_redirection(char *input, int *i, t_token **head);
+t_token	*tokenizer(char *input, t_shell *shell);
 
 int	tokenize_pipe(int *i, t_token **head)
 {
-	if (*i == 0) 
-	{
-		printf("syntax error near unexpected token `|'\n");
-		return (0); //here we should return an error code (2)?
-	}
-	add_token(head, ft_strdup("|"), TOKEN_PIPE);
+	// if (*i == 0)
+	// {
+	// 	printf("syntax error near unexpected token `|'\n");
+	// 	return (0); //here we should return an error code (2)?
+	// }
+	if (!add_token(head, ft_strdup("|"), TOKEN_PIPE))
+		return (0);
 	(*i)++;
 	return (1);
 }
 
-// have to fix if there are 2 consecutive commands in handle_word function
+int	tokenize_redirection(char *input, int *i, t_token **head)
+{
+	t_token	*tmp;
+
+	if (input[*i + 1] == input[*i])
+	{
+		if (input[*i] == '>')
+			tmp = add_token(head, ft_strdup(">>"), TOKEN_REDIRECT_APPEND);
+		else
+			tmp = add_token(head, ft_strdup("<<"), TOKEN_HEREDOC);
+		(*i) = (*i) + 2;
+	}
+	else
+	{
+		if (input[*i] == '>')
+			tmp = add_token(head, ft_strdup(">"), TOKEN_REDIRECT_OUT);
+		else
+			tmp = add_token(head, ft_strdup("<"), TOKEN_REDIRECT_IN);
+		(*i)++;
+	}
+	if (!tmp)
+		return (0);
+	return (1);
+}
+
 t_token	*tokenizer(char *input, t_shell *shell)
 {
 	t_token	*head;
@@ -49,10 +68,12 @@ t_token	*tokenizer(char *input, t_shell *shell)
 	{
 		while (is_whitespace(input[i]))
 			i++;
-		if (input[i] == '\0')
-			break ;
+		// if (input[i] == '\0')
+		// 	break ;
 		if (input[i] == '|')
 		{
+			if ((input[i - 1] && input[i - 1] == '|') || !input[i + 1] || i == 0)
+				return (handle_syn_errors(2, "syntax error near unexpected token `|'\n", shell));
 			if (!tokenize_pipe(&i, &head))
 				break ;
 		}
@@ -61,32 +82,7 @@ t_token	*tokenizer(char *input, t_shell *shell)
 		else
 			tokenize_word(input, &i, &head, shell);
 	}
+	if (!head)
+		shell->last_exit_status = 1;
 	return (head);
-}
-
-t_token	*add_token(t_token **head, char *content, t_token_type type)
-{
-	t_token	*new_token;
-	t_token	*current;
-
-	new_token = malloc(sizeof(t_token));
-	if (!new_token)
-	{
-		free (content);
-		// content = NULL;
-		return (NULL);
-	}
-	new_token->content = content;
-	new_token->type = type;
-	new_token->next = NULL;
-	if (*head == NULL)
-		*head = new_token;
-	else
-	{
-		current = *head;
-		while (current->next)
-			current = current->next;
-		current->next = new_token;
-	}
-	return (new_token);
 }

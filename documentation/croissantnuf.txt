@@ -30,6 +30,14 @@ Execute commands but this time without any path (ls, wc, awk and so forth).
 Unset the $PATH and ensure commands are not working anymore.
 
 Set the $PATH to a multiple directory value (directory1:directory2) and ensure that directories are checked in order from left to right.
+Environment path
+Environment path
+
+Execute commands but this time without any path (ls, wc, awk and so forth).
+
+Unset the $PATH and ensure commands are not working anymore.
+
+Set the $PATH to a multiple directory value (directory1:directory2) and ensure that directories are checked in order from left to right.
 
 - we have to fix the STD-ERR through our entire minishell, we are over halfway there!
 - and ofcourse all correct exitcodes.

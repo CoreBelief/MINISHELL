@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/21 11:00:43 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/29 17:14:24 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 19:29:35 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ void	setup_redirections(t_cmd *cmd)
 	cur = 0;
 	while (cur < cmd->redirect_count)
 	{
-		if (cmd->redir[cur].type == TOKEN_REDIRECT_IN || cmd->redir[cur].type == TOKEN_HEREDOC)
+		if (cmd->redir[cur].type == TOKEN_REDIRECT_IN || \
+		cmd->redir[cur].type == TOKEN_HEREDOC)
 			handle_file_opening(&cmd->input, cmd->redir[cur].file, \
 			cmd->redir[cur].type);
 		else

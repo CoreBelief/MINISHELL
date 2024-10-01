@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   unset.c                                            :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/09/30 19:31:57 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/09/30 19:36:55 by eeklund       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "builtins.h"
 #include "minishell.h"
-#include <stdlib.h>
-#include <string.h>
+// #include <stdlib.h>
+// #include <string.h>
 
-void	builtin_unset(char **args, t_shell *shell);
-static int	is_valid_first_char(char c); 
+void		builtin_unset(char **args, t_shell *shell);
+static int	is_valid_first_char(char c);
 static int	is_valid_variable_char(char c);
 static int	is_valid_variable_name(const char *name);
 
@@ -36,17 +48,18 @@ static int	is_valid_variable_name(const char *name)
 	return (1);
 }
 
-void builtin_unset(char **args, t_shell *shell)
+void	builtin_unset(char **args, t_shell *shell)
 {
-    int i = 1;
+	int	i;
 
-    if (!args[1])
-        return;
+	i = 1;
+	if (!args[1])
+		return ;
 
-    while (args[i])
-    {
-        if (is_valid_variable_name(args[i]))
-            ft_unset_env(args[i], shell);
-        i++;
-    }
+	while (args[i])
+	{
+		if (is_valid_variable_name(args[i]))
+			ft_unset_env(args[i], shell);
+		i++;
+	}
 }

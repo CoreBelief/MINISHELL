@@ -6,18 +6,18 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 16:22:14 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 19:18:22 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "var_exp.h"
-int	handle_exit_status(char **new_str, int *i, t_shell *shell);
-int	handle_variable(char **new_str, char *str, int *i, t_shell *shell);
-int	handle_dollar(char **new_str, char *str, int *i, t_shell *shell);
-int	handle_non_dollar(char **new_str, char *str, int *i);
-char	*variable_exp_double(char *str, t_shell *shell);
 
-
+int			handle_exit_status(char **new_str, int *i, t_shell *shell);
+int			handle_variable(char **new_str, char *str, int *i, t_shell *shell);
+int			handle_dollar(char **new_str, char *str, int *i, t_shell *shell);
+int			handle_non_dollar(char **new_str, char *str, int *i);
+static int	process_char(char **new_str, char *str, int *i, t_shell *shell);
+char		*variable_exp_double(char *str, t_shell *shell);
 
 int	handle_exit_status(char **new_str, int *i, t_shell *shell)
 {
@@ -40,26 +40,6 @@ int	handle_exit_status(char **new_str, int *i, t_shell *shell)
 	return (1);
 }
 
-int	handle_variable(char **new_str, char *str, int *i, t_shell *shell)
-{
-	char	*expansion;
-	char	*tmp;
-
-	(*i)++;
-	expansion = variable_exp(str, i, shell);
-	if (!expansion)
-	{
-		// token->content = new_str;
-		return (1);
-	}
-	tmp = *new_str;
-	*new_str = append_str(tmp, expansion);
-	free(tmp);
-	if (!new_str)
-		return (0);
-	return (1);
-}
-
 int	handle_dollar(char **new_str, char *str, int *i, t_shell *shell)
 {
 	char	*tmp;
@@ -67,7 +47,7 @@ int	handle_dollar(char **new_str, char *str, int *i, t_shell *shell)
 
 	if (str[*i + 1] == '?')
 		return (handle_exit_status(new_str, i, shell));
-	else if (is_var_char(str[*i + 1]))
+	else if (ft_isalnum(str[*i + 1]) || str[*i + 1] == '_')
 		return (handle_variable(new_str, str, i, shell));
 	else
 	{
@@ -109,10 +89,30 @@ int	handle_non_dollar(char **new_str, char *str, int *i)
 		free (substr);
 		if (!*new_str)
 			return (0);
-		// if (token->content)
-			// free(token->content);
 	}
 	*i += len;
+	return (1);
+}
+
+static int	process_char(char **new_str, char *str, int *i, t_shell *shell)
+{
+	char	*tmp;
+
+	if (*i > 0 && str[*i - 1] == '\\' && str[*i] == '$')
+	{
+		if (!handle_non_dollar(new_str, str, i))
+			return (0);
+	}
+	else if (str[*i] == '$')
+	{
+		tmp = *new_str;
+		if (!handle_dollar(new_str, str, i, shell))
+			return (0);
+		if (tmp == *new_str)
+			return (2);
+	}
+	else if (!handle_non_dollar(new_str, str, i))
+		return (0);
 	return (1);
 }
 
@@ -120,7 +120,7 @@ char	*variable_exp_double(char *str, t_shell *shell)
 {
 	int		i;
 	char	*new_str;
-	char	*tmp;
+	int		result;
 
 	i = 0;
 	new_str = ft_strdup("");
@@ -128,19 +128,11 @@ char	*variable_exp_double(char *str, t_shell *shell)
 		return (NULL);
 	while (str[i])
 	{
-		if (str[i] == '$')
-		{
-			tmp = new_str;
-			if (!handle_dollar(&new_str, str, &i, shell))
-				return (0);
-			if (tmp == new_str)
-				return (new_str);
-		}
-		else
-		{
-			if (!handle_non_dollar(&new_str, str, &i))
-				return (NULL);
-		}
+		result = process_char(&new_str, str, &i, shell);
+		if (result == 0)
+			return (NULL);
+		if (result == 2)
+			return (new_str);
 	}
 	return (new_str);
 }

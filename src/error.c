@@ -28,3 +28,10 @@ void	print_exit_numeric_error(char *arg)
 	print_error(arg, ": numeric argument required\n");
 	exit(2);
 }
+
+void	*handle_syn_errors(int stat, char *msg, t_shell *shell)
+{
+	shell->last_exit_status = stat;
+	ft_putstr_fd(msg, 2);
+	return (NULL);
+}

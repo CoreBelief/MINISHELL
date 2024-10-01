@@ -6,50 +6,19 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/09/30 16:15:43 by rdl           ########   odam.nl         */
+/*   Updated: 2024/09/30 19:07:57 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
-void	remove_quotes(char *str);
-int	handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i);
+
+int		handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i);
 t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i);
 void	print_cmd_list(t_cmd *head);
 
-void	remove_quotes(char *str)
-{ // function too long
-	int		i;
-	int		j;
-	int		in_quotes;
-	char	quote_char;
-
-	i = 0;
-	j = 0;
-	in_quotes = 0;
-	quote_char = 0;
-	if (!str)
-		return ;
-	while (str[i])
-	{
-		if ((str[i] == '\'' || str[i] == '\"') && \
-		(!in_quotes || str[i] == quote_char))
-		{
-			in_quotes = !in_quotes;
-			if (in_quotes)
-				quote_char = str[i];
-			else
-				quote_char = 0;
-		}
-		else
-			str[j++] = str[i];
-		i++;
-	}
-	str[j] = '\0';
-}
-
 int	handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i)
 {
-	if ((*tokens)->content[0] == '\0') 
+	if ((*tokens)->content[0] == '\0')
 		return (1);
 	cmd->argv[*i] = ft_strdup((*tokens)->content);
 	if (!cmd->argv[*i])
@@ -89,12 +58,15 @@ void	print_cmd_list(t_cmd *head)
 			i++;
 		}
 		if (head->redirect_count != 0)
-			printf("redirecttype == %i target file == %s\n", head->redir->type, head->redir->file);
+			printf("redirecttype == %i target file == %s\n", head->redir->type, \
+			head->redir->file);
 		printf("  Pipe In: %d, Pipe Out: %d\n", head->pipe_in, head->pipe_out);
 		j = 0;
-		for (j = 0; j < head->redirect_count; j++)
+		while (j < head->redirect_count)
 		{
-			printf("  Redirect[%d] Type: %d, File: %s\n", j, head->redir[j].type, head->redir[j].file);
+			printf("  Redirect[%d] Type: %d, File: %s\n", j, \
+			head->redir[j].type, head->redir[j].file);
+			j++;
 		}
 		head = head->next;
 	}
