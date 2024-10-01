@@ -14,7 +14,7 @@ char	*search_paths(char **paths, char *command)
 	while (paths[i])
 	{
 		full_path = ft_strjoin3(paths[i], "/", command);
-		printf("DEBUG: Trying path: %s\n", full_path);
+		// printf("DEBUG: Trying path: %s\n", full_path);
 		if (access(full_path, X_OK) == 0)
 			return (full_path);
 		free(full_path);
@@ -35,7 +35,7 @@ char	*find_executable(char *command, t_shell *shell)
 	(command[1] == '.' && command[2] == '/'))))
 		return (ft_strdup(command));
 	path_env = ft_get_env("PATH", shell);
-	printf("DEBUG: PATH = %s\n", path_env); // debug-line
+	// printf("DEBUG: PATH = %s\n", path_env); // debug-line
 	if (!path_env)
 		return (NULL);
 	paths = ft_split(path_env, ':');
