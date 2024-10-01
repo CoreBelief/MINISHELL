@@ -22,8 +22,92 @@ echo hi | > >>
 echo hi | < |
 echo hi |   |
 echo hi |  "|"
+Environment path
+Environment path
 
+Execute commands but this time without any path (ls, wc, awk and so forth).
+
+Unset the $PATH and ensure commands are not working anymore.
+
+Set the $PATH to a multiple directory value (directory1:directory2) and ensure that directories are checked in order from left to right.
 
 - we have to fix the STD-ERR through our entire minishell, we are over halfway there!
 - and ofcourse all correct exitcodes.
 - here and there tiny memleaks
+
+Here are the main issues and suggestions for improvement:
+
+Export command handling:
+
+Your minishell should distinguish between export VAR=value and export without arguments.
+When export is used without arguments, it should display all environment variables (which your shell did, but at the wrong time).
+When used with an argument like export PATH=/bin/ls, it should set the variable.
+
+
+Variable expansion in export:
+
+The $ before PATH in the export command should be treated as part of the variable name to export, not as a variable to expand.
+
+
+PATH updating:
+
+After a successful export PATH=... command, subsequent commands should use the new PATH.
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- decide how to handle unclosed quotes
+- leaks
+- structured error handling throughout the program andmaking sure no leaks if exitiong in the middle of the program
+- norminette
+- exit codes
+
+- we have to handle syntax errors better(they also create memleaks!!) !: test these to comapre to bash: 
+|
+| echo oi
+| |
+| $
+| >
+>
+>>
+>>>
+<
+<<
+echo hi <
+cat    <| ls
+echo hi | >
+echo hi | > >>
+echo hi | < |
+echo hi |   |
+echo hi |  "|"
+Environment path
+Environment path
+
+Execute commands but this time without any path (ls, wc, awk and so forth).
+
+Unset the $PATH and ensure commands are not working anymore.
+
+Set the $PATH to a multiple directory value (directory1:directory2) and ensure that directories are checked in order from left to right.
+
+- we have to fix the STD-ERR through our entire minishell, we are over halfway there!
+- and ofcourse all correct exitcodes.
+- here and there tiny memleaks
+
+Here are the main issues and suggestions for improvement:
+
+Export command handling:
+
+Your minishell should distinguish between export VAR=value and export without arguments.
+When export is used without arguments, it should display all environment variables (which your shell did, but at the wrong time).
+When used with an argument like export PATH=/bin/ls, it should set the variable.
+
+
+Variable expansion in export:
+
+The $ before PATH in the export command should be treated as part of the variable name to export, not as a variable to expand.
+
+
+PATH updating:
+
+After a successful export PATH=... command, subsequent commands should use the new PATH.
