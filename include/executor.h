@@ -53,4 +53,10 @@ void		parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd);
 
 void	execute_command(t_shell *shell);
 
+void	ft_strcpy_replace(char *dst, char *src, char *old, char *new);
+
+char	*replace_substr(char *str, char *old, char *new);
+
+char	*expand_exit(char *arg, t_shell *shell);
+
 #endif
