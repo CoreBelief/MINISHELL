@@ -12,6 +12,7 @@ int get_and_reset_signal(void);
 void handle_pending_signals(void);
 // Global variable to store received signal
 extern volatile sig_atomic_t g_received_signal;
+int setup_signal(int signum, void (*handler)(int), int flags);
 
 // Function to set up signal handlers for the shell
 void setup_signals_shell(void);

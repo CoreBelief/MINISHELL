@@ -6,7 +6,7 @@
 /*   By: rdl <rdl@student.codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 19:24:35 by rdl           #+#    #+#                 */
-/*   Updated: 2024/10/01 20:18:16 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/01 21:32:27 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ volatile sig_atomic_t g_received_signal = 0;
 
 void suppress_broken_pipe_message(void);
 static void handle_signal(int sig);
-static int setup_signal(int signum, void (*handler)(int), int flags);
+int setup_signal(int signum, void (*handler)(int), int flags);
 void setup_signals_shell(void);
 void setup_signals_child(void);
 
@@ -57,7 +57,7 @@ static void handle_signal(int sig)
 }
 
 
-static int setup_signal(int signum, void (*handler)(int), int flags)
+int setup_signal(int signum, void (*handler)(int), int flags)
 {
     struct sigaction sa;
     sa.sa_handler = handler;
