@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/01 17:45:16 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/01 22:16:42 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ t_cmd	*init_cmd(void)
 	cmd->pipe_out = -1;
 	cmd->input = -1;
 	cmd->output = -1;
+	cmd->expansion = 0;
 	cmd->next = NULL;
 	return (cmd);
 }
