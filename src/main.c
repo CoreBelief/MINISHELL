@@ -52,63 +52,116 @@ static void	process_input(char *line, t_shell *shell)
 		free_command_list(&shell->commands);
 	}
 }
+// void minishell_loop(t_shell *shell)
+// {
+//     char *line = NULL;
+//     char *prompt = NULL;
+//     int original_stdout;
+//     int terminal_fd;
 
+//     setup_signals_shell();
+//     original_stdout = dup(STDOUT_FILENO); // Keep this, but it may still be problematic.
+//     terminal_fd = open("/dev/tty", O_WRONLY);
+//     if (terminal_fd == -1)
+//     {
+//         perror("Failed to open terminal");
+//         return;
+//     }
+//     while (1)
+//     {
+//         // dup2(terminal_fd, STDOUT_FILENO);
+
+//         // Commented out isatty checks to force always interactive behavior
+//         // if (isatty(STDIN_FILENO)) 
+//         // {
+//             prompt = create_prompt();
+//             if (!prompt)
+//             {
+//                 ft_putstr_fd("Error: Failed to create prompt\n", terminal_fd);
+//                 shell->last_exit_status = 1;
+//                 break;
+//             }
+
+//             line = readline(prompt);
+//             free(prompt);
+//             if (!line) 
+//             {
+//                 // ft_putstr_fd("exit\n", terminal_fd);
+//                 break;
+//             }
+//             add_history(line);
+//         // } 
+//         // else 
+//         // {
+//         //     line = get_next_line(STDIN_FILENO);
+//         //     if (!line)
+//         //         break;
+//         //     size_t len = ft_strlen(line);
+//         //     if (len > 0 && line[len - 1] == '\n')
+//         //         line[len - 1] = '\0';
+//         // }
+
+//         // dup2(original_stdout, STDOUT_FILENO);
+//         process_input(line, shell);
+//         free(line);
+//         line = NULL;
+//     }
+//     if (line)
+//         free(line);
+//     close(terminal_fd);
+//     close(original_stdout);
+// }
 void minishell_loop(t_shell *shell)
-{ //function too long needs splitting up!
+{
     char *line = NULL;
     char *prompt = NULL;
-    int original_stdout;
-    int terminal_fd;
 
     setup_signals_shell();
-    original_stdout = dup(STDOUT_FILENO); //illegalll!!!
-    terminal_fd = open("/dev/tty", O_WRONLY);
-    if (terminal_fd == -1)
-    {
-        perror("Failed to open terminal");
-        return;
-    }
+
     while (1)
     {
-        dup2(terminal_fd, STDOUT_FILENO);
         if (isatty(STDIN_FILENO))
         {
+            // Interactive mode
             prompt = create_prompt();
             if (!prompt)
             {
-                ft_putstr_fd("Error: Failed to create prompt\n", terminal_fd);
+                perror("Error: Failed to create prompt");
                 shell->last_exit_status = 1;
                 break;
             }
-            
             line = readline(prompt);
             free(prompt);
-            if (!line) 
+
+            if (!line)
             {
-                ft_putstr_fd("exit\n", terminal_fd);
+                printf("exit\n");
                 break;
             }
-            add_history(line);
+            if (*line)
+                add_history(line);
         }
         else
         {
+            // Non-interactive mode
             line = get_next_line(STDIN_FILENO);
             if (!line)
                 break;
-            size_t len = ft_strlen(line);
+
+            // Remove newline character if present
+            size_t len = strlen(line);
             if (len > 0 && line[len - 1] == '\n')
                 line[len - 1] = '\0';
         }
-        dup2(original_stdout, STDOUT_FILENO);
-        process_input(line, shell);
+
+        if (*line)
+            process_input(line, shell);
+
         free(line);
         line = NULL;
     }
-    if (line)
-        free(line);
-    close(terminal_fd);
-    close(original_stdout);
 }
+
 
 void	free_shell(t_shell *shell)
 {
@@ -124,41 +177,6 @@ void	init_shell(t_shell *shell)
 	shell->last_exit_status = 0;
 	shell->env = NULL;
 	shell->env_size = 0;
-}
-
-void ft_custom_itoa(int n, char *str, int max_len)
-{ //needs to be norm proof... maybe we can use regualr itoa??
-	int i = 0;
-	int is_negative = 0;
-
-	if (n == 0)
-	{
-		str[i++] = '0';
-		str[i] = '\0';
-		return;
-	}
-	if (n < 0)
-	{
-		is_negative = 1;
-		n = -n;
-	}
-	while (n != 0 && i < max_len - 1)
-	{
-		str[i++] = (n % 10) + '0';
-		n = n / 10;
-	}
-	if (is_negative && i < max_len - 1)
-		str[i++] = '-';
-	str[i] = '\0';
-	int start = 0;
-	int end = i - 1;
-	while (start < end) {
-		char temp = str[start];
-		str[start] = str[end];
-		str[end] = temp;
-		start++;
-		end--;
-	}
 }
 
 static int	countnum(long n)

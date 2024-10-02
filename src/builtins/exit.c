@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include "minishell.h"
 //function too many lines! make shorter or split up!
 static int	is_space(char c);
 static int	is_digit(char c);
@@ -58,6 +59,9 @@ void builtin_exit(char **args)
 {
     long exit_status;
     int numeric_status = 0;
+
+	//  if (isatty(STDIN_FILENO))
+    //     printf("exit\n");
 
     printf("exit\n");
     if (!args[1]) 
