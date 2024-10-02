@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/11 17:48:56 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/29 20:45:43 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/02 16:58:24 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,6 @@ void	execute_builtin(t_cmd *cmd, t_shell *shell)
 		builtin_env(cmd->argv, shell);
 	else if (ft_strcmp(cmd->argv[0], "exit") == 0 || ft_strcmp(cmd->argv[0], "bye") == 0)
 		builtin_exit(cmd->argv);
+	// shell->last_exit_status=0;
 }
 

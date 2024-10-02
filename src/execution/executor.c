@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/02 15:13:07 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/02 16:03:57 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *she
 // 	pid_t	pid;
 
 // 	pid = -1;
-// 	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 \
+// 	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 
 // 	&& cmd->pipe_in == -1)
 // 	{
 // 		execute_builtin(cmd, shell);
@@ -112,18 +112,18 @@ static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 {
 	int		pipe_fds[2];
 	pid_t	pid;
-	int		i;
+	// int		i;
 
 	pid = -1;
-	i = 0;
-	if (cmd->expansion)
-	{
-		while (cmd->argv[i])
-		{
-			cmd->argv[i] = expand_exit(cmd->argv[i], shell);
-			i++;
-		}
-	}
+	// i = 0;
+	// if (cmd->expansion)
+	// {
+	// 	while (cmd->argv[i])
+	// 	{
+	// 		cmd->argv[i] = expand_exit(cmd->argv[i], shell);
+	// 		i++;
+	// 	}
+	// }
 	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 \
 	&& cmd->pipe_in == -1)
 		execute_builtin(cmd, shell);

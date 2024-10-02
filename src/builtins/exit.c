@@ -60,13 +60,8 @@ void builtin_exit(char **args)
     int numeric_status = 0;
 
     printf("exit\n");
-	//  if (isatty(STDIN_FILENO)) 
-    // {
-    //     printf("exit\n");
-    // }
     if (!args[1]) 
         exit(0);
-    // remove_quotes(args[1]);
     if (args[2]) 
     {
         fprintf(stderr, "minishell: exit: too many arguments\n");

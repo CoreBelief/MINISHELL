@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/02 15:14:07 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/02 15:37:26 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,48 +19,48 @@ int			handle_non_dollar(char **new_str, char *str, int *i);
 static int	process_char(char **new_str, char *str, int *i, t_shell *shell);
 char		*variable_exp_double(char *str, t_shell *shell);
 
-// int	handle_exit_status(char **new_str, int *i, t_shell *shell)
-// {
-// 	char	*expansion;
-// 	char	*tmp;
-
-// 	(*i) += 2;
-// 	expansion = ft_itoa(shell->last_exit_status);
-// 	if (!expansion)
-// 	{
-// 		free(*new_str);
-// 		return (0);
-// 	}
-// 	tmp = *new_str;
-// 	*new_str = append_str(tmp, expansion);
-// 	free(tmp);
-// 	free(expansion);
-// 	if (!*new_str)
-// 		return (0);
-// 	return (1);
-// }
-
 int	handle_exit_status(char **new_str, int *i, t_shell *shell)
 {
-	// char	*expansion;
+	char	*expansion;
 	char	*tmp;
-	(void) shell;
 
 	(*i) += 2;
-	// expansion = ft_itoa(shell->last_exit_status);
-	// if (!expansion)
-	// {
-	// 	free(*new_str);
-	// 	return (0);
-	// }
+	expansion = ft_itoa(shell->last_exit_status);
+	if (!expansion)
+	{
+		free(*new_str);
+		return (0);
+	}
 	tmp = *new_str;
-	*new_str = append_str(tmp, "_EXIT_STATUS_");
+	*new_str = append_str(tmp, expansion);
 	free(tmp);
-	// free(expansion);
+	free(expansion);
 	if (!*new_str)
 		return (0);
 	return (1);
 }
+
+// int	handle_exit_status(char **new_str, int *i, t_shell *shell)
+// {
+// 	// char	*expansion;
+// 	char	*tmp;
+// 	(void) shell;
+
+// 	(*i) += 2;
+// 	// expansion = ft_itoa(shell->last_exit_status);
+// 	// if (!expansion)
+// 	// {
+// 	// 	free(*new_str);
+// 	// 	return (0);
+// 	// }
+// 	tmp = *new_str;
+// 	*new_str = append_str(tmp, "_EXIT_STATUS_");
+// 	free(tmp);
+// 	// free(expansion);
+// 	if (!*new_str)
+// 		return (0);
+// 	return (1);
+// }
 
 int	handle_dollar(char **new_str, char *str, int *i, t_shell *shell)
 {

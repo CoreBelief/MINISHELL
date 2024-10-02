@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/25 15:36:55 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/10/01 22:14:21 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/02 15:37:40 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,29 +16,29 @@ int		handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i);
 t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i);
 void	print_cmd_list(t_cmd *head);
 
-// int	handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i)
-// {
-// 	if ((*tokens)->content[0] == '\0')
-// 		return (1);
-// 	cmd->argv[*i] = ft_strdup((*tokens)->content);
-// 	if (!cmd->argv[*i])
-// 		return (0);
-// 	(*i)++;
-// 	return (1);
-// }
-
 int	handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i)
 {
 	if ((*tokens)->content[0] == '\0')
 		return (1);
-	if (!ft_strnstr((*tokens)->content, "_EXIT_STATUS_", ft_strlen((*tokens)->content)))
-		cmd->expansion = 1;
 	cmd->argv[*i] = ft_strdup((*tokens)->content);
 	if (!cmd->argv[*i])
 		return (0);
 	(*i)++;
 	return (1);
 }
+
+// int	handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i)
+// {
+// 	if ((*tokens)->content[0] == '\0')
+// 		return (1);
+// 	if (!ft_strnstr((*tokens)->content, "_EXIT_STATUS_", ft_strlen((*tokens)->content)))
+// 		cmd->expansion = 1;
+// 	cmd->argv[*i] = ft_strdup((*tokens)->content);
+// 	if (!cmd->argv[*i])
+// 		return (0);
+// 	(*i)++;
+// 	return (1);
+// }
 
 t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i)
 {
