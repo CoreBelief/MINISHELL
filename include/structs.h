@@ -59,6 +59,7 @@ typedef struct s_cmd
 	int					output;
 	int					pipe_in;
 	int					pipe_out;
+	int					expansion;
 	struct s_cmd		*next;
 }	t_cmd;
 
