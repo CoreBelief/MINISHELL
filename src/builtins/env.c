@@ -16,3 +16,5 @@ void	builtin_env(char **args, t_shell *shell)
 		i++;
 	}
 }
+//fucking validation bitches
+//with mothafucking exit codes

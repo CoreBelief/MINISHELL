@@ -19,7 +19,7 @@ void    builtin_exit(char **args);
 
 void    builtin_export(char **args, t_shell *shell);
 
-void    builtin_pwd(char **args);
+void    builtin_pwd(char **args, t_shell *shell);
 
 void    builtin_unset(char **args, t_shell *shell);
 

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:32:27 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/02 16:05:40 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/02 17:37:04 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,10 @@
 // #include "structs.h"
 
 void		builtin_export(char **args, t_shell *shell);
-static void	print_sorted_env(t_shell *shell);
+static int	print_sorted_env(t_shell *shell);
 static int	is_valid_identifier(const char *str);
-static void	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell);
-static void	process_identifier(char *arg, char *equal_sign, t_shell *shell);
-static void	print_sorted_env(t_shell *shell);
+static int	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell);
+static int	process_identifier(char *arg, char *equal_sign, t_shell *shell);
 static void	sort_env(char **sorted_env, int size);
 
 // too much functions in one file
@@ -43,7 +42,7 @@ static int	is_valid_identifier(const char *str)
 	return (1);
 }
 
-static void	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
+static int	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
 {
 	char	*value;
 
@@ -55,16 +54,24 @@ static void	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
 		value[ft_strlen(value) - 1] = '\0';
 		value++;
 	}
-	ft_set_env(arg, value, shell);
+	if (!ft_set_env(arg, value, shell))
+		return (0);
 	*equal_sign = '=';
+	return (1);
 }
 
-static void	process_identifier(char *arg, char *equal_sign, t_shell *shell)
+static int	process_identifier(char *arg, char *equal_sign, t_shell *shell)
 {
 	char	*identifier;
 
-	if (equal_sign != NULL)
+	if (equal_sign != NULL){
 		identifier = ft_strndup(arg, equal_sign - arg);
+		if (!identifier)
+		{ 	
+			shell->last_exit_status = 1;
+			return (0);
+		}
+	}
 	else
 		identifier = arg;
 	if (!is_valid_identifier(identifier))
@@ -73,15 +80,27 @@ static void	process_identifier(char *arg, char *equal_sign, t_shell *shell)
 		shell->last_exit_status = 1;
 		if (equal_sign != NULL)
 			free(identifier);
-		return ;
+		return (0);
+	}
+	if (equal_sign != NULL){
+		if (!handle_value_assignment(arg, equal_sign, shell))
+		{
+			free(identifier);
+			shell->last_exit_status = 1;
+			return (0);
+		}
+	}
+	else
+	{
+		if (!ft_set_env(arg, "", shell))
+		{
+			shell->last_exit_status = 1;
+			return (0);
+		}
 	}
 	if (equal_sign != NULL)
-		handle_value_assignment(arg, equal_sign, shell);
-	else
-		ft_set_env(arg, "", shell);
-
-	if (equal_sign != NULL)
 		free(identifier);
+	return (1);
 }
 
 void	builtin_export(char **args, t_shell *shell)
@@ -92,15 +111,20 @@ void	builtin_export(char **args, t_shell *shell)
 	i = 1;
 	if (!args[1])
 	{
-		print_sorted_env(shell);
-		return ;
+		if (!print_sorted_env(shell))
+		{
+			shell->last_exit_status = 1;
+			return ;
+		}
 	}
 	while (args[i])
 	{
 		equal_sign = ft_strchr(args[i], '=');
-		process_identifier(args[i], equal_sign, shell);
+		if (!process_identifier(args[i], equal_sign, shell))
+			return ;
 		i++;
 	}
+	shell->last_exit_status = 0;
 }
 
 static void	sort_env(char **sorted_env, int size)
@@ -125,7 +149,7 @@ static void	sort_env(char **sorted_env, int size)
 	}
 }
 
-static void	print_sorted_env(t_shell *shell)
+static int	print_sorted_env(t_shell *shell)
 {
 	char	**sorted_env;
 	int		i;
@@ -133,7 +157,7 @@ static void	print_sorted_env(t_shell *shell)
 
 	sorted_env = malloc(sizeof(char *) * (shell->env_size + 1));
 	if (!sorted_env)
-		return ;
+		return (0);
 	i = -1;
 	while (++i < shell->env_size)
 		sorted_env[i] = shell->env[i];
@@ -147,4 +171,5 @@ static void	print_sorted_env(t_shell *shell)
 		sorted_env[i], e_sign + 1);
 	}
 	free(sorted_env);
+	return (1);
 }
