@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:19:51 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/01 17:45:49 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/03 19:31:37 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "minishell.h"
 
 t_cmd	*init_cmd(void);
-t_cmd	*parse_command_from_tokens(t_token *tokens, t_shell *shell);
+int		parse_command_from_tokens(t_token *tokens, t_shell *shell);
 void	print_cmd_list(t_cmd *head);
 void	remove_quotes(char *str);
 

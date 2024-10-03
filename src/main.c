@@ -38,12 +38,10 @@ static void	process_input(char *line, t_shell *shell)
 			return ;
 		}
 		// print_token_list(tokens);
-		shell->commands = parse_command_from_tokens(tokens, shell);
-		if (!shell->commands)
+		if (!parse_command_from_tokens(tokens, shell))
 		{
 			// shell->last_exit_status = 1;
 			free_tokens(&tokens);
-			free_command_list(&shell->commands);
 			return ;
 		}
 		// print_cmd_list(shell->commands);
