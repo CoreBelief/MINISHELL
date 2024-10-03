@@ -32,11 +32,7 @@ static void	process_input(char *line, t_shell *shell)
 		add_history(line);
 		tokens = tokenizer(line, shell);
 		if (!tokens)
-		{
-			free_tokens(&tokens);
-			// shell->last_exit_status = 1;
 			return ;
-		}
 		// print_token_list(tokens);
 		if (!parse_command_from_tokens(tokens, shell))
 		{

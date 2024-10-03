@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/03 13:41:00 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/03 20:24:36 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,6 @@ t_token	*tokenizer(char *input, t_shell *shell);
 
 int	tokenize_pipe(int *i, t_token **head)
 {
-	// if (*i == 0)
-	// {
-	// 	printf("syntax error near unexpected token `|'\n");
-	// 	return (0); //here we should return an error code (2)?
-	// }
 	if (!add_token(head, ft_strdup("|"), TOKEN_PIPE))
 		return (0);
 	(*i)++;
@@ -68,24 +63,34 @@ t_token	*tokenizer(char *input, t_shell *shell)
 	{
 		while (is_whitespace(input[i]))
 			i++;
-		// if (input[i] == '\0')
-		// 	break ;
 		if (input[i] == '|')
 		{
 			if ((input[i - 1] && input[i - 1] == '|') || !input[i + 1] || i == 0)
+			{
+				free_tokens(&head);
 				return (handle_syn_errors(2, "syntax error near unexpected token `|'\n", shell));
+			}
 			if (!tokenize_pipe(&i, &head))
-				break ;
+			{
+				free_tokens(&head);
+				return (handle_syn_errors(1, "malloc fail\n", shell));
+			}
 		}
 		else if (input[i] == '<' || input[i] == '>')
 		{
 			if (!tokenize_redirection(input, &i, &head))
+			{
+				free_tokens(&head);
 				return (handle_syn_errors(1, "malloc fail\n", shell));
+			}
 		}
 		else
 		{
 			if (!tokenize_word(input, &i, &head, shell))
-				return (handle_syn_errors(1, "malloc fail\n", shell));
+			{
+				free_tokens(&head);
+				return (NULL);
+			}
 		}
 	}
 	if (!head)
