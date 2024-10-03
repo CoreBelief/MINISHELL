@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/03 13:41:27 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/03 19:31:46 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 t_cmd		*init_cmd(void);
 static int	handle_token(t_token **tok, t_cmd **cur_cmd, \
 int *i, t_shell *shell);
-t_cmd		*parse_command_from_tokens(t_token *tokens, t_shell *shell);
+int			parse_command_from_tokens(t_token *tokens, t_shell *shell);
 
 t_cmd	*init_cmd(void)
 {
@@ -72,25 +72,27 @@ static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell)
 	return (1);
 }
 
-t_cmd	*parse_command_from_tokens(t_token *tokens, t_shell *shell)
+int	parse_command_from_tokens(t_token *tokens, t_shell *shell)
 {
-	t_cmd	*head;
 	t_cmd	*cur_cmd;
 	int		i;
 
-	head = init_cmd();
-	if (!head)
-		return (handle_syn_errors(1, "malloc fail\n", shell));
-	cur_cmd = head;
+	shell->commands = init_cmd();
+	if (!shell->commands)
+		return (0);
+	cur_cmd = shell->commands;
 	i = 0;
 	while (tokens && i < MAX_ARGS)
 	{
 		if (!handle_token(&tokens, &cur_cmd, &i, shell))
-			return (handle_syn_errors(1, "malloc fail\n", shell));
+		{
+			cur_cmd->argv[i] = NULL;
+			return (free_command_list(&shell->commands), 0);
+		}
 		tokens = tokens->next;
 	}
 	cur_cmd->argv[i] = NULL;
-	if (!head)
-		shell->last_exit_status = 1;
-	return (head);
+	// printf("token cur next\n");
+	// set_cmd_paths(shell->commands); // im not sure we are ever using the path so might be unnecessary
+	return (1);
 }
