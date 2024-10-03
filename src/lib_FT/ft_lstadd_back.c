@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_lstadd_back.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: eeklund <eeklund@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/15 12:43:06 by elleneklund       #+#    #+#             */
-/*   Updated: 2023/10/18 15:38:21 by eeklund          ###   ########.fr       */
+/*                                                        ::::::::            */
+/*   ft_lstadd_back.c                                   :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2023/10/15 12:43:06 by elleneklund   #+#    #+#                 */
+/*   Updated: 2024/10/02 19:20:23 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 	t_list	*tmp;
 
 	if (new && lst)
+	{
 		if (!*lst)
 			*lst = new;
 		else
@@ -24,6 +25,7 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 			tmp = ft_lstlast(*lst);
 			tmp->next = new;
 		}
+	}
 }
 
 // void	ft_lstadd_back(t_list **lst, t_list *new)

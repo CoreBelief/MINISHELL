@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 18:42:40 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/02 17:08:02 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/03 15:13:11 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,24 @@ int	extract_and_append(char *input, int len, char **res, t_shell *shell)
 	content = ft_strndup(input, len);
 	if (!content)
 		return (0);
-	expansion = variable_exp_double(content, shell);
-	free(content);
-	if (!expansion)
-		return (0);
-	tmp = *res;
-	*res = append_str(tmp, expansion);
-	free(tmp);
-	free(expansion);
+	if (ft_strchr(content, '$'))
+	{
+		expansion = variable_exp_double(content, shell);
+		free(content);
+		if (!expansion)
+			return (0);
+		tmp = *res;
+		*res = append_str(tmp, expansion);
+		free(tmp);
+		free(expansion);
+	}
+	else
+	{
+		tmp = *res;
+		*res = append_str(tmp, content);
+		free(tmp);
+		free(content);
+	}
 	return (*res != NULL);
 }
 
@@ -43,7 +53,19 @@ int	no_quotes_state(char *input, char **res, int *i, t_shell *shell)
 
 	start = (*i);
 	while (input[*i] && !ft_strchr(" \"'|><", input[*i]))
+	{
+		if (input[*i] == '$' && input [*i + 1] == '"')
+		{
+			(*i)++;
+			return (double_quotes_state(input, res, i, shell));
+		}
+		else if (input[*i] == '$' && input [*i + 1] == '\'')
+		{
+			(*i)++;
+			return (single_quotes_state(input, res, i));
+		}
 		(*i)++;
+	}
 	if (start == *i)
 		return (1);
 	return (extract_and_append(&input[start], *i - start, res, shell));
