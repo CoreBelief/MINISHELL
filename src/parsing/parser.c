@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/01 22:16:42 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/03 13:41:27 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,13 +80,13 @@ t_cmd	*parse_command_from_tokens(t_token *tokens, t_shell *shell)
 
 	head = init_cmd();
 	if (!head)
-		return (NULL);
+		return (handle_syn_errors(1, "malloc fail\n", shell));
 	cur_cmd = head;
 	i = 0;
 	while (tokens && i < MAX_ARGS)
 	{
 		if (!handle_token(&tokens, &cur_cmd, &i, shell))
-			return (NULL);
+			return (handle_syn_errors(1, "malloc fail\n", shell));
 		tokens = tokens->next;
 	}
 	cur_cmd->argv[i] = NULL;

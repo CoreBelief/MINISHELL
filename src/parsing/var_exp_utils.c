@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 12:36:10 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 19:18:46 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/03 15:12:56 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,11 @@ int	handle_variable(char **new_str, char *str, int *i, t_shell *shell)
 	(*i)++;
 	expansion = variable_exp(str, i, shell);
 	if (!expansion)
-	{
-		// token->content = new_str;
-		return (1);
-	}
+		return (0);
 	tmp = *new_str;
 	*new_str = append_str(tmp, expansion);
+	if (expansion[0] == '\0')
+		free(expansion);
 	free(tmp);
 	if (!new_str)
 		return (0);
@@ -88,6 +87,8 @@ char	*variable_exp(char *str, int *i, t_shell *shell)
 	if (!var)
 		return (NULL);
 	expansion = ft_get_env(var, shell);
+	if (!expansion)
+		expansion = ft_strdup("");
 	free (var);
 	*i += len;
 	return (expansion);

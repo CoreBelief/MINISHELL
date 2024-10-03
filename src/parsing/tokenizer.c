@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/01 17:41:35 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/03 13:41:00 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,15 @@ t_token	*tokenizer(char *input, t_shell *shell)
 				break ;
 		}
 		else if (input[i] == '<' || input[i] == '>')
-			tokenize_redirection(input, &i, &head);
+		{
+			if (!tokenize_redirection(input, &i, &head))
+				return (handle_syn_errors(1, "malloc fail\n", shell));
+		}
 		else
-			tokenize_word(input, &i, &head, shell);
+		{
+			if (!tokenize_word(input, &i, &head, shell))
+				return (handle_syn_errors(1, "malloc fail\n", shell));
+		}
 	}
 	if (!head)
 		shell->last_exit_status = 1;

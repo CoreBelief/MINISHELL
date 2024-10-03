@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/02 15:37:26 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/03 15:12:48 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	handle_dollar(char **new_str, char *str, int *i, t_shell *shell)
 		return (handle_exit_status(new_str, i, shell));
 	else if (ft_isalnum(str[*i + 1]) || str[*i + 1] == '_')
 		return (handle_variable(new_str, str, i, shell));
-	else
+	else if (str[*i + 1] != '\'' || str[*i + 1] != '"') // is this really needed??
 	{
 		tmp = *new_str;
 		substr = ft_strndup(&str[*i], 1);
@@ -85,8 +85,8 @@ int	handle_dollar(char **new_str, char *str, int *i, t_shell *shell)
 		free (substr);
 		if (!*new_str)
 			return (0);
-		(*i)++;
 	}
+	(*i)++;
 	return (1);
 }
 
@@ -150,6 +150,7 @@ char	*variable_exp_double(char *str, t_shell *shell)
 		return (NULL);
 	while (str[i])
 	{
+		// printf("str to give to process %s\n", &str[i]);
 		result = process_char(&new_str, str, &i, shell);
 		if (result == 0)
 			return (NULL);

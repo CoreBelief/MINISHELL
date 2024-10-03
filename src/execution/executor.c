@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/02 16:03:57 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/02 19:17:53 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,44 +89,17 @@ static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *she
 	return (pid);
 }
 
-// static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
-// {
-// 	int		pipe_fds[2];
-// 	pid_t	pid;
-
-// 	pid = -1;
-// 	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 
-// 	&& cmd->pipe_in == -1)
-// 	{
-// 		execute_builtin(cmd, shell);
-// 	}
-// 	else
-// 	{
-// 		setup_pipes(cmd, pipe_fds);
-// 		pid = fork_and_execute(cmd, pipe_fds, prev_prd, shell);
-// 	}
-// 	return (pid);
-// }
-
 static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 {
 	int		pipe_fds[2];
 	pid_t	pid;
-	// int		i;
 
 	pid = -1;
-	// i = 0;
-	// if (cmd->expansion)
-	// {
-	// 	while (cmd->argv[i])
-	// 	{
-	// 		cmd->argv[i] = expand_exit(cmd->argv[i], shell);
-	// 		i++;
-	// 	}
-	// }
 	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 \
 	&& cmd->pipe_in == -1)
+	{
 		execute_builtin(cmd, shell);
+	}
 	else
 	{
 		setup_pipes(cmd, pipe_fds);
@@ -169,7 +142,7 @@ static void	wait_for_children(t_shell *shell, pid_t last_pid)
 				shell->last_exit_status = 128 + WTERMSIG(status);
 				if (WTERMSIG(status) == SIGQUIT)
 					ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
-					else if (WTERMSIG(status) == SIGINT)
+				else if (WTERMSIG(status) == SIGINT)
 					ft_putstr_fd("\n", STDERR_FILENO);
 			}
 			else if (WIFEXITED(status))
