@@ -1,3 +1,10 @@
+~~~~~~~~~~~~~~~~~~~~~ tilde expansionn!!!!!!!!
+
+
+
+
+
+
 - decide how to handle unclosed quotes
 - leaks
 - structured error handling throughout the program andmaking sure no leaks if exitiong in the middle of the program
