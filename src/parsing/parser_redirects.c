@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/17 14:52:57 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/01 17:45:39 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/04 15:45:45 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	handle_redirection_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 	{
 		redir_file = ft_strdup((*token)->content);
 		if (!redir_file)
-			return (0);
+			return (0); // malloc fail, exit code 1
 		cmd->redir[cmd->redirect_count].file = redir_file;
 		// if (!cmd->redir[cmd->redirect_count].file)
 		// 	return (0);
@@ -41,6 +41,5 @@ int	handle_redirection_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 		return (1);
 	}
 	handle_syn_errors(2, "syntax error near redirection\n", shell);
-	// printf("syntax error near redirection\n");
 	return (0);
 }

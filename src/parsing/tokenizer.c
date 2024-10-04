@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/03 20:24:36 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/04 15:48:24 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int	tokenize_redirection(char *input, int *i, t_token **head)
 	return (1);
 }
 
+/* FIXXXXXXXX */
 t_token	*tokenizer(char *input, t_shell *shell)
 {
 	t_token	*head;
@@ -70,7 +71,7 @@ t_token	*tokenizer(char *input, t_shell *shell)
 				free_tokens(&head);
 				return (handle_syn_errors(2, "syntax error near unexpected token `|'\n", shell));
 			}
-			if (!tokenize_pipe(&i, &head))
+			if (!tokenize_pipe(&i, &head)) // always malloc fail if returns 0
 			{
 				free_tokens(&head);
 				return (handle_syn_errors(1, "malloc fail\n", shell));
@@ -78,7 +79,7 @@ t_token	*tokenizer(char *input, t_shell *shell)
 		}
 		else if (input[i] == '<' || input[i] == '>')
 		{
-			if (!tokenize_redirection(input, &i, &head))
+			if (!tokenize_redirection(input, &i, &head)) // always malloc fail if returns 0
 			{
 				free_tokens(&head);
 				return (handle_syn_errors(1, "malloc fail\n", shell));

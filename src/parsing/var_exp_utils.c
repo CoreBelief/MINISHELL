@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 12:36:10 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/03 20:16:31 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/04 16:04:17 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	handle_variable(char **new_str, char *str, int *i, t_shell *shell)
 	free(expansion);
 	free(tmp);
 	if (!new_str)
-		return (0);
+		return (0); // malloc
 	return (1);
 }
 
@@ -85,8 +85,7 @@ char	*variable_exp(char *str, int *i, t_shell *shell)
 	len = find_var_len(&str[*i]);
 	var = ft_strndup(&str[*i], len);
 	if (!var)
-		return (NULL);
-
+		return (NULL); // malloc
 	env_value = ft_get_env(var, shell);
 	if (!env_value)
 		expansion = ft_strdup("");
@@ -94,6 +93,5 @@ char	*variable_exp(char *str, int *i, t_shell *shell)
 		expansion = ft_strdup(env_value);
 	free(var);
 	*i += len;
-	return (expansion);
+	return (expansion); // malloc fail if return NULL
 }
-

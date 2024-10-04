@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 18:42:40 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/03 15:13:11 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/04 16:08:54 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	extract_and_append(char *input, int len, char **res, t_shell *shell);
 int	no_quotes_state(char *input, char **res, int *i, t_shell *shell);
 int	double_quotes_state(char *input, char **res, int *i, t_shell *shell);
-int	single_quotes_state(char *input, char **res, int *i);
+int	single_quotes_state(char *input, char **res, int *i, t_shell *shell);
 
 int	extract_and_append(char *input, int len, char **res, t_shell *shell)
 {
@@ -25,29 +25,30 @@ int	extract_and_append(char *input, int len, char **res, t_shell *shell)
 
 	content = ft_strndup(input, len);
 	if (!content)
-		return (0);
+		return (handle_syn_errors(2, "Malloc fail\n", shell), 0);
+	tmp = *res;
 	if (ft_strchr(content, '$'))
 	{
 		expansion = variable_exp_double(content, shell);
 		free(content);
 		if (!expansion)
-			return (0);
-		tmp = *res;
+			return (handle_syn_errors(2, "Malloc fail\n", shell), 0);
 		*res = append_str(tmp, expansion);
 		free(tmp);
 		free(expansion);
 	}
 	else
 	{
-		tmp = *res;
 		*res = append_str(tmp, content);
 		free(tmp);
 		free(content);
 	}
-	return (*res != NULL);
+	if (!*res)
+		return (handle_syn_errors(2, "Malloc fail\n", shell), 0);
+	return (1);
 }
 
-int	no_quotes_state(char *input, char **res, int *i, t_shell *shell)
+int	no_quotes_state(char *input, char **res, int *i, t_shell *shell) // exit codes handled before this point
 {
 	int		start;
 
@@ -62,7 +63,7 @@ int	no_quotes_state(char *input, char **res, int *i, t_shell *shell)
 		else if (input[*i] == '$' && input [*i + 1] == '\'')
 		{
 			(*i)++;
-			return (single_quotes_state(input, res, i));
+			return (single_quotes_state(input, res, i, shell));
 		}
 		(*i)++;
 	}
@@ -71,7 +72,7 @@ int	no_quotes_state(char *input, char **res, int *i, t_shell *shell)
 	return (extract_and_append(&input[start], *i - start, res, shell));
 }
 
-int	double_quotes_state(char *input, char **res, int *i, t_shell *shell)
+int	double_quotes_state(char *input, char **res, int *i, t_shell *shell) // handle exit codes here
 {
 	int	start;
 
@@ -81,17 +82,15 @@ int	double_quotes_state(char *input, char **res, int *i, t_shell *shell)
 		(*i)++;
 	if (input[*i] != '"')
 	{
-		printf("syntax error\n");
-		shell->last_exit_status = 2;
-		return (0);
+		return (handle_syn_errors(2, "syntax error\n", shell), 0);
 	}
 	if (!extract_and_append(&input[start], *i - start, res, shell))
-		return (0);
+		return (handle_syn_errors(2, "Malloc fail\n", shell), 0);
 	(*i)++;
 	return (1);
 }
 
-int	single_quotes_state(char *input, char **res, int *i)
+int	single_quotes_state(char *input, char **res, int *i, t_shell *shell) // handle exit codes here
 {
 	int		start;
 	char	*content;
@@ -103,18 +102,20 @@ int	single_quotes_state(char *input, char **res, int *i)
 		(*i)++;
 	if (input[*i] != '\'')
 	{
-		printf("syntax error\n");
-		return (0);
+		return (handle_syn_errors(2, "syntax error\n", shell), 0);
 	}
 	tmp = *res;
 	content = ft_strndup(&input[start], *i - start);
 	if (!content)
-		return (free (tmp), 0);
+	{
+		free (tmp);
+		return (handle_syn_errors(2, "Malloc fail\n", shell), 0);
+	}
 	*res = append_str(tmp, content);
 	free(content);
 	free (tmp);
 	if (!*res)
-		return (0);
+		return (handle_syn_errors(2, "Malloc fail\n", shell), 0);
 	(*i)++;
 	return (1);
 }
@@ -131,16 +132,19 @@ int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
 	{
 		if (input[*i] == '"' || input[*i] == '\'')
 		{
-			if (!handle_quotes_state(input, &result, i, shell))
+			if (!handle_quotes_state(input, &result, i, shell)) // exit codes are handled before this point, just returning 0
 				return (free (result), 0);
 		}
 		else
 		{
-			if (!no_quotes_state(input, &result, i, shell))
+			if (!no_quotes_state(input, &result, i, shell)) // exit codes are handled before this point, just returning 0
 				return (free (result), 0);
 		}
 	}
 	if (!add_token(head, result, TOKEN_WORD))
-		return (free (result), 0);
+	{
+		free (result);
+		return (handle_syn_errors(2, "Malloc fail\n", shell), 0);
+	}
 	return (1);
 }

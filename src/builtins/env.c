@@ -1,6 +1,16 @@
-#include "builtins.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   env.c                                              :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/10/04 13:55:38 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/10/04 13:55:47 by eeklund       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-#include <stdio.h>
 
 void	builtin_env(char **args, t_shell *shell);
 

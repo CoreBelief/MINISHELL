@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 15:46:18 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/02 19:21:59 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/04 14:06:46 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ int	write_to_hdfd(char *delim, t_shell *shell, int hdfd)
 	return (1);
 }
 
-
 static void	ignore_signals(struct sigaction *old_int, struct sigaction *old_quit)
 {
 	setup_signal(SIGINT, SIG_IGN, 0);
@@ -110,17 +109,19 @@ int	handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 	cmd->redir[cmd->redirect_count].type = (*token)->type;
 	*token = (*token)->next;
 	if (!(*token) || (*token)->type != TOKEN_WORD)
-		return (0);
+		return (0); // syn error, exit code 2
 	delim = (*token)->content;
 	tmp_file = create_filename(cmd->redirect_count);
+	if (!tmp_file)
+		return (0); // malloc fail, exit code 1
 	hered_fd = open_hdfile(tmp_file);
 	if (hered_fd == -1)
-		return (free(tmp_file), 0);
+		return (free(tmp_file), 0); //error opening file, exit code 1?
 	ignore_signals(&old_int, &old_quit);
 	pid = fork();
 	if (pid == -1)
 		return (restore_signals(&old_int, &old_quit), close(hered_fd),
-			free(tmp_file), 0);
+			free(tmp_file), 0); // error forking, exit code 1?
 	if (pid == 0)
 		exit(handle_heredoc_child(delim, shell, hered_fd));
 	waitpid(pid, &status, 0);
@@ -134,5 +135,5 @@ int	handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 		cmd->redirect_count++;
 		return (1);
 	}
-	return (free(tmp_file), 0);
+	return (free(tmp_file), 0); // some wrror with killing child? hmm?
 }

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/01 17:12:53 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/04 15:58:19 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,16 +57,16 @@ bool	is_special_token(char c)
 	return (c == '|' || c == '<' || c == '>');
 }
 
-int	handle_quotes_state(char *input, char **res, int *i, t_shell *shell)
+int	handle_quotes_state(char *input, char **res, int *i, t_shell *shell) // exit codes handled before this
 {
 	if (input[*i] == '"' )
 	{
-		if (!double_quotes_state(input, res, i, shell))
+		if (!double_quotes_state(input, res, i, shell)) // can be either malloc or syntx fail
 			return (0);
 	}
 	if (input[*i] == '\'')
 	{
-		if (!single_quotes_state(input, res, i))
+		if (!single_quotes_state(input, res, i, shell)) // can be either malloc or syntx fail
 			return (0);
 	}
 	return (1);

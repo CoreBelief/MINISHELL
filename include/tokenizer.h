@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 18:58:10 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/01 17:34:59 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/04 15:59:05 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int		extract_and_append(char *input, int len, char **res, t_shell *shell);
 int		no_quotes_state(char *input, char **res, int *i, t_shell *shell);
 int		handle_quotes_state(char *input, char **res, int *i, t_shell *shell);
 int		double_quotes_state(char *input, char **res, int *i, t_shell *shell);
-int		single_quotes_state(char *input, char **res, int *i);
+int		single_quotes_state(char *input, char **res, int *i, t_shell *shell);
 
 int		tokenize_word(char *input, int *i, t_token **head, t_shell *shell);
 t_token	*add_token(t_token **head, char *content, t_token_type type);
