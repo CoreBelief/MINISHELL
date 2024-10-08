@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:32:27 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/02 17:37:04 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/04 18:33:30 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,24 +41,38 @@ static int	is_valid_identifier(const char *str)
 	}
 	return (1);
 }
-
-static int	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
+static int handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
 {
-	char	*value;
+    char *value;
 
-	*equal_sign = '\0';
-	value = equal_sign + 1;
-	if ((value[0] == '"' && value[ft_strlen(value) - 1] == '"') || \
-	(value[0] == '\'' && value[ft_strlen(value) - 1] == '\''))
-	{
-		value[ft_strlen(value) - 1] = '\0';
-		value++;
-	}
-	if (!ft_set_env(arg, value, shell))
-		return (0);
-	*equal_sign = '=';
-	return (1);
+    *equal_sign = '\0';
+    value = equal_sign + 1;
+
+    // No need to strip quotes here since the parser has already handled it.
+    if (!ft_set_env(arg, value, shell))
+        return (0);
+    
+    *equal_sign = '=';
+    return (1);
 }
+
+// static int	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
+// {
+// 	char	*value;
+
+// 	*equal_sign = '\0';
+// 	value = equal_sign + 1;
+// 	if ((value[0] == '"' && value[ft_strlen(value) - 1] == '"') || 
+// 	(value[0] == '\'' && value[ft_strlen(value) - 1] == '\''))
+// 	{
+// 		value[ft_strlen(value) - 1] = '\0';
+// 		value++;
+// 	}
+// 	if (!ft_set_env(arg, value, shell))
+// 		return (0);
+// 	*equal_sign = '=';
+// 	return (1);
+// }
 
 static int	process_identifier(char *arg, char *equal_sign, t_shell *shell)
 {
