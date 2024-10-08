@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 15:46:18 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/04 14:06:46 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/04 20:14:17 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ int	handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 	cmd->redir[cmd->redirect_count].type = (*token)->type;
 	*token = (*token)->next;
 	if (!(*token) || (*token)->type != TOKEN_WORD)
-		return (0); // syn error, exit code 2
+		return(handle_syn_errors(2, "syntax error ner redirection\n", shell), 0); // syn error, exit code 2
 	delim = (*token)->content;
 	tmp_file = create_filename(cmd->redirect_count);
 	if (!tmp_file)

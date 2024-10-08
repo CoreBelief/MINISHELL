@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 18:42:40 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/04 16:08:54 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/04 20:11:13 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	no_quotes_state(char *input, char **res, int *i, t_shell *shell);
 int	double_quotes_state(char *input, char **res, int *i, t_shell *shell);
 int	single_quotes_state(char *input, char **res, int *i, t_shell *shell);
 
-int	extract_and_append(char *input, int len, char **res, t_shell *shell)
+int	extract_and_append(char *input, int len, char **res, t_shell *shell) // needs to know if the previous token is a heredoc --> not do expansion just keep unchanged
 {
 	char	*content;
 	char	*expansion;

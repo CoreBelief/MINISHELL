@@ -78,6 +78,7 @@ env what -------------------------- should be exit code 127? our is 0 and just p
 export H="echo hello hehhe | ls" -- parse variable exp as commands not as literal string
 cat << "$US"E"R" ------------------ delimiter should be $USER
 cat << "$USER" -------------------- treat delimiter as LITERAL string in heredoc, so no var exp!
+export t -------------------------- should not show in env, only in export
 
 cd '/////' 2>/dev/null ------------ our says cd: too many arguments but bash just executes and puts us in '/////' ??? maybe? 
 2>/dev/null ----------------------- what should this do?? 
@@ -93,3 +94,4 @@ BASH
 >| echo sure
 Command 'sure' not found, but can be installed with:
 apt install python3-sure
+
