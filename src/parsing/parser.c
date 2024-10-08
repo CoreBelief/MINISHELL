@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/04 15:46:26 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 13:32:42 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 t_cmd		*init_cmd(void);
 static int	handle_token(t_token **tok, t_cmd **cur_cmd, \
 int *i, t_shell *shell);
-int			parse_command_from_tokens(t_token *tokens, t_shell *shell);
+int			parse_command_from_tokens(t_shell *shell);
 
 t_cmd	*init_cmd(void)
 {
@@ -69,7 +69,7 @@ static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell)
 	return (1);
 }
 
-int	parse_command_from_tokens(t_token *tokens, t_shell *shell)
+int	parse_command_from_tokens(t_shell *shell)
 {
 	t_cmd	*cur_cmd;
 	int		i;
@@ -79,14 +79,14 @@ int	parse_command_from_tokens(t_token *tokens, t_shell *shell)
 		return (0);
 	cur_cmd = shell->commands;
 	i = 0;
-	while (tokens && i < MAX_ARGS)
+	while (shell->tokens && i < MAX_ARGS)
 	{
-		if (!handle_token(&tokens, &cur_cmd, &i, shell)) // all error codes are set before coming here
+		if (!handle_token(&shell->tokens, &cur_cmd, &i, shell)) // all error codes are set before coming here
 		{
 			cur_cmd->argv[i] = NULL;
 			return (free_command_list(&shell->commands), 0);
 		}
-		tokens = tokens->next;
+		shell->tokens = (shell->tokens)->next;
 	}
 	cur_cmd->argv[i] = NULL;
 	return (1);

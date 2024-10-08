@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/04 18:12:06 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 13:22:06 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ char	*variable_exp_double(char *str, t_shell *shell)
 		return (NULL); // malloc fail
 	while (str[i])
 	{
-		result = process_char(&new_str, str, &i, shell); 
+		result = process_char(&new_str, str, &i, shell);
 		if (result == 0)
 			return (NULL); // malloc fail always
 		if (result == 2)

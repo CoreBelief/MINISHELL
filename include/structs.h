@@ -71,6 +71,7 @@ typedef struct s_parsed_line
 
 typedef struct s_shell
 {
+	t_token		*tokens;
 	t_cmd		*commands;
 	int			last_exit_status;
 	char		**env;

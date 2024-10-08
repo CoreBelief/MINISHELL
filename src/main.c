@@ -25,23 +25,21 @@ int			main(int argc, char **argv, char **envp); //main can be shorter and split 
 
 static void	process_input(char *line, t_shell *shell)
 {
-	t_token		*tokens;
 
 	if (line && *line)
 	{
 		add_history(line);
-		tokens = tokenizer(line, shell);
-		if (!tokens) // all exit codes are set before coming here
+		if (!tokenizer(line, shell)) // all exit codes are set before coming here
 			return ;
 		// print_token_list(tokens);
-		if (!parse_command_from_tokens(tokens, shell)) // all exit codes are set before coming here
+		if (!parse_command_from_tokens(shell)) // all exit codes are set before coming here
 		{
 			// shell->last_exit_status = 1;
-			free_tokens(&tokens);
+			free_tokens(&shell->tokens);
 			return ;
 		}
 		// print_cmd_list(shell->commands);
-		free_tokens(&tokens);
+		free_tokens(&shell->tokens);
 		execute_command(shell);
 		free_command_list(&shell->commands);
 	}
@@ -167,6 +165,7 @@ void	free_shell(t_shell *shell)
 
 void	init_shell(t_shell *shell)
 {
+	shell->tokens = NULL;
 	shell->commands = NULL;
 	shell->last_exit_status = 0;
 	shell->env = NULL;

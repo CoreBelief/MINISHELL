@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/04 15:48:24 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 13:47:36 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 int		tokenize_pipe(int *i, t_token **head);
 int		tokenize_redirection(char *input, int *i, t_token **head);
-t_token	*tokenizer(char *input, t_shell *shell);
+int		tokenizer(char *input, t_shell *shell);
 
 int	tokenize_pipe(int *i, t_token **head)
 {
@@ -51,7 +51,7 @@ int	tokenize_redirection(char *input, int *i, t_token **head)
 }
 
 /* FIXXXXXXXX */
-t_token	*tokenizer(char *input, t_shell *shell)
+int	tokenizer(char *input, t_shell *shell)
 {
 	t_token	*head;
 	int		i;
@@ -68,33 +68,34 @@ t_token	*tokenizer(char *input, t_shell *shell)
 		{
 			if ((input[i - 1] && input[i - 1] == '|') || !input[i + 1] || i == 0)
 			{
-				free_tokens(&head);
-				return (handle_syn_errors(2, "syntax error near unexpected token `|'\n", shell));
+				free_tokens(&shell->tokens);
+				return (handle_syn_errors(2, "syntax error near unexpected token `|'\n", shell), 0);
 			}
-			if (!tokenize_pipe(&i, &head)) // always malloc fail if returns 0
+			if (!tokenize_pipe(&i, &shell->tokens)) // always malloc fail if returns 0
 			{
-				free_tokens(&head);
-				return (handle_syn_errors(1, "malloc fail\n", shell));
+				free_tokens(&shell->tokens);
+				return (handle_syn_errors(1, "malloc fail\n", shell), 0);
 			}
 		}
 		else if (input[i] == '<' || input[i] == '>')
 		{
-			if (!tokenize_redirection(input, &i, &head)) // always malloc fail if returns 0
+			if (!tokenize_redirection(input, &i, &shell->tokens)) // always malloc fail if returns 0
 			{
-				free_tokens(&head);
-				return (handle_syn_errors(1, "malloc fail\n", shell));
+				free_tokens(&shell->tokens);
+				return (handle_syn_errors(1, "malloc fail\n", shell), 0);
 			}
 		}
 		else
 		{
-			if (!tokenize_word(input, &i, &head, shell))
+			if (!tokenize_word(input, &i, &shell->tokens, shell))
 			{
-				free_tokens(&head);
-				return (NULL);
+				free_tokens(&shell->tokens);
+				return (0);
 			}
 		}
 	}
-	if (!head)
+	if (!shell->tokens)
 		shell->last_exit_status = 1;
-	return (head);
+	// shell->tokens = head;
+	return (1);
 }

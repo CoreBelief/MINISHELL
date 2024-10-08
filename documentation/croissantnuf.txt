@@ -76,14 +76,16 @@ export -TEST=123 ------------------ should be syntax error and exit code 2 but o
 export --TEST=123 ----------------- should be syntax error and exit code 2 but our just does it i think and exit with 0
 env what -------------------------- should be exit code 127? our is 0 and just prints env 
 export H="echo hello hehhe | ls" -- parse variable exp as commands not as literal string
-cat << "$US"E"R" ------------------ delimiter should be $USER
-cat << "$USER" -------------------- treat delimiter as LITERAL string in heredoc, so no var exp!
 export t -------------------------- should not show in env, only in export
 
 cd '/////' 2>/dev/null ------------ our says cd: too many arguments but bash just executes and puts us in '/////' ??? maybe? 
 2>/dev/null ----------------------- what should this do?? 
 cd --    -------------------------- should put us somewhere so prob expand o smth but our says no such file or directory, maybe this is fine
 
+
+FIXED
+cat << "$US"E"R" ------------------ delimiter should be $USER
+cat << "$USER" -------------------- treat delimiter as LITERAL string in heredoc, so no var exp!
 
 ??????????? FUK this maybe
 OURS

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 18:58:10 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/04 15:59:05 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 13:32:08 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int		single_quotes_state(char *input, char **res, int *i, t_shell *shell);
 int		tokenize_word(char *input, int *i, t_token **head, t_shell *shell);
 t_token	*add_token(t_token **head, char *content, t_token_type type);
 int		tokenize_redirection(char *input, int *i, t_token **head);
-t_token	*tokenizer(char *input, t_shell *shell);
+int		tokenizer(char *input, t_shell *shell);
 
 void	print_token_list(t_token *head);
 
