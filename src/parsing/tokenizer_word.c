@@ -6,51 +6,50 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 18:42:40 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 14:23:27 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 15:13:00 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	prev_token_hd(t_token *tok);
+static int	extract_expansion(char *content, char **res, t_shell *shell);
 int	extract_and_append(char *input, int len, char **res, t_shell *shell);
 int	double_quotes_state(char *input, char **res, int *i, t_shell *shell);
 int	single_quotes_state(char *input, char **res, int *i, t_shell *shell);
 int	no_quotes_state(char *input, char **res, int *i, t_shell *shell);
 
-int	prev_token_hd(t_token *tok)
+static int	extract_expansion(char *content, char **res, t_shell *shell)
 {
-	if (!tok)
+	char	*expansion;
+	char	*tmp;
+
+	tmp = *res;
+	expansion = variable_exp_double(content, shell);
+	free(content);
+	if (!expansion)
 		return (0);
-	while (tok->next)
-		tok = tok->next;
-	if (tok->type == TOKEN_HEREDOC)
-		return (1);
-	return (0);
+	*res = append_str(tmp, expansion);
+	free(tmp);
+	free(expansion);
+	return (*res != NULL);
 }
 
 int	extract_and_append(char *input, int len, char **res, t_shell *shell)
 {
 	char	*content;
-	char	*expansion;
 	char	*tmp;
 
 	content = ft_strndup(input, len);
 	if (!content)
 		return (0);
-	tmp = *res;
 	if (ft_strchr(content, '$') && !prev_token_hd(shell->tokens))
 	{
-		expansion = variable_exp_double(content, shell);
-		free(content);
-		if (!expansion)
+		if (!extract_expansion(content, res, shell))
 			return (0);
-		*res = append_str(tmp, expansion);
-		free(tmp);
-		free(expansion);
 	}
 	else
 	{
+		tmp = *res;
 		*res = append_str(tmp, content);
 		free(tmp);
 		free(content);
@@ -73,7 +72,7 @@ int	double_quotes_state(char *input, char **res, int *i, t_shell *shell) // hand
 		return (handle_syn_errors(2, "syntax error\n", shell), 0);
 	}
 	if (!extract_and_append(&input[start], *i - start, res, shell))
-		return (handle_syn_errors(2, "Malloc fail\n", shell), 0);
+		return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
 	(*i)++;
 	return (1);
 }
@@ -89,21 +88,19 @@ int	single_quotes_state(char *input, char **res, int *i, t_shell *shell) // hand
 	while (input[*i] && input[*i] != '\'')
 		(*i)++;
 	if (input[*i] != '\'')
-	{
 		return (handle_syn_errors(2, "syntax error\n", shell), 0);
-	}
 	tmp = *res;
 	content = ft_strndup(&input[start], *i - start);
 	if (!content)
 	{
 		free (tmp);
-		return (handle_syn_errors(2, "Malloc fail\n", shell), 0);
+		return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
 	}
 	*res = append_str(tmp, content);
 	free(content);
 	free (tmp);
 	if (!*res)
-		return (handle_syn_errors(2, "Malloc fail\n", shell), 0);
+		return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
 	(*i)++;
 	return (1);
 }
@@ -130,36 +127,6 @@ int	no_quotes_state(char *input, char **res, int *i, t_shell *shell) // exit cod
 	if (start == *i)
 		return (1);
 	if (!extract_and_append(&input[start], *i - start, res, shell))
-		return (handle_syn_errors(2, "Malloc fail\n", shell), 0);
-	return (1);
-}
-
-
-int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
-{
-	char	*result;
-
-	result = ft_strdup("");
-	if (!result)
-		return (0);
-	while (input[*i] && !is_whitespace(input[*i]) && \
-	!is_special_token(input[*i]))
-	{
-		if (input[*i] == '"' || input[*i] == '\'')
-		{
-			if (!handle_quotes_state(input, &result, i, shell)) // exit codes are handled before this point, just returning 0
-				return (free (result), 0);
-		}
-		else
-		{
-			if (!no_quotes_state(input, &result, i, shell)) // exit codes are handled before this point, just returning 0
-				return (free (result), 0);
-		}
-	}
-	if (!add_token(head, result, TOKEN_WORD))
-	{
-		free (result);
-		return (handle_syn_errors(2, "Malloc fail\n", shell), 0);
-	}
+		return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
 	return (1);
 }

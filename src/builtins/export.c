@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:32:27 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/04 18:23:46 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 14:42:29 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@
 // #include <stdlib.h>
 // #include "structs.h"
 
-void		builtin_export(char **args, t_shell *shell);
 static int	print_sorted_env(t_shell *shell);
 static int	is_valid_identifier(const char *str);
 static int	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell);
 static int	process_identifier(char *arg, char *equal_sign, t_shell *shell);
 static void	sort_env(char **sorted_env, int size);
+void		builtin_export(char **args, t_shell *shell);
 
 // too much functions in one file
 // split it into multiple files?
@@ -103,29 +103,6 @@ static int	process_identifier(char *arg, char *equal_sign, t_shell *shell)
 	return (1);
 }
 
-void	builtin_export(char **args, t_shell *shell)
-{
-	int		i;
-	char	*equal_sign;
-
-	i = 1;
-	if (!args[1])
-	{
-		if (!print_sorted_env(shell))
-		{
-			shell->last_exit_status = 1;
-			return ;
-		}
-	}
-	while (args[i])
-	{
-		equal_sign = ft_strchr(args[i], '=');
-		if (!process_identifier(args[i], equal_sign, shell))
-			return ;
-		i++;
-	}
-	shell->last_exit_status = 0;
-}
 
 static void	sort_env(char **sorted_env, int size)
 {
@@ -172,4 +149,28 @@ static int	print_sorted_env(t_shell *shell)
 	}
 	free(sorted_env);
 	return (1);
+}
+
+void	builtin_export(char **args, t_shell *shell)
+{
+	int		i;
+	char	*equal_sign;
+
+	i = 1;
+	if (!args[1])
+	{
+		if (!print_sorted_env(shell))
+		{
+			shell->last_exit_status = 1;
+			return ;
+		}
+	}
+	while (args[i])
+	{
+		equal_sign = ft_strchr(args[i], '=');
+		if (!process_identifier(args[i], equal_sign, shell))
+			return ;
+		i++;
+	}
+	shell->last_exit_status = 0;
 }

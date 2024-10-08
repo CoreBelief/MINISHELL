@@ -6,14 +6,14 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 19:26:53 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 15:18:57 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include "../src/finalgnl/get_next_line.h"
+# include "../src/finalgnl/get_next_line.h"
 
 # include "utils.h"
 # include <unistd.h>
@@ -52,10 +52,8 @@
 # define MAX_ARGS 1024
 # define MAX_REDIRECTS 10
 
-// Function prototypes
-
 // Main loop
-void    minishell_loop(t_shell *shell);
+void	minishell_loop(t_shell *shell);
 
 // void	setup_signals(void);
 
