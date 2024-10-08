@@ -6,36 +6,46 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 18:42:40 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/03 15:13:11 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 15:13:00 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static int	extract_expansion(char *content, char **res, t_shell *shell);
 int	extract_and_append(char *input, int len, char **res, t_shell *shell);
-int	no_quotes_state(char *input, char **res, int *i, t_shell *shell);
 int	double_quotes_state(char *input, char **res, int *i, t_shell *shell);
-int	single_quotes_state(char *input, char **res, int *i);
+int	single_quotes_state(char *input, char **res, int *i, t_shell *shell);
+int	no_quotes_state(char *input, char **res, int *i, t_shell *shell);
+
+static int	extract_expansion(char *content, char **res, t_shell *shell)
+{
+	char	*expansion;
+	char	*tmp;
+
+	tmp = *res;
+	expansion = variable_exp_double(content, shell);
+	free(content);
+	if (!expansion)
+		return (0);
+	*res = append_str(tmp, expansion);
+	free(tmp);
+	free(expansion);
+	return (*res != NULL);
+}
 
 int	extract_and_append(char *input, int len, char **res, t_shell *shell)
 {
 	char	*content;
-	char	*expansion;
 	char	*tmp;
 
 	content = ft_strndup(input, len);
 	if (!content)
 		return (0);
-	if (ft_strchr(content, '$'))
+	if (ft_strchr(content, '$') && !prev_token_hd(shell->tokens))
 	{
-		expansion = variable_exp_double(content, shell);
-		free(content);
-		if (!expansion)
+		if (!extract_expansion(content, res, shell))
 			return (0);
-		tmp = *res;
-		*res = append_str(tmp, expansion);
-		free(tmp);
-		free(expansion);
 	}
 	else
 	{
@@ -44,10 +54,58 @@ int	extract_and_append(char *input, int len, char **res, t_shell *shell)
 		free(tmp);
 		free(content);
 	}
-	return (*res != NULL);
+	if (!*res)
+		return (0);
+	return (1);
 }
 
-int	no_quotes_state(char *input, char **res, int *i, t_shell *shell)
+int	double_quotes_state(char *input, char **res, int *i, t_shell *shell) // handle exit codes here
+{
+	int	start;
+
+	(*i)++;
+	start = *i;
+	while (input[*i] && input [*i] != '"')
+		(*i)++;
+	if (input[*i] != '"')
+	{
+		return (handle_syn_errors(2, "syntax error\n", shell), 0);
+	}
+	if (!extract_and_append(&input[start], *i - start, res, shell))
+		return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
+	(*i)++;
+	return (1);
+}
+
+int	single_quotes_state(char *input, char **res, int *i, t_shell *shell) // handle exit codes here
+{
+	int		start;
+	char	*content;
+	char	*tmp;
+
+	(*i)++;
+	start = *i;
+	while (input[*i] && input[*i] != '\'')
+		(*i)++;
+	if (input[*i] != '\'')
+		return (handle_syn_errors(2, "syntax error\n", shell), 0);
+	tmp = *res;
+	content = ft_strndup(&input[start], *i - start);
+	if (!content)
+	{
+		free (tmp);
+		return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
+	}
+	*res = append_str(tmp, content);
+	free(content);
+	free (tmp);
+	if (!*res)
+		return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
+	(*i)++;
+	return (1);
+}
+
+int	no_quotes_state(char *input, char **res, int *i, t_shell *shell) // exit codes handled before this point
 {
 	int		start;
 
@@ -62,85 +120,13 @@ int	no_quotes_state(char *input, char **res, int *i, t_shell *shell)
 		else if (input[*i] == '$' && input [*i + 1] == '\'')
 		{
 			(*i)++;
-			return (single_quotes_state(input, res, i));
+			return (single_quotes_state(input, res, i, shell));
 		}
 		(*i)++;
 	}
 	if (start == *i)
 		return (1);
-	return (extract_and_append(&input[start], *i - start, res, shell));
-}
-
-int	double_quotes_state(char *input, char **res, int *i, t_shell *shell)
-{
-	int	start;
-
-	(*i)++;
-	start = *i;
-	while (input[*i] && input [*i] != '"')
-		(*i)++;
-	if (input[*i] != '"')
-	{
-		printf("syntax error\n");
-		shell->last_exit_status = 2;
-		return (0);
-	}
 	if (!extract_and_append(&input[start], *i - start, res, shell))
-		return (0);
-	(*i)++;
-	return (1);
-}
-
-int	single_quotes_state(char *input, char **res, int *i)
-{
-	int		start;
-	char	*content;
-	char	*tmp;
-
-	(*i)++;
-	start = *i;
-	while (input[*i] && input[*i] != '\'')
-		(*i)++;
-	if (input[*i] != '\'')
-	{
-		printf("syntax error\n");
-		return (0);
-	}
-	tmp = *res;
-	content = ft_strndup(&input[start], *i - start);
-	if (!content)
-		return (free (tmp), 0);
-	*res = append_str(tmp, content);
-	free(content);
-	free (tmp);
-	if (!*res)
-		return (0);
-	(*i)++;
-	return (1);
-}
-
-int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
-{
-	char	*result;
-
-	result = ft_strdup("");
-	if (!result)
-		return (0);
-	while (input[*i] && !is_whitespace(input[*i]) && \
-	!is_special_token(input[*i]))
-	{
-		if (input[*i] == '"' || input[*i] == '\'')
-		{
-			if (!handle_quotes_state(input, &result, i, shell))
-				return (free (result), 0);
-		}
-		else
-		{
-			if (!no_quotes_state(input, &result, i, shell))
-				return (free (result), 0);
-		}
-	}
-	if (!add_token(head, result, TOKEN_WORD))
-		return (free (result), 0);
+		return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
 	return (1);
 }

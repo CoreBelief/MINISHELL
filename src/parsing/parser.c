@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/03 19:31:46 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 15:41:06 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 t_cmd		*init_cmd(void);
 static int	handle_token(t_token **tok, t_cmd **cur_cmd, \
 int *i, t_shell *shell);
-int			parse_command_from_tokens(t_token *tokens, t_shell *shell);
+int			parse_command_from_tokens(t_shell *shell);
 
 t_cmd	*init_cmd(void)
 {
@@ -26,10 +26,7 @@ t_cmd	*init_cmd(void)
 		return (NULL);
 	cmd->argv = malloc(sizeof(char *) * (MAX_ARGS + 1));
 	if (!cmd->argv)
-	{
-		free(cmd);
-		return (NULL);
-	}
+		return (free(cmd), NULL);
 	cmd->redir = malloc (sizeof(t_redirect) * MAX_REDIRECTS);
 	if (!cmd->argv)
 	{
@@ -50,49 +47,49 @@ t_cmd	*init_cmd(void)
 static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell)
 {
 	if (!is_redirect_token((*tok)->type) && (*tok)->type != TOKEN_PIPE)
-		return (handle_word_parsing(*cur_cmd, tok, i));
+		return (handle_word_parsing(*cur_cmd, tok, i)); //returns 0 on malloc fail
 	else if (is_redirect_token((*tok)->type))
 	{
 		if ((*cur_cmd)->redirect_count >= MAX_REDIRECTS)
-			return (0);
+			return (0); //error: more redirects than ok
 		if ((*tok)->type == TOKEN_HEREDOC)
 		{
-			if (!(handle_heredoc_parsing(*cur_cmd, tok, shell)))
+			if (!(handle_heredoc_parsing(*cur_cmd, tok, shell))) // have many different exit codes. implement exit codes and messages inside func and only return 0 here
 				return (0);
 		}
 		else if (!handle_redirection_parsing(*cur_cmd, tok, shell))
-			return (0);
+			return (0); // can be syntax error or malloc fal so only return 0 here and handle exit codes/msgs inside
 	}
 	else if ((*tok)->type == TOKEN_PIPE)
 	{
 		*cur_cmd = handle_pipe_parsing(*cur_cmd, i);
 		if (!*cur_cmd)
-			return (0);
+			return (0); // always malloc fail
 	}
 	return (1);
 }
 
-int	parse_command_from_tokens(t_token *tokens, t_shell *shell)
+int	parse_command_from_tokens(t_shell *shell)
 {
 	t_cmd	*cur_cmd;
+	t_token	*cur_tok;
 	int		i;
 
+	cur_tok = shell->tokens;
 	shell->commands = init_cmd();
 	if (!shell->commands)
 		return (0);
 	cur_cmd = shell->commands;
 	i = 0;
-	while (tokens && i < MAX_ARGS)
+	while (cur_tok && i < MAX_ARGS)
 	{
-		if (!handle_token(&tokens, &cur_cmd, &i, shell))
+		if (!handle_token(&cur_tok, &cur_cmd, &i, shell)) // all error codes are set before coming here
 		{
 			cur_cmd->argv[i] = NULL;
 			return (free_command_list(&shell->commands), 0);
 		}
-		tokens = tokens->next;
+		cur_tok = (cur_tok)->next;
 	}
 	cur_cmd->argv[i] = NULL;
-	// printf("token cur next\n");
-	// set_cmd_paths(shell->commands); // im not sure we are ever using the path so might be unnecessary
 	return (1);
 }

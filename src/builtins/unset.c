@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:31:57 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 19:36:55 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 14:37:11 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ void	builtin_unset(char **args, t_shell *shell)
 	i = 1;
 	if (!args[1])
 		return ;
-
 	while (args[i])
 	{
 		if (is_valid_variable_name(args[i]))

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/02 19:17:53 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 15:44:09 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,19 @@ void	execute_external(t_cmd *cmd, t_shell *shell)
 	path = find_executable(cmd->argv[0], shell);
 	if (!path)
 	{
-		shell->last_exit_status = 127;
+		// shell->last_exit_status = 127;
 		ft_putstr_fd(cmd->argv[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
-		exit(shell->last_exit_status);
+		exit(127);
 	}
 	check_file_status(path, shell);
 	execve(path, cmd->argv, shell->env);
-	shell->last_exit_status = 126;
+	// shell->last_exit_status = 126;
 	perror(path);
 	free(path);
-	exit(shell->last_exit_status);
+	exit(126);
 }
+
 void	setup_pipes(t_cmd *cmd, int pfds[2])
 {
 	if (cmd->pipe_out == 1)

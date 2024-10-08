@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 12:36:10 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/03 19:07:38 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/04 16:04:17 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,10 @@ int	handle_variable(char **new_str, char *str, int *i, t_shell *shell)
 		return (0);
 	tmp = *new_str;
 	*new_str = append_str(tmp, expansion);
-	if (expansion[0] == '\0')
-		free(expansion);
+	free(expansion);
 	free(tmp);
 	if (!new_str)
-		return (0);
+		return (0); // malloc
 	return (1);
 }
 
@@ -76,26 +75,23 @@ int	until_dollar(char *str)
 	return (i);
 }
 
-char *variable_exp(char *str, int *i, t_shell *shell)
+char	*variable_exp(char *str, int *i, t_shell *shell)
 {
-    int     len;
-    char    *expansion;
-    char    *var;
-    char    *env_value;
+	int		len;
+	char	*expansion;
+	char	*var;
+	char	*env_value;
 
-    len = find_var_len(&str[*i]);
-    var = ft_strndup(&str[*i], len);
-    if (!var)
-        return (NULL);
-
-    env_value = ft_get_env(var, shell);
-    if (!env_value)
-        expansion = ft_strdup("");         // Allocate new empty string
-    else
-        expansion = ft_strdup(env_value);  // Allocate new string with env value
-
-    free(var);
-    *i += len;
-    return (expansion);
+	len = find_var_len(&str[*i]);
+	var = ft_strndup(&str[*i], len);
+	if (!var)
+		return (NULL); // malloc
+	env_value = ft_get_env(var, shell);
+	if (!env_value)
+		expansion = ft_strdup("");
+	else
+		expansion = ft_strdup(env_value);
+	free(var);
+	*i += len;
+	return (expansion); // malloc fail if return NULL
 }
-

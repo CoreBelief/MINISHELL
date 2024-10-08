@@ -6,24 +6,49 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/03 13:41:00 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 15:58:51 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "tokenizer.h"
 
+t_token	*add_token(t_token **head, char *content, t_token_type type);
 int		tokenize_pipe(int *i, t_token **head);
 int		tokenize_redirection(char *input, int *i, t_token **head);
-t_token	*tokenizer(char *input, t_shell *shell);
+int		tokenize_word(char *input, int *i, t_token **head, t_shell *shell);
+int		tokenizer(char *input, t_shell *shell);
+
+
+t_token	*add_token(t_token **head, char *content, t_token_type type)
+{
+	t_token	*new_token;
+	t_token	*current;
+
+	new_token = malloc(sizeof(t_token));
+	if (!new_token)
+	{
+		free (content);
+		content = NULL;
+		return (NULL);
+	}
+	new_token->content = content;
+	new_token->type = type;
+	new_token->next = NULL;
+	if (*head == NULL)
+		*head = new_token;
+	else
+	{
+		current = *head;
+		while (current->next)
+			current = current->next;
+		current->next = new_token;
+	}
+	return (new_token);
+}
 
 int	tokenize_pipe(int *i, t_token **head)
 {
-	// if (*i == 0)
-	// {
-	// 	printf("syntax error near unexpected token `|'\n");
-	// 	return (0); //here we should return an error code (2)?
-	// }
 	if (!add_token(head, ft_strdup("|"), TOKEN_PIPE))
 		return (0);
 	(*i)++;
@@ -55,40 +80,78 @@ int	tokenize_redirection(char *input, int *i, t_token **head)
 	return (1);
 }
 
-t_token	*tokenizer(char *input, t_shell *shell)
+int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
 {
-	t_token	*head;
-	int		i;
-	int		len;
+	char	*result;
 
-	head = NULL;
+	result = ft_strdup("");
+	if (!result)
+		return (0);
+	while (input[*i] && !is_whitespace(input[*i]) && \
+	!is_special_token(input[*i]))
+	{
+		if (input[*i] == '"' || input[*i] == '\'')
+		{
+			if (!handle_quotes_state(input, &result, i, shell)) // exit codes are handled before this point, just returning 0
+				return (free (result), 0);
+		}
+		else
+		{
+			if (!no_quotes_state(input, &result, i, shell)) // exit codes are handled before this point, just returning 0
+				return (free (result), 0);
+		}
+	}
+	if (!add_token(head, result, TOKEN_WORD))
+	{
+		free (result);
+		return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
+	}
+	return (1);
+}
+
+/* FIXXXXXXXX */
+int	tokenizer(char *input, t_shell *shell)
+{
+	int	i;
+	int	len;
+
 	i = 0;
 	len = ft_strlen(input);
 	while (input[i] != '\0' && i < len)
 	{
 		while (is_whitespace(input[i]))
 			i++;
-		// if (input[i] == '\0')
-		// 	break ;
 		if (input[i] == '|')
 		{
-			if ((input[i - 1] && input[i - 1] == '|') || !input[i + 1] || i == 0)
-				return (handle_syn_errors(2, "syntax error near unexpected token `|'\n", shell));
-			if (!tokenize_pipe(&i, &head))
-				break ;
+			if (i == 0 || !input[i + 1] || (input[i + 1] && input[i + 1] == '|'))
+			{
+				free_tokens(&shell->tokens);
+				return (handle_syn_errors(2, "syntax error near unexpected token `|'\n", shell), 0);
+			}
+			if (!tokenize_pipe(&i, &shell->tokens)) // always malloc fail if returns 0
+			{
+				free_tokens(&shell->tokens);
+				return (handle_syn_errors(1, "malloc fail\n", shell), 0);
+			}
 		}
 		else if (input[i] == '<' || input[i] == '>')
 		{
-			if (!tokenize_redirection(input, &i, &head))
-				return (handle_syn_errors(1, "malloc fail\n", shell));
+			if (!tokenize_redirection(input, &i, &shell->tokens)) // always malloc fail if returns 0
+			{
+				free_tokens(&shell->tokens);
+				return (handle_syn_errors(1, "malloc fail\n", shell), 0);
+			}
 		}
 		else
 		{
-			if (!tokenize_word(input, &i, &head, shell))
-				return (handle_syn_errors(1, "malloc fail\n", shell));
+			if (!tokenize_word(input, &i, &shell->tokens, shell))
+				return (free_tokens(&shell->tokens), 0);
 		}
 	}
-	if (!head)
+	if (!shell->tokens)
+	{
 		shell->last_exit_status = 1;
-	return (head);
+		return (0);
+	}
+	return (1);
 }

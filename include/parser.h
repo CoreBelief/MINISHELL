@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:19:51 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/03 19:31:37 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 15:17:45 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "minishell.h"
 
 t_cmd	*init_cmd(void);
-int		parse_command_from_tokens(t_token *tokens, t_shell *shell);
+int		parse_command_from_tokens(t_shell *shell);
 void	print_cmd_list(t_cmd *head);
 void	remove_quotes(char *str);
 
@@ -34,6 +34,5 @@ char	*create_filename(int redir_count);
 int		open_hdfile(char *target);
 int		write_to_hdfd(char *delim, t_shell *shell, int hdfd);
 int		handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell);
-
 
 #endif
