@@ -31,7 +31,7 @@ static void	process_input(char *line, t_shell *shell)
 		add_history(line);
 		if (!tokenizer(line, shell)) // all exit codes are set before coming here
 			return ;
-		// print_token_list(tokens);
+		// print_token_list(shell->tokens);
 		if (!parse_command_from_tokens(shell)) // all exit codes are set before coming here
 		{
 			// shell->last_exit_status = 1;

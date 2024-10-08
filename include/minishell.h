@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 15:18:57 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 15:36:04 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@
 
 // Main loop
 void	minishell_loop(t_shell *shell);
+void	free_shell(t_shell *shell);
 
 // void	setup_signals(void);
 

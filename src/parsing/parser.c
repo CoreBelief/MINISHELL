@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 13:32:42 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 15:41:06 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,21 +72,23 @@ static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell)
 int	parse_command_from_tokens(t_shell *shell)
 {
 	t_cmd	*cur_cmd;
+	t_token	*cur_tok;
 	int		i;
 
+	cur_tok = shell->tokens;
 	shell->commands = init_cmd();
 	if (!shell->commands)
 		return (0);
 	cur_cmd = shell->commands;
 	i = 0;
-	while (shell->tokens && i < MAX_ARGS)
+	while (cur_tok && i < MAX_ARGS)
 	{
-		if (!handle_token(&shell->tokens, &cur_cmd, &i, shell)) // all error codes are set before coming here
+		if (!handle_token(&cur_tok, &cur_cmd, &i, shell)) // all error codes are set before coming here
 		{
 			cur_cmd->argv[i] = NULL;
 			return (free_command_list(&shell->commands), 0);
 		}
-		shell->tokens = (shell->tokens)->next;
+		cur_tok = (cur_tok)->next;
 	}
 	cur_cmd->argv[i] = NULL;
 	return (1);

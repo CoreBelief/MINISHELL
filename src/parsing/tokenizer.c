@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 15:11:40 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 15:38:43 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,11 +112,11 @@ int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
 /* FIXXXXXXXX */
 int	tokenizer(char *input, t_shell *shell)
 {
-	t_token	*head;
+	// t_token	*head;
 	int		i;
 	int		len;
 
-	head = NULL;
+	// head = NULL;
 	i = 0;
 	len = ft_strlen(input);
 	while (input[i] != '\0' && i < len)
