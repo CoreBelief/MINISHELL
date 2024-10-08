@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 15:36:39 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 15:44:09 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,9 @@ void	execute_external(t_cmd *cmd, t_shell *shell)
 	// shell->last_exit_status = 126;
 	perror(path);
 	free(path);
-	free_command_list(&cmd);
-	free_shell(shell);
 	exit(126);
 }
+
 void	setup_pipes(t_cmd *cmd, int pfds[2])
 {
 	if (cmd->pipe_out == 1)

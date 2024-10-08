@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:32:27 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 14:42:29 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 18:20:21 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ static int	process_identifier(char *arg, char *equal_sign, t_shell *shell)
 {
 	char	*identifier;
 
-	if (equal_sign != NULL){
+	if (equal_sign != NULL)
+	{
 		identifier = ft_strndup(arg, equal_sign - arg);
 		if (!identifier)
 		{

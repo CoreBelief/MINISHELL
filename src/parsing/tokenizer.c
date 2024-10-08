@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 15:38:43 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 15:58:51 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,11 +112,9 @@ int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
 /* FIXXXXXXXX */
 int	tokenizer(char *input, t_shell *shell)
 {
-	// t_token	*head;
-	int		i;
-	int		len;
+	int	i;
+	int	len;
 
-	// head = NULL;
 	i = 0;
 	len = ft_strlen(input);
 	while (input[i] != '\0' && i < len)
@@ -125,7 +123,7 @@ int	tokenizer(char *input, t_shell *shell)
 			i++;
 		if (input[i] == '|')
 		{
-			if ((input[i - 1] && input[i - 1] == '|') || !input[i + 1] || i == 0)
+			if (i == 0 || !input[i + 1] || (input[i + 1] && input[i + 1] == '|'))
 			{
 				free_tokens(&shell->tokens);
 				return (handle_syn_errors(2, "syntax error near unexpected token `|'\n", shell), 0);
@@ -147,14 +145,13 @@ int	tokenizer(char *input, t_shell *shell)
 		else
 		{
 			if (!tokenize_word(input, &i, &shell->tokens, shell))
-			{
-				free_tokens(&shell->tokens);
-				return (0);
-			}
+				return (free_tokens(&shell->tokens), 0);
 		}
 	}
 	if (!shell->tokens)
+	{
 		shell->last_exit_status = 1;
-	// shell->tokens = head;
+		return (0);
+	}
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/08 15:16:58 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 15:19:30 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/08 17:39:23 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,11 @@
 
 # include "minishell.h"
 
-typedef struct s_builtin_command
+typedef struct s_builtin
 {
 	const char	*name;
 	int			is_parent;
-}	t_builtin_command;
-
-// Define an array of built-in commands with a flag indicating if it is a "parent" command.
-static const t_builtin_command builtin_commands[] = {
-	{"cd", 1},
-	{"pwd", 0},
-	{"export", 1},
-	{"echo", 0},
-	{"unset", 1},
-	{"env", 0},
-	{"exit", 1},
-	{"bye", 1},
-	{NULL, 0}
-};
+}	t_builtin;
 
 typedef enum token_type
 {

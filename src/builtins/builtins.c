@@ -6,44 +6,59 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/11 17:48:56 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/02 17:36:29 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/08 17:45:57 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		is_builtin_parent(char *command);
-int		is_builtin(char *command);
-void	execute_builtin(t_cmd *cmd, t_shell *shell);
+const t_builtin	*get_builtin_commands(void);
+int				is_builtin_parent(char *command);
+int				is_builtin(char *command);
+void			execute_builtin(t_cmd *cmd, t_shell *shell);
+
+const t_builtin	*get_builtin_commands(void)
+{
+	static const t_builtin	builtin_commands[] = \
+		{{"cd", 1}, {"export", 1}, {"unset", 1}, {"bye", 1}, \
+		{"exit", 1}, {"pwd", 0}, {"echo", 0}, {"env", 0}, {NULL, 0}};
+
+	return (builtin_commands);
+}
 
 int	is_builtin_parent(char *command)
 {
-	int	i;
+	int				i;
+	const t_builtin	*builtin_commands;
 
 	i = 0;
+	builtin_commands = get_builtin_commands();
 	while (builtin_commands[i].name)
 	{
-		if (ft_strcmp(command, builtin_commands[i].name) == 0 && builtin_commands[i].is_parent)
+		if (ft_strcmp(command, builtin_commands[i].name) == 0 && \
+		builtin_commands[i].is_parent)
 		{
-			return 1;
+			return (1);
 		}
 		i++;
 	}
-	return 0;
+	return (0);
 }
 
-int is_builtin(char *command)
+int	is_builtin(char *command)
 {
-	int i;
+	int				i;
+	const t_builtin	*builtin_commands;
 
 	i = 0;
+	builtin_commands = get_builtin_commands();
 	while (builtin_commands[i].name)
 	{
 		if (ft_strcmp(command, builtin_commands[i].name) == 0)
-			return 1;
+			return (1);
 		i++;
 	}
-	return 0;
+	return (0);
 }
 
 void	execute_builtin(t_cmd *cmd, t_shell *shell)
@@ -63,7 +78,7 @@ void	execute_builtin(t_cmd *cmd, t_shell *shell)
 		builtin_unset(cmd->argv, shell);
 	else if (ft_strcmp(cmd->argv[0], "env") == 0)
 		builtin_env(cmd->argv, shell);
-	else if (ft_strcmp(cmd->argv[0], "exit") == 0 || ft_strcmp(cmd->argv[0], "bye") == 0)
+	else if (ft_strcmp(cmd->argv[0], "exit") == 0 || \
+	ft_strcmp(cmd->argv[0], "bye") == 0)
 		builtin_exit(cmd->argv);
 }
-
