@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 15:46:18 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 19:35:04 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/09 20:03:06 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,6 @@ static int	handle_heredoc_child(char *delim, t_shell *shell, int hered_fd)
 }
 
 
-
-
-// Function prototypes
-
-
 int handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 {
     char *delim;
@@ -118,12 +113,10 @@ int handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 
     if (!validate_heredoc_syntax(cmd, token, shell))
         return 0;
-    
     delim = (*token)->content;
     tmp_file = create_and_open_temp_file(cmd->redirect_count, &hered_fd);
     if (!tmp_file)
         return 0;
-
     handle_signals(&old_int, &old_quit, 0);
     pid = fork();
     if (pid == -1)
@@ -133,10 +126,8 @@ int handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
         free(tmp_file);
         return 0;
     }
-    
     if (pid == 0)
         exit(handle_heredoc_child(delim, shell, hered_fd));
-    
     status = handle_heredoc_parent(pid, hered_fd, &old_int, &old_quit);
     return finalize_heredoc(cmd, tmp_file, status);
 }
@@ -159,7 +150,6 @@ static char *create_and_open_temp_file(int redirect_count, int *hered_fd)
     char *tmp_file = create_filename(redirect_count);
     if (!tmp_file)
         return NULL;
-    
     *hered_fd = open_hdfile(tmp_file);
     if (*hered_fd == -1)
     {

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:21:40 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 19:24:08 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/09 20:01:38 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ char	*search_paths(char **paths, char *command);
 char	*find_executable(char *command, t_shell *shell);
 char	*find_command_in_path(char *command, t_shell *shell);
 
-//function too long
 char	*search_paths(char **paths, char *command)
 {
 	int		i;
@@ -26,7 +25,6 @@ char	*search_paths(char **paths, char *command)
 	while (paths[i])
 	{
 		full_path = ft_strjoin3(paths[i], "/", command);
-		// printf("DEBUG: Trying path: %s\n", full_path);
 		if (access(full_path, X_OK) == 0)
 			return (full_path);
 		free(full_path);
@@ -47,7 +45,6 @@ char	*find_executable(char *command, t_shell *shell)
 	(command[1] == '.' && command[2] == '/'))))
 		return (ft_strdup(command));
 	path_env = ft_get_env("PATH", shell);
-	// printf("DEBUG: PATH = %s\n", path_env); // debug-line
 	if (!path_env)
 		return (NULL);
 	paths = ft_split(path_env, ':');

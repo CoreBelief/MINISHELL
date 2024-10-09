@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:20:16 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/02 16:54:10 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/09 20:01:56 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ void	close_pipe_ends(int pfds[2])
 void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
 {
 	setup_signals_child();
-	// signal(SIGPIPE, SIG_IGN);
 	if (cmd->redirect_count)
 		setup_redirections(cmd);
 	handle_input_redirection(prev_prd, cmd);

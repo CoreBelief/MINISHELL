@@ -6,14 +6,11 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 15:44:09 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/09 20:01:28 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-// #include "error.h"
-// #include "path.h"
-// #include "process.h"
 
 void	execute_external(t_cmd *cmd, t_shell *shell);
 void	setup_pipes(t_cmd *cmd, int pipe_fds[2]);
@@ -25,20 +22,18 @@ void	execute_external(t_cmd *cmd, t_shell *shell)
 
 	if (!cmd->argv[0])
 	{
-		shell->last_exit_status = 0;// for empty cmds
+		shell->last_exit_status = 0;
 		exit(shell->last_exit_status);
 	}
 	path = find_executable(cmd->argv[0], shell);
 	if (!path)
 	{
-		// shell->last_exit_status = 127;
 		ft_putstr_fd(cmd->argv[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
 		exit(127);
 	}
 	check_file_status(path, shell);
 	execve(path, cmd->argv, shell->env);
-	// shell->last_exit_status = 126;
 	perror(path);
 	free(path);
 	exit(126);
@@ -55,40 +50,28 @@ void	setup_pipes(t_cmd *cmd, int pfds[2])
 		}
 	}
 }
-
-static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
+static pid_t fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
 {
-	pid_t	pid;
-
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("minishell: fork");
-		exit(EXIT_FAILURE);
-	}
-	else if (pid == 0)
-		child_proc(cmd, pfds, *prev_prd, shell);
-	else
-	{
-		signal(SIGINT, SIG_IGN);
-		parent_proc(cmd, pfds, prev_prd);
-	}
-	return (pid);
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("minishell: fork");
-		exit(EXIT_FAILURE);
-	}
-	else if (pid == 0)
-		child_proc(cmd, pfds, *prev_prd, shell);
-	else
-	{
-		signal(SIGINT, SIG_IGN);
-		parent_proc(cmd, pfds, prev_prd);
-	}
-	return (pid);
+    pid_t pid = fork();
+    
+    if (pid == -1)
+    {
+        perror("minishell: fork");
+        exit(EXIT_FAILURE);
+    }
+    else if (pid == 0)
+    {
+        child_proc(cmd, pfds, *prev_prd, shell);
+    }
+    else
+    {
+        signal(SIGINT, SIG_IGN);
+        parent_proc(cmd, pfds, prev_prd);
+    }
+    
+    return pid;
 }
+
 
 static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
 {
