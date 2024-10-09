@@ -1,8 +1,15 @@
-#include <limits.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   exit.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/10/09 17:25:25 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/10/09 20:11:21 by rdl           ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 
@@ -17,7 +24,7 @@ static int is_space(char c) {
 
 static int is_digit(char c) 
 {
-    return (c >= '0' && c <= '9');
+	return (c >= '0' && c <= '9');
 }
 
 // // Trims leading and trailing spaces
@@ -42,20 +49,18 @@ static int is_digit(char c)
 static char *trim_whitespace(char *str) {
     char *end;
 
-    // Trim leading space
-    while (is_space(*str)) str++;
-
-    if (*str == 0)  // If string is all spaces
-        return str;
-
-    // Trim trailing space
-    end = str + strlen(str) - 1;
-    while (end > str && is_space(*end)) end--;
-
-    // Write new null terminator
-    *(end + 1) = '\0';
-
-    return str;
+	// Trim leading space
+	while (is_space(*str))
+		str++;
+	if (*str == 0) // If string is all spaces
+		return (str);
+	// Trim trailing space
+	end = str + strlen(str) - 1;
+	while (end > str && is_space(*end))
+		end--;
+	// Write new null terminator
+	*(end + 1) = '\0';
+	return (str);
 }
 
 static int	is_valid_number(const char *str, long *number)
@@ -83,8 +88,8 @@ static int	is_valid_number(const char *str, long *number)
 		result = result * 10 + (str[i] - '0');
 		i++;
 	}
-	if ((sign == -1 && result > (unsigned long)LONG_MAX + 1)
-		|| (sign == 1 && result > (unsigned long)LONG_MAX))
+	if ((sign == -1 && result > (unsigned long)LONG_MAX + 1) || (sign == 1
+			&& result > (unsigned long)LONG_MAX))
 		return (0);
 	*number = sign * (long)result;
 	return (1);
@@ -114,8 +119,8 @@ static int	is_valid_number(const char *str, long *number)
 // }
 void builtin_exit(char **args) 
 {
-    long exit_status;
-    int numeric_status = 0;
+	long	exit_status;
+	int		numeric_status;
 
     printf("exit\n");
     // printf("args == %s\n", args[1]);

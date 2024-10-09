@@ -6,12 +6,12 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 17:29:22 by rdl           #+#    #+#                 */
-/*   Updated: 2024/09/29 02:16:18 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/09 17:22:29 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "environ.h"
+#include "minishell.h"
 #include <unistd.h>
 
 static char	*get_cd_path(char **args, t_shell *shell);
@@ -20,7 +20,8 @@ void		builtin_cd(char **args, t_shell *shell);
 
 static char	*get_cd_path(char **args, t_shell *shell)
 {
-	char *home_path;
+	char	*home_path;
+	char	*oldpwd;
 
 	if (!args[1] || ft_strcmp(args[1], "~") == 0)
 	{
@@ -34,7 +35,7 @@ static char	*get_cd_path(char **args, t_shell *shell)
 	}
 	else if (ft_strcmp(args[1], "-") == 0)
 	{
-		char *oldpwd = ft_get_env("OLDPWD", shell);
+		oldpwd = ft_get_env("OLDPWD", shell);
 		if (!oldpwd)
 		{
 			print_error("cd", ": OLDPWD not set\n");
@@ -44,7 +45,6 @@ static char	*get_cd_path(char **args, t_shell *shell)
 	}
 	return (args[1]);
 }
-
 
 static void	update_pwd(char *old_pwd, t_shell *shell)
 {
@@ -63,8 +63,9 @@ void	builtin_cd(char **args, t_shell *shell)
 {
 	char	*path;
 	char	old_pwd[1024];
-	int		arg_count = 0;
+	int		arg_count;
 
+	arg_count = 0;
 	while (args[arg_count])
 		arg_count++;
 	if (arg_count > 2)

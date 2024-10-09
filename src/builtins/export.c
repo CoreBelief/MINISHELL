@@ -6,16 +6,20 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:32:27 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 19:54:59 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/09 20:10:35 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 #include "minishell.h"
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include "structs.h"
 
 static int	print_sorted_env(t_shell *shell);
 static int	is_valid_identifier(const char *str);
-static int	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell);
+static int	handle_value_assignment(char *arg, char *equal_sign,
+				t_shell *shell);
 static int	process_identifier(char *arg, char *equal_sign, t_shell *shell);
 static void	sort_env(char **sorted_env, int size);
 void		builtin_export(char **args, t_shell *shell);
@@ -169,7 +173,6 @@ static int process_identifier(char *arg, char *equal_sign, t_shell *shell)
     return result;
 }
 
-
 static void	sort_env(char **sorted_env, int size)
 {
 	int		i;
@@ -210,8 +213,8 @@ static int	print_sorted_env(t_shell *shell)
 	while (++i < shell->env_size)
 	{
 		e_sign = ft_strchr(sorted_env[i], '=');
-		printf("declare -x %.*s\"%s\"\n", (int)(e_sign - sorted_env[i] + 1), \
-		sorted_env[i], e_sign + 1);
+		printf("declare -x %.*s\"%s\"\n", (int)(e_sign - sorted_env[i] + 1),
+			sorted_env[i], e_sign + 1);
 	}
 	free(sorted_env);
 	return (1);

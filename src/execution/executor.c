@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 20:01:28 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/09 20:11:45 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 void	execute_external(t_cmd *cmd, t_shell *shell);
 void	setup_pipes(t_cmd *cmd, int pipe_fds[2]);
+static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell);
+static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell);
+void	cleanup_heredoc_files(t_cmd *cmd);
+static void	wait_for_children(t_shell *shell, pid_t last_pid);
 void	execute_command(t_shell *shell);
 
 void	execute_external(t_cmd *cmd, t_shell *shell)

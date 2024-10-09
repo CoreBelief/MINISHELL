@@ -6,15 +6,16 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:21:40 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 20:01:38 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/09 20:11:52 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*search_paths(char **paths, char *command);
-char	*find_executable(char *command, t_shell *shell);
-char	*find_command_in_path(char *command, t_shell *shell);
+char		*search_paths(char **paths, char *command);
+char		*find_executable(char *command, t_shell *shell);
+static void	handle_error(t_shell *shell, char *path, int status, char *message);
+void		check_file_status(char *path, t_shell *shell);
 
 char	*search_paths(char **paths, char *command)
 {
