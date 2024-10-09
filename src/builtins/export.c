@@ -6,19 +6,21 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:32:27 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 18:20:21 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/09 17:22:09 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 #include "minishell.h"
+
 // #include <stdio.h>
 // #include <stdlib.h>
 // #include "structs.h"
 
 static int	print_sorted_env(t_shell *shell);
 static int	is_valid_identifier(const char *str);
-static int	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell);
+static int	handle_value_assignment(char *arg, char *equal_sign,
+				t_shell *shell);
 static int	process_identifier(char *arg, char *equal_sign, t_shell *shell);
 static void	sort_env(char **sorted_env, int size);
 void		builtin_export(char **args, t_shell *shell);
@@ -48,8 +50,8 @@ static int	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
 
 	*equal_sign = '\0';
 	value = equal_sign + 1;
-	if ((value[0] == '"' && value[ft_strlen(value) - 1] == '"') || \
-	(value[0] == '\'' && value[ft_strlen(value) - 1] == '\''))
+	if ((value[0] == '"' && value[ft_strlen(value) - 1] == '"')
+		|| (value[0] == '\'' && value[ft_strlen(value) - 1] == '\''))
 	{
 		value[ft_strlen(value) - 1] = '\0';
 		value++;
@@ -77,13 +79,15 @@ static int	process_identifier(char *arg, char *equal_sign, t_shell *shell)
 		identifier = arg;
 	if (!is_valid_identifier(identifier))
 	{
-		print_error(arg, ": not a valid identifier\n"); //should we have the command name here(export?)
+		print_error(arg, ": not a valid identifier\n");
+		// should we have the command name here(export?)
 		shell->last_exit_status = 1;
 		if (equal_sign != NULL)
 			free(identifier);
 		return (0);
 	}
-	if (equal_sign != NULL){
+	if (equal_sign != NULL)
+	{
 		if (!handle_value_assignment(arg, equal_sign, shell))
 		{
 			free(identifier);
@@ -103,7 +107,6 @@ static int	process_identifier(char *arg, char *equal_sign, t_shell *shell)
 		free(identifier);
 	return (1);
 }
-
 
 static void	sort_env(char **sorted_env, int size)
 {
@@ -145,8 +148,8 @@ static int	print_sorted_env(t_shell *shell)
 	while (++i < shell->env_size)
 	{
 		e_sign = ft_strchr(sorted_env[i], '=');
-		printf("declare -x %.*s\"%s\"\n", (int)(e_sign - sorted_env[i] + 1), \
-		sorted_env[i], e_sign + 1);
+		printf("declare -x %.*s\"%s\"\n", (int)(e_sign - sorted_env[i] + 1),
+			sorted_env[i], e_sign + 1);
 	}
 	free(sorted_env);
 	return (1);

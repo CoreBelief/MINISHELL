@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 15:41:06 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/09 17:06:27 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,10 @@ t_cmd	*init_cmd(void)
 static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell)
 {
 	if (!is_redirect_token((*tok)->type) && (*tok)->type != TOKEN_PIPE)
-		return (handle_word_parsing(*cur_cmd, tok, i)); //returns 0 on malloc fail
+	{
+		if (!handle_word_parsing(*cur_cmd, tok, i)) //returns 0 on malloc fail
+			return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
+	}
 	else if (is_redirect_token((*tok)->type))
 	{
 		if ((*cur_cmd)->redirect_count >= MAX_REDIRECTS)
@@ -58,13 +61,13 @@ static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell)
 				return (0);
 		}
 		else if (!handle_redirection_parsing(*cur_cmd, tok, shell))
-			return (0); // can be syntax error or malloc fal so only return 0 here and handle exit codes/msgs inside
+			return (0); // error handle before this point
 	}
 	else if ((*tok)->type == TOKEN_PIPE)
 	{
 		*cur_cmd = handle_pipe_parsing(*cur_cmd, i);
 		if (!*cur_cmd)
-			return (0); // always malloc fail
+			return (handle_syn_errors(1, " Malloc fail\n", shell), 0); // always malloc fail
 	}
 	return (1);
 }

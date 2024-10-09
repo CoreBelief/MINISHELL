@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 15:44:09 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/09 17:12:30 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,10 @@
 
 void	execute_external(t_cmd *cmd, t_shell *shell);
 void	setup_pipes(t_cmd *cmd, int pipe_fds[2]);
+static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell);
+static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell);
+void	cleanup_heredoc_files(t_cmd *cmd);
+static void	wait_for_children(t_shell *shell, pid_t last_pid);
 void	execute_command(t_shell *shell);
 
 void	execute_external(t_cmd *cmd, t_shell *shell)
@@ -31,14 +35,12 @@ void	execute_external(t_cmd *cmd, t_shell *shell)
 	path = find_executable(cmd->argv[0], shell);
 	if (!path)
 	{
-		// shell->last_exit_status = 127;
 		ft_putstr_fd(cmd->argv[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
 		exit(127);
 	}
 	check_file_status(path, shell);
 	execve(path, cmd->argv, shell->env);
-	// shell->last_exit_status = 126;
 	perror(path);
 	free(path);
 	exit(126);
@@ -60,20 +62,6 @@ static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *she
 {
 	pid_t	pid;
 
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("minishell: fork");
-		exit(EXIT_FAILURE);
-	}
-	else if (pid == 0)
-		child_proc(cmd, pfds, *prev_prd, shell);
-	else
-	{
-		signal(SIGINT, SIG_IGN);
-		parent_proc(cmd, pfds, prev_prd);
-	}
-	return (pid);
 	pid = fork();
 	if (pid == -1)
 	{

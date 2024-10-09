@@ -6,17 +6,17 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:21:40 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 19:24:08 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/09 17:15:52 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*search_paths(char **paths, char *command);
-char	*find_executable(char *command, t_shell *shell);
-char	*find_command_in_path(char *command, t_shell *shell);
+char		*search_paths(char **paths, char *command);
+char		*find_executable(char *command, t_shell *shell);
+static void	handle_error(t_shell *shell, char *path, int status, char *message);
+void		check_file_status(char *path, t_shell *shell);
 
-//function too long
 char	*search_paths(char **paths, char *command)
 {
 	int		i;
@@ -26,7 +26,6 @@ char	*search_paths(char **paths, char *command)
 	while (paths[i])
 	{
 		full_path = ft_strjoin3(paths[i], "/", command);
-		// printf("DEBUG: Trying path: %s\n", full_path);
 		if (access(full_path, X_OK) == 0)
 			return (full_path);
 		free(full_path);

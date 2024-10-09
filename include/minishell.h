@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 15:36:04 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/09 17:25:42 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # include <pwd.h>
 # include <errno.h>
 # include <sys/stat.h>
+# include <ctype.h>
+# include <limits.h>
 
 # include "environ.h"
 # include "signal.h"
