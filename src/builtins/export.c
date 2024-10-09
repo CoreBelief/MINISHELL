@@ -6,15 +6,12 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:32:27 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 18:42:32 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/09 19:48:20 by rdl           ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 #include "minishell.h"
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include "structs.h"
 
 static int	print_sorted_env(t_shell *shell);
 static int	is_valid_identifier(const char *str);
@@ -22,9 +19,6 @@ static int	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell);
 static int	process_identifier(char *arg, char *equal_sign, t_shell *shell);
 static void	sort_env(char **sorted_env, int size);
 void		builtin_export(char **args, t_shell *shell);
-
-// too much functions in one file
-// split it into multiple files?
 
 static int	is_valid_identifier(const char *str)
 {
@@ -47,8 +41,6 @@ static int handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
 
     *equal_sign = '\0';
     value = equal_sign + 1;
-
-    // No need to strip quotes here since the parser has already handled it.
     if (!ft_set_env(arg, value, shell))
         return (0);
     
@@ -56,66 +48,68 @@ static int handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
     return (1);
 }
 
-// static int	handle_value_assignment(char *arg, char *equal_sign, t_shell *shell)
-// {
-// 	char	*value;
-
-// 	*equal_sign = '\0';
-// 	value = equal_sign + 1;
-// 	if ((value[0] == '"' && value[ft_strlen(value) - 1] == '"') || 
-// 	(value[0] == '\'' && value[ft_strlen(value) - 1] == '\''))
-// 	{
-// 		value[ft_strlen(value) - 1] = '\0';
-// 		value++;
-// 	}
-// 	if (!ft_set_env(arg, value, shell))
-// 		return (0);
-// 	*equal_sign = '=';
-// 	return (1);
-// }
-
-static int	process_identifier(char *arg, char *equal_sign, t_shell *shell)
+static int handle_equal_sign(char *arg, char *equal_sign, char **identifier)
 {
-	char	*identifier;
+    *identifier = ft_strndup(arg, equal_sign - arg);
+    return (*identifier != NULL);
+}
 
-	if (equal_sign != NULL)
-	{
-		identifier = ft_strndup(arg, equal_sign - arg);
-		if (!identifier)
-		{
-			shell->last_exit_status = 1;
-			return (0);
-		}
-	}
-	else
-		identifier = arg;
-	if (!is_valid_identifier(identifier))
-	{
-		print_error(arg, ": not a valid identifier\n"); //should we have the command name here(export?)
-		shell->last_exit_status = 1;
-		if (equal_sign != NULL)
-			free(identifier);
-		return (0);
-	}
-	if (equal_sign != NULL){
-		if (!handle_value_assignment(arg, equal_sign, shell))
-		{
-			free(identifier);
-			shell->last_exit_status = 1;
-			return (0);
-		}
-	}
-	else
-	{
-		if (!ft_set_env(arg, "", shell))
-		{
-			shell->last_exit_status = 1;
-			return (0);
-		}
-	}
-	if (equal_sign != NULL)
-		free(identifier);
-	return (1);
+static int handle_no_equal_sign(char *arg, char **identifier)
+{
+    *identifier = arg;
+    return (1);
+}
+
+static int validate_identifier(const char *identifier, char *arg, t_shell *shell)
+{
+    if (!is_valid_identifier(identifier))
+    {
+        print_error(arg, ": not a valid identifier\n");
+        shell->last_exit_status = 1;
+        return (0);
+    }
+    return (1);
+}
+
+static int set_environment(char *arg, char *equal_sign, t_shell *shell)
+{
+    if (equal_sign != NULL)
+    {
+        return handle_value_assignment(arg, equal_sign, shell);
+    }
+    else
+    {
+        return ft_set_env(arg, "", shell);
+    }
+}
+
+static int process_identifier(char *arg, char *equal_sign, t_shell *shell)
+{
+    char *identifier;
+    int result;
+
+    if (equal_sign != NULL)
+    {
+        if (!handle_equal_sign(arg, equal_sign, &identifier))
+        {
+            shell->last_exit_status = 1;
+            return (0);
+        }
+    }
+    else
+        handle_no_equal_sign(arg, &identifier);
+    if (!validate_identifier(identifier, arg, shell))
+    {
+        if (equal_sign != NULL)
+            free(identifier);
+        return (0);
+    }
+    result = set_environment(arg, equal_sign, shell);
+    if (!result)
+        shell->last_exit_status = 1;
+    if (equal_sign != NULL)
+        free(identifier);
+    return result;
 }
 
 
