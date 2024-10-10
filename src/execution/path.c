@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:21:40 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 20:11:52 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/10 17:12:52 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ char		*search_paths(char **paths, char *command);
 char		*find_executable(char *command, t_shell *shell);
 static void	handle_error(t_shell *shell, char *path, int status, char *message);
 void		check_file_status(char *path, t_shell *shell);
+void		cleanup_heredoc_files(t_cmd *cmd);
 
 char	*search_paths(char **paths, char *command)
 {
@@ -76,4 +77,23 @@ void	check_file_status(char *path, t_shell *shell)
 		handle_error(shell, path, 126, ": Is a directory\n");
 	if (!(st.st_mode & S_IXUSR))
 		handle_error(shell, path, 126, ": Permission denied\n");
+}
+
+void	cleanup_heredoc_files(t_cmd *cmd)
+{
+	int		i;
+	t_cmd	*cur;
+
+	i = 0;
+	cur = cmd;
+	while (cur)
+	{
+		while (i < cur->redirect_count)
+		{
+			if (cur->redir[i].type == TOKEN_HEREDOC)
+				unlink(cur->redir[i].file);
+			i++;
+		}
+		cur = cur->next;
+	}
 }

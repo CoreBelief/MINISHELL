@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   memory.c                                           :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/10/10 17:16:54 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/10/10 17:16:57 by eeklund       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 #include <stdlib.h>
-void	free_command(t_cmd *cmd);//needs to be shorter!@!
+
+void	free_command(t_cmd *cmd); // needs to be shorter!@!
 void	free_command_list(t_cmd **head);
 void	ft_free_str_array(char **arr);
 void	free_tokens(t_token **head);
-
 
 void	free_command(t_cmd *cmd)
 {
@@ -63,12 +75,11 @@ void	ft_free_str_array(char **arr)
 	i = 0;
 	while (arr[i])
 	{
-		free (arr[i]);
+		free(arr[i]);
 		i++;
 	}
-	free (arr);
+	free(arr);
 }
-
 
 void	free_tokens(t_token **head)
 {

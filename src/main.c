@@ -1,38 +1,42 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   main.c                                             :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: eeklund <eeklund@student.42.fr>              +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2024/10/10 17:23:58 by eeklund       #+#    #+#                 */
+/*   Updated: 2024/10/10 17:26:05 by eeklund       ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <pwd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <sys/wait.h>
-#include "environ.h"
-#include "signal.h"
-#include <fcntl.h>
-#include <termios.h>
-#include <fcntl.h>
-#include <unistd.h>
 
-static void	process_input(char *line, t_shell *shell); //maybe we move this to different file?
+static void	process_input(char *line, t_shell *shell);
+// maybe we move this to different file?
 void		minishell_loop(t_shell *shell);
-void		free_shell(t_shell *shell); //move this to memory.c ?
-void		init_shell(t_shell *shell); //move this also somewhere else?
-void		ft_custom_itoa(int n, char *str, int max_len); //this one can use its own file inside utils maybe?
-int			increment_shlvl(t_shell *shell); //not sure yet where to place this?
-int			main(int argc, char **argv, char **envp); //main can be shorter and split up maybe? maybe its fine
-
+void		free_shell(t_shell *shell);
+// move this to memory.c ?
+void		init_shell(t_shell *shell);
+// move this also somewhere else?
+void		ft_custom_itoa(int n, char *str, int max_len);
+// this one can use its own file inside utils maybe?
+int			increment_shlvl(t_shell *shell);
+// not sure yet where to place this?
+int			main(int argc, char **argv, char **envp);
+// main can be shorter and split up maybe? maybe its fine
 
 static void	process_input(char *line, t_shell *shell)
 {
-
 	if (line && *line)
 	{
 		add_history(line);
-		if (!tokenizer(line, shell)) // all exit codes are set before coming here
+		if (!tokenizer(line, shell))
+			// all exit codes are set before coming here
 			return ;
 		// print_token_list(shell->tokens);
-		if (!parse_command_from_tokens(shell)) // all exit codes are set before coming here
+		if (!parse_command_from_tokens(shell))
+		// all exit codes are set before coming here
 		{
 			// shell->last_exit_status = 1;
 			free_tokens(&shell->tokens);
@@ -52,42 +56,44 @@ static void	process_input(char *line, t_shell *shell)
 //     int terminal_fd;
 
 //     setup_signals_shell();
-//     original_stdout = dup(STDOUT_FILENO); // Keep this, but it may still be problematic.
+//     original_stdout = dup(STDOUT_FILENO); // Keep this,
+// but it may still be problematic.
 //     terminal_fd = open("/dev/tty", O_WRONLY);
 //     if (terminal_fd == -1)
 //     {
 //         perror("Failed to open terminal");
-//         return;
+//         return ;
 //     }
 //     while (1)
 //     {
 //         // dup2(terminal_fd, STDOUT_FILENO);
 
 //         // Commented out isatty checks to force always interactive behavior
-//         // if (isatty(STDIN_FILENO)) 
+//         // if (isatty(STDIN_FILENO))
 //         // {
 //             prompt = create_prompt();
 //             if (!prompt)
 //             {
-//                 ft_putstr_fd("Error: Failed to create prompt\n", terminal_fd);
+//                 ft_putstr_fd("Error: Failed to create prompt\n",
+// terminal_fd);
 //                 shell->last_exit_status = 1;
-//                 break;
+//                 break ;
 //             }
 
 //             line = readline(prompt);
 //             free(prompt);
-//             if (!line) 
+//             if (!line)
 //             {
 //                 // ft_putstr_fd("exit\n", terminal_fd);
-//                 break;
+//                 break ;
 //             }
 //             add_history(line);
-//         // } 
-//         // else 
+//         // }
+//         // else
 //         // {
 //         //     line = get_next_line(STDIN_FILENO);
 //         //     if (!line)
-//         //         break;
+//         //         break ;
 //         //     size_t len = ft_strlen(line);
 //         //     if (len > 0 && line[len - 1] == '\n')
 //         //         line[len - 1] = '\0';
@@ -103,57 +109,54 @@ static void	process_input(char *line, t_shell *shell)
 //     close(terminal_fd);
 //     close(original_stdout);
 // }
-void minishell_loop(t_shell *shell)
+void	minishell_loop(t_shell *shell)
 {
-    char *line = NULL;
-    char *prompt = NULL;
+	char	*line;
+	char	*prompt;
+	size_t	len;
 
-    setup_signals_shell();
-
-    while (1)
-    {
-        if (isatty(STDIN_FILENO))
-        {
-            // Interactive mode
-            prompt = create_prompt();
-            if (!prompt)
-            {
-                perror("Error: Failed to create prompt");
-                shell->last_exit_status = 1;
-                break;
-            }
-            line = readline(prompt);
-            free(prompt);
-
-            if (!line)
-            {
-                printf("exit\n");
-                break;
-            }
-            if (*line)
-                add_history(line);
-        }
-        else
-        {
-            // Non-interactive mode
-            line = get_next_line(STDIN_FILENO);
-            if (!line)
-                break;
-
-            // Remove newline character if present
-            size_t len = strlen(line);
-            if (len > 0 && line[len - 1] == '\n')
-                line[len - 1] = '\0';
-        }
-
-        if (*line)
-            process_input(line, shell);
-
-        free(line);
-        line = NULL;
-    }
+	line = NULL;
+	prompt = NULL;
+	setup_signals_shell();
+	while (1)
+	{
+		if (isatty(STDIN_FILENO))
+		{
+			// Interactive mode
+			prompt = create_prompt();
+			if (!prompt)
+			{
+				perror("Error: Failed to create prompt");
+				shell->last_exit_status = 1;
+				break ;
+			}
+			line = readline(prompt);
+			free(prompt);
+			if (!line)
+			{
+				printf("exit\n");
+				break ;
+			}
+			if (*line)
+				add_history(line);
+		}
+		else
+		{
+			// Non-interactive mode
+			line = get_next_line(STDIN_FILENO);
+			if (!line)
+				break ;
+			// Remove newline character if present
+			len = strlen(line);
+			if (len > 0 && line[len - 1] == '\n')
+				line[len - 1] = '\0';
+		}
+		if (*line)
+			process_input(line, shell);
+		free(line);
+		line = NULL;
+	}
 }
-
 
 void	free_shell(t_shell *shell)
 {
@@ -201,7 +204,7 @@ char	*ft_itoa(int n)
 
 	num = (long)n;
 	len = countnum(num);
-	intstring = (char *) malloc ((len + 1) * (sizeof(char)));
+	intstring = (char *)malloc((len + 1) * (sizeof(char)));
 	if (!intstring)
 		return (NULL);
 	i = 0;
@@ -233,13 +236,14 @@ int	increment_shlvl(t_shell *shell)
 		shlvl += 1;
 	}
 	new_shlvl = ft_itoa(shlvl);
-	// ft_custom_itoa(shlvl, new_shlvl, sizeof(new_shlvl));//find out why custom itoa and why not regular ft_itoa
+	// ft_custom_itoa(shlvl, new_shlvl,
+	// sizeof(new_shlvl));//find out why custom itoa and why not regular ft_itoa
 	if (!ft_set_env("SHLVL", new_shlvl, shell))
 	{
-		free (new_shlvl);
+		free(new_shlvl);
 		return (0);
 	}
-	free (new_shlvl);
+	free(new_shlvl);
 	return (1);
 }
 
@@ -270,4 +274,3 @@ int	main(int argc, char **argv, char **envp)
 	free_shell(&shell);
 	return (shell.last_exit_status);
 }
-

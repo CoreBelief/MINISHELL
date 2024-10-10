@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 18:42:40 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 16:44:14 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/10 15:40:24 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	extract_and_append(char *input, int len, char **res, t_shell *shell)
 	return (1);
 }
 
-int	double_quotes_state(char *input, char **res, int *i, t_shell *shell) // handle exit codes here
+int	double_quotes_state(char *input, char **res, int *i, t_shell *shell)
 {
 	int	start;
 
@@ -77,7 +77,7 @@ int	double_quotes_state(char *input, char **res, int *i, t_shell *shell) // hand
 	return (1);
 }
 
-int	single_quotes_state(char *input, char **res, int *i, t_shell *shell) // handle exit codes here
+int	single_quotes_state(char *input, char **res, int *i, t_shell *shell)
 {
 	int		start;
 	char	*content;
@@ -105,7 +105,7 @@ int	single_quotes_state(char *input, char **res, int *i, t_shell *shell) // hand
 	return (1);
 }
 
-int	no_quotes_state(char *input, char **res, int *i, t_shell *shell) // exit codes handled before this point
+int	no_quotes_state(char *input, char **res, int *i, t_shell *shell)
 {
 	int		start;
 

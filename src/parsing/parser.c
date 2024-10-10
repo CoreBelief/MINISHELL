@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/26 14:02:24 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 17:06:27 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/10 15:58:28 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell)
 {
 	if (!is_redirect_token((*tok)->type) && (*tok)->type != TOKEN_PIPE)
 	{
-		if (!handle_word_parsing(*cur_cmd, tok, i)) //returns 0 on malloc fail
+		if (!handle_word_parsing(*cur_cmd, tok, i))
 			return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
 	}
 	else if (is_redirect_token((*tok)->type))
@@ -57,17 +57,17 @@ static int	handle_token(t_token **tok, t_cmd **cur_cmd, int *i, t_shell *shell)
 			return (0); //error: more redirects than ok
 		if ((*tok)->type == TOKEN_HEREDOC)
 		{
-			if (!(handle_heredoc_parsing(*cur_cmd, tok, shell))) // have many different exit codes. implement exit codes and messages inside func and only return 0 here
+			if (!(handle_heredoc_parsing(*cur_cmd, tok, shell))) //error inside
 				return (0);
 		}
 		else if (!handle_redirection_parsing(*cur_cmd, tok, shell))
-			return (0); // error handle before this point
+			return (0);
 	}
 	else if ((*tok)->type == TOKEN_PIPE)
 	{
 		*cur_cmd = handle_pipe_parsing(*cur_cmd, i);
 		if (!*cur_cmd)
-			return (handle_syn_errors(1, " Malloc fail\n", shell), 0); // always malloc fail
+			return (handle_syn_errors(1, " Malloc fail\n", shell), 0);
 	}
 	return (1);
 }

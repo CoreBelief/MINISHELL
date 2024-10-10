@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 17:25:42 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/10 17:25:58 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,42 +14,40 @@
 # define MINISHELL_H
 
 # include "../src/finalgnl/get_next_line.h"
-
+# include "../src/lib_FT/libft.h"
+# include "builtins.h"
+# include "environ.h"
+# include "error.h"
+# include "executor.h"
+# include "memory.h"
+# include "parser.h"
+# include "path.h"
+# include "process.h"
+# include "prompt.h"
+# include "redirections.h"
+# include "signal.h"
+# include "signals.h"
+# include "structs.h"
+# include "tokenizer.h"
 # include "utils.h"
-# include <unistd.h>
+# include "var_exp.h"
+# include <ctype.h>
+# include <errno.h>
+# include <fcntl.h>
+# include <limits.h>
+# include <pwd.h>
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <signal.h>
+# include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-# include <signal.h>
-# include <sys/wait.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <fcntl.h>
-# include <sys/types.h>
-# include <stdbool.h>
-# include <pwd.h>
-# include <errno.h>
 # include <sys/stat.h>
-# include <ctype.h>
-# include <limits.h>
-
-# include "environ.h"
-# include "signal.h"
-# include "../src/lib_FT/libft.h"
-# include "prompt.h"
-# include "structs.h"
-# include "builtins.h"
-# include "parser.h"
-# include "tokenizer.h"
-# include "memory.h"
-# include "executor.h"
-# include "var_exp.h"
-# include "signals.h"
-# include "redirections.h"
-# include "error.h"
-# include "path.h"
-# include "utils.h"
-# include "process.h"
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <termios.h>
+# include <unistd.h>
 
 # define MAX_ARGS 1024
 # define MAX_REDIRECTS 10
@@ -71,7 +69,7 @@ void	free_shell(t_shell *shell);
 // int set_env(const char *name, const char *value);
 // int unset_env(const char *name);
 
-//utils
+// utils
 // char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
 
 #endif

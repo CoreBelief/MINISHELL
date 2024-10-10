@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 16:59:35 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/10 15:39:36 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,16 @@ bool	is_special_token(char c)
 	return (c == '|' || c == '<' || c == '>');
 }
 
-int	handle_quotes_state(char *input, char **res, int *i, t_shell *shell) // exit codes handled before this
+int	handle_quotes_state(char *input, char **res, int *i, t_shell *shell)
 {
 	if (input[*i] == '"' )
 	{
-		if (!double_quotes_state(input, res, i, shell)) // can be either malloc or syntx fail
+		if (!double_quotes_state(input, res, i, shell))
 			return (0);
 	}
 	if (input[*i] == '\'')
 	{
-		if (!single_quotes_state(input, res, i, shell)) // can be either malloc or syntx fail
+		if (!single_quotes_state(input, res, i, shell))
 			return (0);
 	}
 	return (1);
@@ -83,17 +83,16 @@ t_token	*add_token(t_token **head, char *content, t_token_type type)
 	}
 	return (new_token);
 }
+// void	print_token_list(t_token *head)
+// {
+// 	t_token	*temp;
 
-void	print_token_list(t_token *head)
-{
-	t_token	*temp;
-
-	printf("inside print token_lst\n");
-	while (head)
-	{
-		temp = head;
-		head = head->next;
-		printf("TOKEN-> '%s' type:%i\n", temp->content, temp->type);
-	}
-	printf("\n");
-}
+// 	printf("inside print token_lst\n");
+// 	while (head)
+// 	{
+// 		temp = head;
+// 		head = head->next;
+// 		printf("TOKEN-> '%s' type:%i\n", temp->content, temp->type);
+// 	}
+// 	printf("\n");
+// }

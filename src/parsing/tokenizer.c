@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 16:59:09 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/10 15:38:32 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,12 @@ int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
 	{
 		if (input[*i] == '"' || input[*i] == '\'')
 		{
-			if (!handle_quotes_state(input, &result, i, shell)) // exit codes are handled before this point, just returning 0
+			if (!handle_quotes_state(input, &result, i, shell))
 				return (free (result), 0);
 		}
 		else
 		{
-			if (!no_quotes_state(input, &result, i, shell)) // exit codes are handled before this point, just returning 0
+			if (!no_quotes_state(input, &result, i, shell))
 				return (free (result), 0);
 		}
 	}
@@ -99,7 +99,7 @@ int	tokenize_all(char *input, int *i, t_shell *shell)
 	}
 	else if (input[*i] == '<' || input[*i] == '>')
 	{
-		if (!tokenize_redirection(input, i, &shell->tokens)) // always malloc fail if returns 0
+		if (!tokenize_redirection(input, i, &shell->tokens))
 		{
 			free_tokens(&shell->tokens);
 			return (handle_syn_errors(1, "malloc fail\n", shell), 0);
@@ -113,7 +113,6 @@ int	tokenize_all(char *input, int *i, t_shell *shell)
 	return (1);
 }
 
-/* FIXXXXXXXX */
 int	tokenizer(char *input, t_shell *shell)
 {
 	int	i;

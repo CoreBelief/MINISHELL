@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/17 14:52:57 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 20:13:05 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/10 15:33:28 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	handle_redirection_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 	{
 		redir_file = ft_strdup((*token)->content);
 		if (!redir_file)
-			return (handle_syn_errors(1, "Malloc fail\n", shell), 0); // malloc fail, exit code 1
+			return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
 		cmd->redir[cmd->redirect_count].file = redir_file;
 		cmd->redirect_count++;
 		return (1);

@@ -6,19 +6,21 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 20:11:45 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/10 16:17:07 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	execute_external(t_cmd *cmd, t_shell *shell);
-void	setup_pipes(t_cmd *cmd, int pipe_fds[2]);
-static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell);
-static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell);
-void	cleanup_heredoc_files(t_cmd *cmd);
-static void	wait_for_children(t_shell *shell, pid_t last_pid);
-void	execute_command(t_shell *shell);
+void			execute_external(t_cmd *cmd, t_shell *shell);
+// void			setup_pipes(t_cmd *cmd, int pipe_fds[2]);
+static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd,
+					t_shell *shell);
+static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd,
+					t_shell *shell);
+// void			cleanup_heredoc_files(t_cmd *cmd);
+static void		wait_for_children(t_shell *shell, pid_t last_pid);
+void			execute_command(t_shell *shell);
 
 void	execute_external(t_cmd *cmd, t_shell *shell)
 {
@@ -43,77 +45,66 @@ void	execute_external(t_cmd *cmd, t_shell *shell)
 	exit(126);
 }
 
-void	setup_pipes(t_cmd *cmd, int pfds[2])
+// void	setup_pipes(t_cmd *cmd, int pfds[2])
+// {
+// 	if (cmd->pipe_out == 1)
+// 	{
+// 		if (pipe(pfds) == -1)
+// 		{
+// 			perror("minishell: pipe");
+// 			exit(EXIT_FAILURE);
+// 		}
+// 	}
+// }
+
+static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd,
+		t_shell *shell)
 {
-	if (cmd->pipe_out == 1)
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == -1)
 	{
-		if (pipe(pfds) == -1)
-		{
-			perror("minishell: pipe");
-			exit(EXIT_FAILURE);
-		}
+		perror("minishell: fork");
+		exit(EXIT_FAILURE);
 	}
-}
-static pid_t fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd, t_shell *shell)
-{
-    pid_t pid = fork();
-    
-    if (pid == -1)
-    {
-        perror("minishell: fork");
-        exit(EXIT_FAILURE);
-    }
-    else if (pid == 0)
-    {
-        child_proc(cmd, pfds, *prev_prd, shell);
-    }
-    else
-    {
-        signal(SIGINT, SIG_IGN);
-        parent_proc(cmd, pfds, prev_prd);
-    }
-    
-    return pid;
+	else if (pid == 0)
+	{
+		child_proc(cmd, pfds, *prev_prd, shell);
+	}
+	else
+	{
+		signal(SIGINT, SIG_IGN);
+		parent_proc(cmd, pfds, prev_prd);
+	}
+	return (pid);
 }
 
-
-static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd, t_shell *shell)
+static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd,
+		t_shell *shell)
 {
 	int		pipe_fds[2];
 	pid_t	pid;
 
 	pid = -1;
-	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1 \
-	&& cmd->pipe_in == -1)
+	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1
+		&& cmd->pipe_in == -1)
 	{
 		execute_builtin(cmd, shell);
 	}
 	else
 	{
-		setup_pipes(cmd, pipe_fds);
+		if (cmd->pipe_out == 1)
+		{
+			if (pipe(pipe_fds) == -1)
+			{
+				perror("minishell: pipe");
+				exit(EXIT_FAILURE);
+			}
+		}
 		pid = fork_and_execute(cmd, pipe_fds, prev_prd, shell);
 	}
 	return (pid);
-}
-
-
-void	cleanup_heredoc_files(t_cmd *cmd)
-{
-	int		i;
-	t_cmd	*cur;
-
-	i = 0;
-	cur = cmd;
-	while (cur)
-	{
-		while (i < cur->redirect_count)
-		{
-			if (cur->redir[i].type == TOKEN_HEREDOC)
-				unlink(cur->redir[i].file);
-			i++;
-		}
-		cur = cur->next;
-	}
 }
 
 static void	wait_for_children(t_shell *shell, pid_t last_pid)
