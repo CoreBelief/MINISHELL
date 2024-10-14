@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/14 14:27:43 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/14 17:34:49 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/14 17:41:26 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ static char	*get_concatenated_value(const char *existing_value,
 	return (result);
 }
 
-static int	handle_append_assignment(char *arg, char *equal_sign,
-		t_shell *shell)
+static int	handle_append_assignment(char *arg,
+	char *equal_sign, t_shell *shell)
 {
 	char	*identifier;
 	char	*new_value;
