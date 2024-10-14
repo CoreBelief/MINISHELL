@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 17:23:58 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 17:26:05 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/10 18:35:00 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ static void	process_input(char *line, t_shell *shell)
 		free_command_list(&shell->commands);
 	}
 }
+
+/*MIDDLE*/
 // void minishell_loop(t_shell *shell)
 // {
 //     char *line = NULL;
@@ -57,7 +59,7 @@ static void	process_input(char *line, t_shell *shell)
 
 //     setup_signals_shell();
 //     original_stdout = dup(STDOUT_FILENO); // Keep this,
-// but it may still be problematic.
+// // but it may still be problematic.
 //     terminal_fd = open("/dev/tty", O_WRONLY);
 //     if (terminal_fd == -1)
 //     {
@@ -109,6 +111,67 @@ static void	process_input(char *line, t_shell *shell)
 //     close(terminal_fd);
 //     close(original_stdout);
 // }
+
+/*OLDEST*/
+// void minishell_loop(t_shell *shell)
+// { //function too long needs splitting up!
+//     char *line = NULL;
+//     char *prompt = NULL;
+//     int original_stdout;
+//     int terminal_fd;
+
+//     setup_signals_shell();
+//     original_stdout = dup(STDOUT_FILENO); //illegalll!!!
+//     terminal_fd = open("/dev/tty", O_WRONLY);
+//     if (terminal_fd == -1)
+//     {
+//         perror("Failed to open terminal");
+//         return;
+//     }
+//     while (1)
+//     {
+//         dup2(terminal_fd, STDOUT_FILENO);
+//         if (isatty(STDIN_FILENO))
+//         {
+//             prompt = create_prompt();
+//             if (!prompt)
+//             {
+//                 ft_putstr_fd("Error: Failed to create prompt\n", terminal_fd);
+//                 shell->last_exit_status = 1;
+//                 break;
+//             }
+            
+//             line = readline(prompt);
+//             free(prompt);
+//             if (!line) 
+//             {
+//                 ft_putstr_fd("exit\n", terminal_fd);
+//                 break;
+//             }
+//             add_history(line);
+//         }
+//         else
+//         {
+//             line = get_next_line(STDIN_FILENO);
+//             if (!line)
+//                 break;
+//             size_t len = ft_strlen(line);
+//             if (len > 0 && line[len - 1] == '\n')
+//                 line[len - 1] = '\0';
+//         }
+//         dup2(original_stdout, STDOUT_FILENO);
+//         process_input(line, shell);
+//         free(line);
+//         line = NULL;
+//     }
+//     if (line)
+//         free(line);
+//     close(terminal_fd);
+//     close(original_stdout);
+// }
+
+
+/* LATEST*/
 void	minishell_loop(t_shell *shell)
 {
 	char	*line;

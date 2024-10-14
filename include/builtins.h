@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 17:18:28 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 17:18:33 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/10 18:47:00 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define BUILTINS_H
 
 # include "minishell.h"
+# include "structs.h"
 
 // Builtins.c
 int		is_builtin_parent(char *command);

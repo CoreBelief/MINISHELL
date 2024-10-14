@@ -1,30 +1,3 @@
-
-// #ifndef EXECUTOR_H
-// # define EXECUTOR_H
-
-// #include "minishell.h"
-
-// char		*find_executable(char *command, t_shell *shell);
-
-// void		execute_external(t_command *cmd, t_shell *shell);
-
-// void		setup_pipes(t_command *cmd, int pipe_fds[2]);
-
-// // void		handle_child_process(t_command *cmd, int pipe_fds[2],
-// 			int prev_pipe_read, t_shell *shell);
-
-// // void		handle_parent_process(t_command *cmd, int pipe_fds[2],
-// 			int *prev_pipe_read);
-
-// // void		execute_single_command(t_command *cmd, int *prev_pipe_read,
-// 			t_shell *shell);
-
-// void		wait_for_children(t_shell *shell);
-
-// void		execute_command(t_shell *shell);
-
-// #endif
-
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
@@ -33,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/13 21:18:22 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/14 13:29:28 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,3 +36,29 @@ char	*expand_exit(char *arg, t_shell *shell);
 void	cleanup_heredoc_files(t_cmd *cmd);
 
 #endif
+
+// #ifndef EXECUTOR_H
+// # define EXECUTOR_H
+
+// #include "minishell.h"
+
+// char		*find_executable(char *command, t_shell *shell);
+
+// void		execute_external(t_command *cmd, t_shell *shell);
+
+// void		setup_pipes(t_command *cmd, int pipe_fds[2]);
+
+// // void		handle_child_process(t_command *cmd, int pipe_fds[2],
+// 			int prev_pipe_read, t_shell *shell);
+
+// // void		handle_parent_process(t_command *cmd, int pipe_fds[2],
+// 			int *prev_pipe_read);
+
+// // void		execute_single_command(t_command *cmd, int *prev_pipe_read,
+// 			t_shell *shell);
+
+// void		wait_for_children(t_shell *shell);
+
+// void		execute_command(t_shell *shell);
+
+// #endif

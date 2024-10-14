@@ -6,9 +6,9 @@ LIBS = -lreadline
 SRCS_DIR = src
 OBJ_DIR = obj
 
-SRCS = $(addprefix $(SRCS_DIR)/, main.c prompt.c error.c signals.c memory.c parsing/tokenizer.c \
+SRCS = $(addprefix $(SRCS_DIR)/, main.c prompt/prompt.c prompt/prompt_utils.c error.c signals.c memory.c parsing/tokenizer.c \
 parsing/tokenizer_utils.c parsing/tokenizer_word.c parsing/var_exp.c parsing/var_exp_utils.c parsing/parser.c parsing/parser_utils.c \
-parsing/parser_redirects.c parsing/heredoc_parsing.c execution/executor.c execution/redirections.c \
+parsing/parser_redirects.c parsing/heredoc_parsing.c parsing/heredoc_parsing_utils.c execution/executor.c execution/redirections.c \
 execution/process.c execution/path.c builtins/echo.c builtins/cd.c builtins/pwd.c builtins/export.c \
 builtins/unset.c builtins/env.c builtins/exit.c builtins/builtins.c environ/environ.c utils/ft_strjoin3.c \
 utils/ft_strcmp.c utils/ft_strcpy.c utils/ft_strncpy.c utils/ft_strndup.c finalgnl/get_next_line.c \

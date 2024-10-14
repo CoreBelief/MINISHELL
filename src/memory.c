@@ -6,17 +6,33 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 17:16:54 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 17:16:57 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/10 18:44:49 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <stdlib.h>
 
-void	free_command(t_cmd *cmd); // needs to be shorter!@!
+void	free_cmd_args(t_cmd *cmd);
+void	free_command(t_cmd *cmd);
 void	free_command_list(t_cmd **head);
 void	ft_free_str_array(char **arr);
 void	free_tokens(t_token **head);
+
+void	free_cmd_args(t_cmd *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (cmd->argv[i])
+	{
+		free(cmd->argv[i]);
+		cmd->argv[i] = NULL;
+		i++;
+	}
+	free(cmd->argv);
+	cmd->argv = NULL;
+}
 
 void	free_command(t_cmd *cmd)
 {
@@ -25,17 +41,7 @@ void	free_command(t_cmd *cmd)
 	if (!cmd)
 		return ;
 	if (cmd->argv)
-	{
-		i = 0;
-		while (cmd->argv[i])
-		{
-			free(cmd->argv[i]);
-			cmd->argv[i] = NULL;
-			i++;
-		}
-		free(cmd->argv);
-		cmd->argv = NULL;
-	}
+		free_cmd_args(cmd);
 	if (cmd->redir)
 	{
 		i = 0;

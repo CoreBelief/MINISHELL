@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:32:27 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 15:31:28 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/10 18:53:03 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,22 @@
 // #include <stdlib.h>
 // #include "structs.h"
 
-static int	print_sorted_env(t_shell *shell);
 static int	is_valid_identifier(const char *str);
 static int	handle_value_assignment(char *arg, char *equal_sign,
 				t_shell *shell);
-static int	process_identifier(char *arg, char *equal_sign, t_shell *shell);
-static void	sort_env(char **sorted_env, int size);
-void		builtin_export(char **args, t_shell *shell);
-static int	handle_append_assignment(char *arg, char *plus_equal_sign,
-				t_shell *shell);
+static int	handle_equal_sign(char *arg, char *equal_sign, char **identifier);
 static char	*get_concatenated_value(const char *existing_value,
 				const char *new_value);
+static int	handle_append_assignment(char *arg, char *plus_equal_sign,
+				t_shell *shell);
+static int	handle_no_equal_sign(char *arg, char **identifier);
+static int	validate_identifier(const char *identifier, char *arg,
+			t_shell *shell);
+static int	set_environment(char *arg, char *equal_sign, t_shell *shell);
+static int	process_identifier(char *arg, char *equal_sign, t_shell *shell);
+static void	sort_env(char **sorted_env, int size);
+static int	print_sorted_env(t_shell *shell);
+void		builtin_export(char **args, t_shell *shell);
 
 static int	is_valid_identifier(const char *str)
 {
