@@ -48,9 +48,14 @@ int	validate_identifier(const char *identifier, char *arg,
 
 int	handle_equal_sign(char *arg, char *equal_sign, char **identifier)
 {
-	*identifier = ft_strndup(arg, equal_sign - arg);
+	char *plus_sign = equal_sign - 1;
+	if (plus_sign >= arg && *plus_sign == '+')
+		*identifier = ft_strndup(arg, plus_sign - arg);
+	else
+		*identifier = ft_strndup(arg, equal_sign - arg);
 	return (*identifier != NULL);
 }
+
 
 int	handle_no_equal_sign(char *arg, char **identifier)
 {

@@ -194,11 +194,9 @@ char	*non_interactive_mode(void)
 	char		*line;
 	size_t		len;
 
-	// Non-interactive mode
 	line = get_next_line(STDIN_FILENO);
 	if (!line)
 		return (NULL);
-	// Remove newline character if present
 	len = strlen(line);
 	if (len > 0 && line[len - 1] == '\n')
 		line[len - 1] = '\0';
@@ -226,7 +224,6 @@ void	minishell_loop(t_shell *shell)
 			if (!line)
 				break ;
 		}
-		// if (*line)
 		process_input(line, shell);
 		free(line);
 		line = NULL;

@@ -63,7 +63,7 @@ t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i)
 // 		j = 0;
 // 		while (j < head->redirect_count)
 // 		{
-// 			printf("  Redirect[%d] Type: %d, File: %s\n", j, \
+// 			printf("  Redirect[%d] Type: %d, File: %s\n", j, 
 // 			head->redir[j].type, head->redir[j].file);
 // 			j++;
 // 		}

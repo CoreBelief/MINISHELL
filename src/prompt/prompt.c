@@ -46,13 +46,15 @@ static int	check_git_in_dir(char *dir_path)
 	dir = opendir(dir_path);
 	if (!dir)
 		return (0);
-	while ((entry = readdir(dir)) != NULL)
+	entry = readdir(dir);
+	while (entry != NULL)
 	{
 		if (ft_strcmp(entry->d_name, ".git") == 0)
 		{
 			closedir(dir);
 			return (1);
 		}
+		entry = readdir(dir);
 	}
 	closedir(dir);
 	return (0);
