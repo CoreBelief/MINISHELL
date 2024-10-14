@@ -38,7 +38,8 @@ static char	*get_concatenated_value(const char *existing_value,
 	return (result);
 }
 
-static int	handle_append_assignment(char *arg, char *equal_sign, t_shell *shell)
+static int	handle_append_assignment(char *arg,
+	char *equal_sign, t_shell *shell)
 {
 	char	*identifier;
 	char	*new_value;

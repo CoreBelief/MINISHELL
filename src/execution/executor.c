@@ -13,12 +13,10 @@
 #include "minishell.h"
 
 void			execute_external(t_cmd *cmd, t_shell *shell);
-// void			setup_pipes(t_cmd *cmd, int pipe_fds[2]);
 static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd,
 					t_shell *shell);
 static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd,
 					t_shell *shell);
-// void			cleanup_heredoc_files(t_cmd *cmd);
 static void		wait_for_children(t_shell *shell, pid_t last_pid);
 void			execute_command(t_shell *shell);
 
@@ -44,18 +42,6 @@ void	execute_external(t_cmd *cmd, t_shell *shell)
 	free(path);
 	exit(126);
 }
-
-// void	setup_pipes(t_cmd *cmd, int pfds[2])
-// {
-// 	if (cmd->pipe_out == 1)
-// 	{
-// 		if (pipe(pfds) == -1)
-// 		{
-// 			perror("minishell: pipe");
-// 			exit(EXIT_FAILURE);
-// 		}
-// 	}
-// }
 
 static pid_t	fork_and_execute(t_cmd *cmd, int *pfds, int *prev_prd,
 		t_shell *shell)
@@ -113,7 +99,7 @@ static void	wait_for_children(t_shell *shell, pid_t last_pid)
 	pid_t	pid;
 
 	pid = waitpid(-1, &status, WUNTRACED);
-	while (pid   > 0)
+	while (pid > 0)
 	{
 		if (pid == last_pid)
 		{
