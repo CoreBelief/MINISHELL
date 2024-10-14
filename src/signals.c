@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 19:24:35 by rdl           #+#    #+#                 */
-/*   Updated: 2024/10/10 17:16:20 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/14 15:04:43 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,10 @@ int	setup_signal(int signum, void (*handler)(int), int flags)
 	return (sigaction(signum, &sa, NULL));
 }
 
-void	setup_signals_shell(void)
-{
 	// suppress_broken_pipe_message();
 		//if pipe handling is removed this has to go too!
+void	setup_signals_shell(void)
+{
 	if (setup_signal(SIGINT, handle_signal, SA_RESTART) == -1)
 	{
 		perror("Error setting up SIGINT handler");

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 17:17:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 17:17:52 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/14 14:17:12 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int								get_and_reset_signal(void);
 
 void							handle_pending_signals(void);
 // Global variable to store received signal
-extern volatile sig_atomic_t	g_received_signal;
+// extern volatile sig_atomic_t	g_received_signal;
 int								setup_signal(int signum, void (*handler)(int),
 									int flags);
 

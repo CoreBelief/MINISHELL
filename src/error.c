@@ -6,13 +6,14 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 17:17:14 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 17:17:33 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/14 14:15:19 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// this seems incomplete... we can put more error handling inside here, so the functions wil be shorter
+// this seems incomplete... we can put more error 
+//handling inside here, so the functions wil be shorter
 void	print_error(char *cmd, char *msg);
 void	print_command_not_found(char *command);
 void	print_exit_numeric_error(char *arg);

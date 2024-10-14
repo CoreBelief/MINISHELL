@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 15:46:18 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 18:37:22 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/14 14:26:17 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,16 +85,14 @@ static int	finalize_heredoc(t_cmd *cmd, char *tmp_file, int status)
 
 int	handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 {
-	char	*delim;
-	int		hered_fd;
-	char	*tmp_file;
-	pid_t	pid;
-	int		status;
+	int					hered_fd;
+	char				*tmp_file;
+	pid_t				pid;
+	struct sigaction	old_int;
+	struct sigaction	old_quit;
 
-	struct sigaction old_int, old_quit;
 	if (!validate_heredoc_syntax(cmd, token, shell))
 		return (0);
-	delim = (*token)->content;
 	tmp_file = create_and_open_temp_file(cmd->redirect_count, &hered_fd);
 	if (!tmp_file)
 		return (handle_syn_errors(1, "Error opening file\n", shell), 0);
@@ -108,7 +106,7 @@ int	handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell)
 		return (handle_syn_errors(1, "Could not fork:(\n", shell), 0);
 	}
 	if (pid == 0)
-		exit(handle_heredoc_child(delim, shell, hered_fd));
-	status = handle_heredoc_parent(pid, hered_fd, &old_int, &old_quit);
-	return (finalize_heredoc(cmd, tmp_file, status));
+		exit(handle_heredoc_child((*token)->content, shell, hered_fd));
+	return (finalize_heredoc(cmd, tmp_file,
+			handle_heredoc_parent(pid, hered_fd, &old_int, &old_quit)));
 }

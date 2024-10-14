@@ -6,16 +6,12 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/09 17:25:25 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 17:14:40 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/14 15:12:38 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// static int is_space(char c)
-// {
-//     return (c == ' ' || (c >= '\t' && c <= '\r'));
-// }
 static int	is_space(char c)
 {
 	return (c == ' ' || (c >= '\t' && c <= '\r'));
@@ -28,22 +24,22 @@ static int	is_digit(char c)
 
 // // Trims leading and trailing spaces
 // static char *trim_whitespace(char *str) {
-//     char *end;
+// 	char *end;
 
-//     // Trim leading space
-//     while (is_space(*str)) str++;
+// 	// Trim leading space
+// 	while (is_space(*str)) str++;
 
-//     if (*str == 0)  // If string is all spaces
-//         return (str);
+// 	if (*str == 0)  // If string is all spaces
+// 		return (str);
 
-//     // Trim trailing space
-//     end = str + strlen(str) - 1;
-//     while (end > str && is_space(*end)) end--;
+// 	// Trim trailing space
+// 	end = str + strlen(str) - 1;
+// 	while (end > str && is_space(*end)) end--;
 
-//     // Write new null terminator
-//     *(end + 1) = '\0';
+// 	// Write new null terminator
+// 	*(end + 1) = '\0';
 
-//     return (str);
+// 	return (str);
 // }
 static char	*trim_whitespace(char *str)
 {
@@ -72,7 +68,6 @@ static int	is_valid_number(const char *str, long *number)
 	i = 0;
 	sign = 1;
 	result = 0;
-	str = trim_whitespace((char *)str);
 	if (str[i] == '+' || str[i] == '-')
 	{
 		if (str[i] == '-')
@@ -81,15 +76,13 @@ static int	is_valid_number(const char *str, long *number)
 	}
 	while (str[i] != '\0')
 	{
-		if (!is_digit(str[i]))
-			return (0);
-		if (result > (ULONG_MAX - (str[i] - '0')) / 10)
+		if (!is_digit(str[i]) || result > (ULONG_MAX - (str[i] - '0')) / 10)
 			return (0);
 		result = result * 10 + (str[i] - '0');
 		i++;
 	}
-	if ((sign == -1 && result > (unsigned long)LONG_MAX + 1) || (sign == 1
-			&& result > (unsigned long)LONG_MAX))
+	if ((sign == -1 && result > (unsigned long)LONG_MAX + 1)
+		|| (sign == 1 && result > (unsigned long)LONG_MAX))
 		return (0);
 	*number = sign * (long)result;
 	return (1);
@@ -117,6 +110,8 @@ static int	is_valid_number(const char *str, long *number)
 
 //     exit((int)(exit_status & 255));
 // }
+
+//25 lines without the comments
 void	builtin_exit(char **args)
 {
 	long	exit_status;
