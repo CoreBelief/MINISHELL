@@ -6,20 +6,20 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 15:38:32 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/14 17:21:53 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "tokenizer.h"
 
-int		tokenize_pipe(char *input, int *i, t_shell *shell);
-int		tokenize_redirection(char *input, int *i, t_token **head);
-int		tokenize_word(char *input, int *i, t_token **head, t_shell *shell);
-int		tokenize_all(char *input, int *i, t_shell *shell);
+static int	tokenize_pipe(char *input, int *i, t_shell *shell);
+static int	tokenize_redirection(char *input, int *i, t_token **head);
+static int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell);
+static int	tokenize_all(char *input, int *i, t_shell *shell);
 int		tokenizer(char *input, t_shell *shell);
 
-int	tokenize_pipe(char *input, int *i, t_shell *shell)
+static int	tokenize_pipe(char *input, int *i, t_shell *shell)
 {
 	if (*i == 0 || !input[*i + 1] || (input[*i + 1] && input[*i + 1] == '|'))
 	{
@@ -36,7 +36,7 @@ int	tokenize_pipe(char *input, int *i, t_shell *shell)
 	return (1);
 }
 
-int	tokenize_redirection(char *input, int *i, t_token **head)
+static int	tokenize_redirection(char *input, int *i, t_token **head)
 {
 	t_token	*tmp;
 
@@ -61,7 +61,7 @@ int	tokenize_redirection(char *input, int *i, t_token **head)
 	return (1);
 }
 
-int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
+static int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
 {
 	char	*result;
 
@@ -90,7 +90,7 @@ int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell)
 	return (1);
 }
 
-int	tokenize_all(char *input, int *i, t_shell *shell)
+static int	tokenize_all(char *input, int *i, t_shell *shell)
 {
 	if (input[*i] == '|')
 	{

@@ -6,19 +6,19 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 18:42:40 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 15:40:24 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/14 17:30:42 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	extract_expansion(char *content, char **res, t_shell *shell);
-int	extract_and_append(char *input, int len, char **res, t_shell *shell);
-int	double_quotes_state(char *input, char **res, int *i, t_shell *shell);
-int	single_quotes_state(char *input, char **res, int *i, t_shell *shell);
-int	no_quotes_state(char *input, char **res, int *i, t_shell *shell);
+static int	extract_expansion(char *content, char **res, t_shell *shell);
+static int	extract_and_append(char *input, int len, char **res, t_shell *shell);
+int			double_quotes_state(char *input, char **res, int *i, t_shell *shell);
+int			single_quotes_state(char *input, char **res, int *i, t_shell *shell);
+int			no_quotes_state(char *input, char **res, int *i, t_shell *shell);
 
-int	extract_expansion(char *content, char **res, t_shell *shell)
+static int	extract_expansion(char *content, char **res, t_shell *shell)
 {
 	char	*expansion;
 	char	*tmp;
@@ -34,7 +34,7 @@ int	extract_expansion(char *content, char **res, t_shell *shell)
 	return (*res != NULL);
 }
 
-int	extract_and_append(char *input, int len, char **res, t_shell *shell)
+static int	extract_and_append(char *input, int len, char **res, t_shell *shell)
 {
 	char	*content;
 	char	*tmp;
