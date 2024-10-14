@@ -38,8 +38,7 @@ static char	*get_concatenated_value(const char *existing_value,
 	return (result);
 }
 
-static int	handle_append_assignment(char *arg, char *plus_equal_sign,
-		t_shell *shell)
+static int	handle_append_assignment(char *arg, char *equal_sign, t_shell *shell)
 {
 	char	*identifier;
 	char	*new_value;
@@ -47,19 +46,21 @@ static int	handle_append_assignment(char *arg, char *plus_equal_sign,
 	char	*concatenated_value;
 	int		result;
 
-	*plus_equal_sign = '\0';
-	identifier = arg;
-	new_value = plus_equal_sign + 2; // Skip past '+='
+	identifier = NULL;
+	identifier = ft_strndup(arg, (equal_sign - arg) - 1);
+	if (!identifier)
+		return (0);
+	new_value = equal_sign + 1;
 	existing_value = ft_get_env(identifier, shell);
 	concatenated_value = get_concatenated_value(existing_value, new_value);
 	if (!concatenated_value)
 	{
-		*plus_equal_sign = '+'; // Restore the original string
+		free(identifier);
 		return (0);
 	}
 	result = ft_set_env(identifier, concatenated_value, shell);
 	free(concatenated_value);
-	*plus_equal_sign = '+'; // Restore the original string
+	free(identifier);
 	return (result);
 }
 

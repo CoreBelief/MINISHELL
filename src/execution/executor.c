@@ -112,7 +112,8 @@ static void	wait_for_children(t_shell *shell, pid_t last_pid)
 	int		status;
 	pid_t	pid;
 
-	while ((pid = waitpid(-1, &status, WUNTRACED)) > 0)
+	pid = waitpid(-1, &status, WUNTRACED);
+	while (pid   > 0)
 	{
 		if (pid == last_pid)
 		{
@@ -127,6 +128,7 @@ static void	wait_for_children(t_shell *shell, pid_t last_pid)
 			else if (WIFEXITED(status))
 				shell->last_exit_status = WEXITSTATUS(status);
 		}
+		pid = waitpid(-1, &status, WUNTRACED);
 	}
 	if (pid == -1 && errno != ECHILD)
 		perror("waitpid");
