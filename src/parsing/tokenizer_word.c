@@ -6,16 +6,19 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 18:42:40 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/14 17:30:42 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/14 17:36:47 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static int	extract_expansion(char *content, char **res, t_shell *shell);
-static int	extract_and_append(char *input, int len, char **res, t_shell *shell);
-int			double_quotes_state(char *input, char **res, int *i, t_shell *shell);
-int			single_quotes_state(char *input, char **res, int *i, t_shell *shell);
+static int	extract_and_append(char *input, int len, char **res,
+				t_shell *shell);
+int			double_quotes_state(char *input, char **res, int *i,
+				t_shell *shell);
+int			single_quotes_state(char *input, char **res, int *i,
+				t_shell *shell);
 int			no_quotes_state(char *input, char **res, int *i, t_shell *shell);
 
 static int	extract_expansion(char *content, char **res, t_shell *shell)
@@ -65,7 +68,7 @@ int	double_quotes_state(char *input, char **res, int *i, t_shell *shell)
 
 	(*i)++;
 	start = *i;
-	while (input[*i] && input [*i] != '"')
+	while (input[*i] && input[*i] != '"')
 		(*i)++;
 	if (input[*i] != '"')
 	{
@@ -93,12 +96,12 @@ int	single_quotes_state(char *input, char **res, int *i, t_shell *shell)
 	content = ft_strndup(&input[start], *i - start);
 	if (!content)
 	{
-		free (tmp);
+		free(tmp);
 		return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
 	}
 	*res = append_str(tmp, content);
 	free(content);
-	free (tmp);
+	free(tmp);
 	if (!*res)
 		return (handle_syn_errors(1, "Malloc fail\n", shell), 0);
 	(*i)++;
@@ -107,17 +110,17 @@ int	single_quotes_state(char *input, char **res, int *i, t_shell *shell)
 
 int	no_quotes_state(char *input, char **res, int *i, t_shell *shell)
 {
-	int		start;
+	int	start;
 
 	start = (*i);
 	while (input[*i] && !ft_strchr(" \"'|><", input[*i]))
 	{
-		if (input[*i] == '$' && input [*i + 1] == '"')
+		if (input[*i] == '$' && input[*i + 1] == '"')
 		{
 			(*i)++;
 			return (double_quotes_state(input, res, i, shell));
 		}
-		else if (input[*i] == '$' && input [*i + 1] == '\'')
+		else if (input[*i] == '$' && input[*i + 1] == '\'')
 		{
 			(*i)++;
 			return (single_quotes_state(input, res, i, shell));

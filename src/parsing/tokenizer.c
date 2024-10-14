@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/28 12:19:48 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/14 17:21:53 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/14 17:35:13 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	tokenize_pipe(char *input, int *i, t_shell *shell);
 static int	tokenize_redirection(char *input, int *i, t_token **head);
 static int	tokenize_word(char *input, int *i, t_token **head, t_shell *shell);
 static int	tokenize_all(char *input, int *i, t_shell *shell);
-int		tokenizer(char *input, t_shell *shell);
+int			tokenizer(char *input, t_shell *shell);
 
 static int	tokenize_pipe(char *input, int *i, t_shell *shell)
 {

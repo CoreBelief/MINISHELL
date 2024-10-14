@@ -6,14 +6,13 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/23 13:35:00 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/14 17:26:16 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/14 17:37:17 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "var_exp.h"
 
 static int	handle_exit_status(char **new_str, int *i, t_shell *shell);
-// int			handle_variable(char **new_str, char *str, int *i, t_shell *shell);
 static int	handle_dollar(char **new_str, char *str, int *i, t_shell *shell);
 static int	handle_non_dollar(char **new_str, char *str, int *i);
 static int	process_char(char **new_str, char *str, int *i, t_shell *shell);

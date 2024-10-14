@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 16:17:07 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/14 17:35:44 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ static void	wait_for_children(t_shell *shell, pid_t last_pid)
 	pid_t	pid;
 
 	pid = waitpid(-1, &status, WUNTRACED);
-	while (pid   > 0)
+	while (pid > 0)
 	{
 		if (pid == last_pid)
 		{
