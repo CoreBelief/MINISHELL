@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/14 13:59:00 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 17:31:25 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,13 @@
 // Main loop
 void	minishell_loop(t_shell *shell);
 void	free_shell(t_shell *shell);
+
+/* interaction_mode */
+int		open_terminal(void);
+char	*get_interactive_input(int terminal_fd, t_shell *shell);
+char	*get_non_interactive_input(void);
+void	cleanup(int terminal_fd, int original_stdout);
+char	*get_input_line(int terminal_fd, t_shell *shell);
 
 /*minishellception */
 char	*ft_itoa(int n);
