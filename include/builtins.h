@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 17:18:28 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 19:20:14 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 20:19:46 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define BUILTINS_H
 
 # include "minishell.h"
-// # include "structs.h"
 
 // Builtins.c
 const t_builtin	*get_builtin_commands(void);

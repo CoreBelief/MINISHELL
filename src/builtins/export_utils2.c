@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/14 14:38:06 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/14 17:35:54 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 20:33:24 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ int	handle_equal_sign(char *arg, char *equal_sign, char **identifier)
 		*identifier = ft_strndup(arg, plus_sign - arg);
 	else
 		*identifier = ft_strndup(arg, equal_sign - arg);
+	// printf("*identifier %s\n", *identifier);
 	return (*identifier != NULL);
 }
 
