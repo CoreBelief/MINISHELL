@@ -11,14 +11,7 @@
 /* ************************************************************************** */
 
 #define _POSIX_C_SOURCE 200809L
-#include <errno.h>
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/wait.h>
-#include <unistd.h>
+#include "minishell.h"
 
 volatile sig_atomic_t	g_received_signal = 0;
 

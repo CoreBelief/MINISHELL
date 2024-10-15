@@ -16,6 +16,8 @@
 # include "../src/finalgnl/get_next_line.h"
 # include "../src/lib_FT/libft.h"
 # include "structs.h"
+#include <stdbool.h>
+# include <errno.h>
 # include "builtins.h"
 # include "error.h"
 # include "executor.h"
@@ -25,14 +27,12 @@
 # include "process.h"
 # include "prompt.h"
 # include "redirections.h"
-# include "signal.h"
 # include "signals.h"
 # include "tokenizer.h"
 # include "environ.h"
 # include "utils.h"
 # include "var_exp.h"
 # include <ctype.h>
-# include <errno.h>
 # include <fcntl.h>
 # include <limits.h>
 # include <pwd.h>
@@ -49,9 +49,7 @@
 # include <termios.h>
 # include <unistd.h>
 #include <dirent.h>
-#include <limits.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 # define MAX_ARGS 1024
 # define MAX_REDIRECTS 10
@@ -68,30 +66,11 @@ void	free_shell(t_shell *shell);
 
 /* interaction_mode */
 int		open_terminal(void);
-// char	*get_interactive_input(int terminal_fd, t_shell *shell);
-// char	*get_non_interactive_input(void);
 void	cleanup(int terminal_fd, int original_stdout);
 char	*get_input_line(int terminal_fd, t_shell *shell);
 
 /*minishellception */
-char	*ft_itoa(int n);
 int		increment_shlvl(t_shell *shell);
 void	init_shell(t_shell *shell);
-
-// void	setup_signals(void);
-
-// Memory management
-// void        free_command(t_cmd *cmd);
-
-// Error handling
-// void        print_error(char *msg);
-
-// environment setup
-// char *get_env(const char *name);
-// int set_env(const char *name, const char *value);
-// int unset_env(const char *name);
-
-// utils
-// char *ft_strjoin3(const char *s1, const char *s2, const char *s3);
 
 #endif

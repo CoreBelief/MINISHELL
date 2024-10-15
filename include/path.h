@@ -15,7 +15,6 @@
 
 # include "minishell.h"
 
-/* path */
 char	*search_paths(char **paths, char *command);
 char	*find_executable(char *command, t_shell *shell);
 void	check_file_status(char *path, t_shell *shell);

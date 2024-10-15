@@ -15,11 +15,8 @@
 
 # include "minishell.h"
 
-/* var_exp */
 int		handle_variable(char **new_str, char *str, int *i, t_shell *shell);
 char	*variable_exp_double(char *str, t_shell *shell);
-
-/* var_exp_ utils */
 int		is_var_char(char c);
 int		find_var_len(char *var);
 char	*append_str(char *og, char *to_append);

@@ -21,6 +21,5 @@ void	free_command_list(t_cmd **head);
 void	ft_free_str_array(char **arr);
 void	free_tokens(t_token **head);
 
-void	free_shell(t_shell *shell);
 
 #endif
