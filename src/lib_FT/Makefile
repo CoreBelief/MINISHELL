@@ -21,30 +21,22 @@ all:	$(NAME)
 
 $(NAME):	$(OBJ)
 	ar	rcs	$(NAME)	$(OBJ)
-#making	archive	
 
 $(OBJ):	%.o:	%.c
 	$(CC)	$(CFLAGS)	-c	$<	-o	$@
-#Compiling and saying make object file not executable
 
 bonus:	$(BONUS_OBJ)
 	ar	rcs	$(NAME)	$(BONUS_OBJ)
-#make rule bonus. create update archive with also bonus if "make bonus"
 
 $(BONUS_OBJ):	%.o:	%.c
 	$(CC)	-c	$(CFLAGS)	$<	-o	$@
 
 clean:
 	rm	-f	$(OBJ)	$(BONUS_OBJ)
-#remove only objet files
 
 fclean:	clean
 	rm	-f	$(NAME)
-#remove archive
 
 re:	fclean	all
-# run fclean
 
 .PHONY:	all	clean	clean_bonus	fclean	re	bonus
-#if you have files with these names then still run the command
-#"-o" naming it

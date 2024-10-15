@@ -12,6 +12,11 @@
 
 #include "minishell.h"
 
+static void	process_input(char *line, t_shell *shell);
+void	minishell_loop(t_shell *shell);
+int	main(int argc, char **argv, char **envp);
+
+
 static void	process_input(char *line, t_shell *shell)
 {
 	if (line && *line)

@@ -12,8 +12,6 @@
 
 #include "builtins.h"
 #include "minishell.h"
-// #include <stdlib.h>
-// #include <string.h>
 
 void		builtin_unset(char **args, t_shell *shell);
 static int	is_valid_first_char(char c);

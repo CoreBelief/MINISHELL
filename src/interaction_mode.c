@@ -11,6 +11,11 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+int	open_terminal(void);
+static char	*get_interactive_input(int terminal_fd, t_shell *shell);
+static char	*get_non_interactive_input(void);
+void	cleanup(int terminal_fd, int original_stdout);
+char	*get_input_line(int terminal_fd, t_shell *shell);
 
 int	open_terminal(void)
 {
@@ -24,7 +29,7 @@ int	open_terminal(void)
 	return (terminal_fd);
 }
 
-char	*get_interactive_input(int terminal_fd, t_shell *shell)
+static char	*get_interactive_input(int terminal_fd, t_shell *shell)
 {
 	char	*prompt;
 	char	*line;
@@ -45,7 +50,7 @@ char	*get_interactive_input(int terminal_fd, t_shell *shell)
 	return (line);
 }
 
-char	*get_non_interactive_input(void)
+static char	*get_non_interactive_input(void)
 {
 	char	*line;
 	size_t	len;

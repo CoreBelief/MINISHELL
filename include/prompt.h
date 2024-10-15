@@ -13,17 +13,7 @@
 #ifndef PROMPT_H
 # define PROMPT_H
 
-# include "environ.h"
 # include "minishell.h"
-# include "signal.h"
-# include <pwd.h>
-# include <readline/history.h>
-# include <readline/readline.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/wait.h>
-# include <unistd.h>
 
 # define MAX_HOSTNAME 256
 # define MAX_USERNAME 256

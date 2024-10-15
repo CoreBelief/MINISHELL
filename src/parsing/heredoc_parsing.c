@@ -13,7 +13,6 @@
 #define _POSIX_C_SOURCE 200809L
 
 #include "minishell.h"
-#include "signal.h"
 #define ERR_SYNTAX 2
 #define ERR_MALLOC 1
 #define ERR_FILE_OPEN 1
