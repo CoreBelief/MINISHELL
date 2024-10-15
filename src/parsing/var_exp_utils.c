@@ -16,7 +16,7 @@ int		handle_variable(char **new_str, char *str, int *i, t_shell *shell);
 int		find_var_len(char *var);
 char	*append_str(char *og, char *to_append);
 int		until_dollar(char *str);
-char	*variable_exp(char *str, int *i, t_shell *shell);
+static char	*variable_exp(char *str, int *i, t_shell *shell);
 
 int	handle_variable(char **new_str, char *str, int *i, t_shell *shell)
 {
@@ -75,7 +75,7 @@ int	until_dollar(char *str)
 	return (i);
 }
 
-char	*variable_exp(char *str, int *i, t_shell *shell)
+static char	*variable_exp(char *str, int *i, t_shell *shell)
 {
 	int		len;
 	char	*expansion;

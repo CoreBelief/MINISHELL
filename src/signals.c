@@ -22,28 +22,12 @@
 
 volatile sig_atomic_t	g_received_signal = 0;
 
-// void suppress_broken_pipe_message(void);
 static void				handle_signal(int sig);
 int						setup_signal(int signum, void (*handler)(int),
 							int flags);
 void					setup_signals_shell(void);
 void					setup_signals_child(void);
 
-// void suppress_broken_pipe_message(void)
-// { //not sure if this pipehandling is beneficial,
-	//we could test if we should remove thisremove
-//     int saved_errno = errno;
-//     struct sigaction sa;
-//     memset(&sa, 0, sizeof(sa));
-//     sa.sa_handler = SIG_IGN;
-//     sigemptyset(&sa.sa_mask);
-
-//     if (sigaction(SIGPIPE, &sa, NULL) == -1) {
-//         perror("Error setting up SIGPIPE handler");
-//         exit(EXIT_FAILURE);
-//     }
-//     errno = saved_errno;
-// }
 
 static void	handle_signal(int sig)
 {
@@ -67,8 +51,6 @@ int	setup_signal(int signum, void (*handler)(int), int flags)
 	return (sigaction(signum, &sa, NULL));
 }
 
-	// suppress_broken_pipe_message();
-		//if pipe handling is removed this has to go too!
 void	setup_signals_shell(void)
 {
 	if (setup_signal(SIGINT, handle_signal, SA_RESTART) == -1)

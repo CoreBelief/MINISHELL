@@ -10,8 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser.h"
 #include "minishell.h"
+
+int	is_redirect_token(int token_type);
+int	handle_redirection_parsing(t_cmd *cmd, t_token **token, t_shell *shell);
 
 int	is_redirect_token(int token_type)
 {

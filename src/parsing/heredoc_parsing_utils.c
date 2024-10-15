@@ -12,13 +12,13 @@
 
 #include "minishell.h"
 
-char	*create_filename(int redir_count);
-int		open_hdfile(char *target);
+static char	*create_filename(int redir_count);
+static int		open_hdfile(char *target);
 int		write_to_hdfd(char *delim, t_shell *shell, int hdfd);
 int		validate_heredoc_syntax(t_cmd *cmd, t_token **token, t_shell *shell);
 char	*create_and_open_temp_file(int redirect_count, int *hered_fd);
 
-char	*create_filename(int redir_count)
+static char	*create_filename(int redir_count)
 {
 	char	*filename;
 	char	*hd_id;
@@ -33,7 +33,7 @@ char	*create_filename(int redir_count)
 	return (filename);
 }
 
-int	open_hdfile(char *target)
+static int	open_hdfile(char *target)
 {
 	int	hd_fd;
 

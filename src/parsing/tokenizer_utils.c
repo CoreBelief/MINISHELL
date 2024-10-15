@@ -83,16 +83,4 @@ t_token	*add_token(t_token **head, char *content, t_token_type type)
 	}
 	return (new_token);
 }
-// void	print_token_list(t_token *head)
-// {
-// 	t_token	*temp;
 
-// 	printf("inside print token_lst\n");
-// 	while (head)
-// 	{
-// 		temp = head;
-// 		head = head->next;
-// 		printf("TOKEN-> '%s' type:%i\n", temp->content, temp->type);
-// 	}
-// 	printf("\n");
-// }

@@ -12,11 +12,10 @@
 
 #include "minishell.h"
 
-// this seems incomplete... we can put more error 
-//handling inside here, so the functions wil be shorter
 void	print_error(char *cmd, char *msg);
 void	print_command_not_found(char *command);
 void	print_exit_numeric_error(char *arg);
+void	*handle_syn_errors(int stat, char *msg, t_shell *shell);
 
 void	print_error(char *cmd, char *msg)
 {

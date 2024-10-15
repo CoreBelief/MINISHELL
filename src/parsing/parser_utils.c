@@ -14,7 +14,6 @@
 
 int		handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i);
 t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i);
-// void	print_cmd_list(t_cmd *head);
 
 int	handle_word_parsing(t_cmd *cmd, t_token **tokens, int *i)
 {
@@ -41,33 +40,3 @@ t_cmd	*handle_pipe_parsing(t_cmd *cmd, int *i)
 	*i = 0;
 	return (new_cmd);
 }
-// void	print_cmd_list(t_cmd *head)
-// {
-// 	int			i;
-// 	int			j;
-
-// 	printf("inside print cmd_lst\n");
-// 	i = 0;
-// 	while (head)
-// 	{
-// 		printf("redir count:%i\n", head->redirect_count);
-// 		while (head->argv && head->argv[i])
-// 		{
-// 			printf("arg: %s\n", head->argv[i]);
-// 			i++;
-// 		}
-// 		if (head->redirect_count != 0)
-// 			printf("redirecttype == %i target file == %s\n", head->redir->type,
-// 			head->redir->file);
-// 		printf("  Pipe In: %d, Pipe Out: %d\n", head->pipe_in, head->pipe_out);
-// 		j = 0;
-// 		while (j < head->redirect_count)
-// 		{
-// 			printf("  Redirect[%d] Type: %d, File: %s\n", j, 
-// 			head->redir[j].type, head->redir[j].file);
-// 			j++;
-// 		}
-// 		head = head->next;
-// 	}
-// 	printf("\n");
-// }

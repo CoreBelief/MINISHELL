@@ -48,9 +48,19 @@
 # include <sys/wait.h>
 # include <termios.h>
 # include <unistd.h>
+#include <dirent.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 # define MAX_ARGS 1024
 # define MAX_REDIRECTS 10
+#define MAX_PATH 1024
+#define COLOR_GREEN "\001\033[1;32m\002"
+#define COLOR_CYAN "\001\033[1;36m\002"
+#define COLOR_YELLOW "\001\033[1;33m\002"
+#define COLOR_RESET "\001\033[0m\002"
+
 
 // Main loop
 void	minishell_loop(t_shell *shell);
@@ -58,8 +68,8 @@ void	free_shell(t_shell *shell);
 
 /* interaction_mode */
 int		open_terminal(void);
-char	*get_interactive_input(int terminal_fd, t_shell *shell);
-char	*get_non_interactive_input(void);
+// char	*get_interactive_input(int terminal_fd, t_shell *shell);
+// char	*get_non_interactive_input(void);
 void	cleanup(int terminal_fd, int original_stdout);
 char	*get_input_line(int terminal_fd, t_shell *shell);
 
