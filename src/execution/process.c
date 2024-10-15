@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:20:16 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/09 20:12:06 by rdl           ########   odam.nl         */
+/*   Updated: 2024/10/15 17:04:22 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,10 @@ void	handle_output_redirection(int pfds[2], t_cmd *cmd)
 
 void	close_pipe_ends(int pfds[2])
 {
-	close(pfds[0]);
-	close(pfds[1]);
+	if (pfds[0] != -1)
+		close(pfds[0]);
+	if (pfds[1] != -1)
+		close(pfds[1]);
 }
 
 void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
@@ -73,7 +75,9 @@ void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
 void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 {
 	if (*prev_prd != -1)
+	{
 		close(*prev_prd);
+	}
 	if (cmd->pipe_out == 1 && cmd->output == -1)
 	{
 		close(pfds[1]);
@@ -82,9 +86,6 @@ void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 	else
 	{
 		*prev_prd = -1;
-		if (pfds[0] != -1)
-			close(pfds[0]);
-		if (pfds[1] != -1)
-			close(pfds[1]);
+		close_pipe_ends(pfds);
 	}
 }
