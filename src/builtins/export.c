@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:32:27 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/14 14:39:48 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 21:30:00 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,31 +51,6 @@ static void	sort_env(char **sorted_env, int size)
 		}
 	}
 }
-
-// static int	print_sorted_env(t_shell *shell)
-// {
-// 	char	**sorted_env;
-// 	int		i;
-// 	char	*e_sign;
-
-// 	sorted_env = malloc(sizeof(char *) * (shell->env_size + 1));
-// 	if (!sorted_env)
-// 		return (0);
-// 	i = -1;
-// 	while (++i < shell->env_size)
-// 		sorted_env[i] = shell->env[i];
-// 	sorted_env[i] = NULL;
-// 	sort_env(sorted_env, shell->env_size);
-// 	i = -1;
-// 	while (++i < shell->env_size)
-// 	{
-// 		e_sign = ft_strchr(sorted_env[i], '=');
-// 		printf("declare -x %.*s\"%s\"\n", (int)(e_sign - sorted_env[i] + 1),
-// 			sorted_env[i], e_sign + 1);
-// 	}
-// 	free(sorted_env);
-// 	return (1);
-// }
 
 static int	print_sorted_env(t_shell *shell)
 {
