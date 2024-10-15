@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/08 15:16:58 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 17:39:23 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 19:05:32 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,6 @@ typedef struct s_cmd
 	int					expansion;
 	struct s_cmd		*next;
 }	t_cmd;
-
-typedef struct s_parsed_line
-{
-	t_cmd	*cmd;
-	char	**env_vars;
-}	t_parsed_line;
 
 typedef struct s_shell
 {

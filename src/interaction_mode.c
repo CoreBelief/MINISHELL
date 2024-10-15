@@ -6,16 +6,17 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/15 17:29:05 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 17:31:36 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:50:58 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-int	open_terminal(void);
+
+int			open_terminal(void);
 static char	*get_interactive_input(int terminal_fd, t_shell *shell);
 static char	*get_non_interactive_input(void);
-void	cleanup(int terminal_fd, int original_stdout);
-char	*get_input_line(int terminal_fd, t_shell *shell);
+void		cleanup(int terminal_fd, int original_stdout);
+char		*get_input_line(int terminal_fd, t_shell *shell);
 
 int	open_terminal(void)
 {

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 17:19:46 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/14 13:27:59 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 19:05:05 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,4 @@ char	*get_username(void);
 char	*get_current_dir(void);
 char	*get_parent_dir(char *path);
 
-#endif // PROMPT_H
+#endif

@@ -6,16 +6,15 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 17:23:58 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 17:29:31 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:50:55 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static void	process_input(char *line, t_shell *shell);
-void	minishell_loop(t_shell *shell);
-int	main(int argc, char **argv, char **envp);
-
+void		minishell_loop(t_shell *shell);
+int			main(int argc, char **argv, char **envp);
 
 static void	process_input(char *line, t_shell *shell)
 {

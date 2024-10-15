@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/09 17:25:25 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 18:26:02 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:50:43 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 static char	*trim_whitespace(char *str);
 static int	is_valid_number(const char *str, long *number);
 void		builtin_exit(char **args);
-
 
 static char	*trim_whitespace(char *str)
 {
@@ -54,8 +53,8 @@ static int	is_valid_number(const char *str, long *number)
 		result = result * 10 + (str[i] - '0');
 		i++;
 	}
-	if ((sign == -1 && result > (unsigned long)LONG_MAX + 1)
-		|| (sign == 1 && result > (unsigned long)LONG_MAX))
+	if ((sign == -1 && result > (unsigned long)LONG_MAX + 1) || (sign == 1
+			&& result > (unsigned long)LONG_MAX))
 		return (0);
 	*number = sign * (long)result;
 	return (1);

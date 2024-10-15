@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 19:24:35 by rdl           #+#    #+#                 */
-/*   Updated: 2024/10/14 15:04:43 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:50:51 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int						setup_signal(int signum, void (*handler)(int),
 							int flags);
 void					setup_signals_shell(void);
 void					setup_signals_child(void);
-
 
 static void	handle_signal(int sig)
 {

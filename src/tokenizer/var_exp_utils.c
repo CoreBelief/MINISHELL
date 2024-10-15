@@ -6,16 +6,16 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 12:36:10 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 15:46:00 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:50:00 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		handle_variable(char **new_str, char *str, int *i, t_shell *shell);
-int		find_var_len(char *var);
-char	*append_str(char *og, char *to_append);
-int		until_dollar(char *str);
+int			handle_variable(char **new_str, char *str, int *i, t_shell *shell);
+int			find_var_len(char *var);
+char		*append_str(char *og, char *to_append);
+int			until_dollar(char *str);
 static char	*variable_exp(char *str, int *i, t_shell *shell);
 
 int	handle_variable(char **new_str, char *str, int *i, t_shell *shell)

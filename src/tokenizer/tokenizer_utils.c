@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/07/30 17:22:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 15:39:36 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:50:23 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ bool	is_special_token(char c);
 int		handle_quotes_state(char *input, char **res, int *i, t_shell *shell);
 int		prev_token_hd(t_token *tok);
 t_token	*add_token(t_token **head, char *content, t_token_type type);
-void	print_token_list(t_token *head);
 
 int	is_whitespace(char c)
 {
@@ -33,7 +32,7 @@ bool	is_special_token(char c)
 
 int	handle_quotes_state(char *input, char **res, int *i, t_shell *shell)
 {
-	if (input[*i] == '"' )
+	if (input[*i] == '"')
 	{
 		if (!double_quotes_state(input, res, i, shell))
 			return (0);
@@ -65,7 +64,7 @@ t_token	*add_token(t_token **head, char *content, t_token_type type)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 	{
-		free (content);
+		free(content);
 		content = NULL;
 		return (NULL);
 	}
@@ -83,4 +82,3 @@ t_token	*add_token(t_token **head, char *content, t_token_type type)
 	}
 	return (new_token);
 }
-

@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 15:46:18 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/14 14:26:17 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 19:00:14 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@
 #define ERR_FILE_OPEN 1
 #define ERR_FORK 1
 
-static int	handle_heredoc_child(char *delim, t_shell *shell, int hered_fd);
-int			handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell);
 static void	handle_signals(struct sigaction *old_int,
 				struct sigaction *old_quit, int restore);
+static int	handle_heredoc_child(char *delim, t_shell *shell, int hered_fd);
 static int	handle_heredoc_parent(pid_t pid, int hered_fd,
 				struct sigaction *old_int, struct sigaction *old_quit);
 static int	finalize_heredoc(t_cmd *cmd, char *tmp_file, int status);
+int			handle_heredoc_parsing(t_cmd *cmd, t_token **token, t_shell *shell);
 
 static void	handle_signals(struct sigaction *old_int,
 		struct sigaction *old_quit, int restore)
