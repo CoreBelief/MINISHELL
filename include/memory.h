@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/30 15:13:08 by elleneklund   #+#    #+#                 */
-/*   Updated: 2024/10/14 13:38:08 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 19:20:06 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,5 @@ void	free_command(t_cmd *cmd);
 void	free_command_list(t_cmd **head);
 void	ft_free_str_array(char **arr);
 void	free_tokens(t_token **head);
-
 
 #endif

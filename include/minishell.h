@@ -6,18 +6,31 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 18:51:27 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 19:25:00 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <stdbool.h>
+# include <dirent.h>
+# include <errno.h>
+# include <limits.h>
+# include <pwd.h>
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <signal.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <sys/stat.h>
+# include <sys/wait.h>
+# include <unistd.h>
+
 # include "../src/finalgnl/get_next_line.h"
 # include "../src/lib_FT/libft.h"
 # include "structs.h"
-#include <stdbool.h>
-# include <errno.h>
 # include "builtins.h"
 # include "environ.h"
 # include "error.h"
@@ -32,26 +45,6 @@
 # include "tokenizer.h"
 # include "utils.h"
 # include "var_exp.h"
-# include <ctype.h>
-# include <fcntl.h>
-# include <limits.h>
-# include <limits.h>
-# include <pwd.h>
-# include <readline/history.h>
-# include <readline/readline.h>
-# include <signal.h>
-# include <stdbool.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/stat.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <termios.h>
-# include <unistd.h>
-#include <dirent.h>
-#include <stdlib.h>
 
 # define MAX_ARGS 1024
 # define MAX_REDIRECTS 10
