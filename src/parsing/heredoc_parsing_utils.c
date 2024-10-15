@@ -6,17 +6,18 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 18:26:23 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 18:36:26 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:50:06 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static char	*create_filename(int redir_count);
-static int		open_hdfile(char *target);
-int		write_to_hdfd(char *delim, t_shell *shell, int hdfd);
-int		validate_heredoc_syntax(t_cmd *cmd, t_token **token, t_shell *shell);
-char	*create_and_open_temp_file(int redirect_count, int *hered_fd);
+static int	open_hdfile(char *target);
+int			write_to_hdfd(char *delim, t_shell *shell, int hdfd);
+int			validate_heredoc_syntax(t_cmd *cmd, t_token **token,
+				t_shell *shell);
+char		*create_and_open_temp_file(int redirect_count, int *hered_fd);
 
 static char	*create_filename(int redir_count)
 {

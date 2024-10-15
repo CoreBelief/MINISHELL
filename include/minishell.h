@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 18:33:49 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:51:27 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "../src/lib_FT/libft.h"
 # include "structs.h"
 # include "builtins.h"
+# include "environ.h"
 # include "error.h"
 # include "executor.h"
 # include "memory.h"
@@ -28,12 +29,13 @@
 # include "signal.h"
 # include "signals.h"
 # include "tokenizer.h"
-# include "environ.h"
 # include "utils.h"
 # include "var_exp.h"
 # include <ctype.h>
+# include <dirent.h>
 # include <errno.h>
 # include <fcntl.h>
+# include <limits.h>
 # include <limits.h>
 # include <pwd.h>
 # include <readline/history.h>
@@ -42,25 +44,22 @@
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <stdlib.h>
 # include <string.h>
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <termios.h>
 # include <unistd.h>
-#include <dirent.h>
-#include <limits.h>
-#include <stdlib.h>
-#include <unistd.h>
+# include <unistd.h>
 
 # define MAX_ARGS 1024
 # define MAX_REDIRECTS 10
-#define MAX_PATH 1024
-#define COLOR_GREEN "\001\033[1;32m\002"
-#define COLOR_CYAN "\001\033[1;36m\002"
-#define COLOR_YELLOW "\001\033[1;33m\002"
-#define COLOR_RESET "\001\033[0m\002"
-
+# define MAX_PATH 1024
+# define COLOR_GREEN "\001\033[1;32m\002"
+# define COLOR_CYAN "\001\033[1;36m\002"
+# define COLOR_YELLOW "\001\033[1;33m\002"
+# define COLOR_RESET "\001\033[0m\002"
 
 // Main loop
 void	minishell_loop(t_shell *shell);

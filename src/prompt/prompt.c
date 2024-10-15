@@ -6,13 +6,11 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 18:39:26 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/10 18:41:54 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:51:37 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
 
 static char	*append_to_prompt(char *prompt, char *str);
 static int	check_git_in_dir(char *dir_path);
