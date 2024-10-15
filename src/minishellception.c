@@ -23,6 +23,8 @@ void	init_shell(t_shell *shell)
 	shell->last_exit_status = 0;
 	shell->env = NULL;
 	shell->env_size = 0;
+	shell->export_list = NULL;
+	shell->export_size = 0;
 }
 
 void	free_shell(t_shell *shell)
@@ -30,6 +32,10 @@ void	free_shell(t_shell *shell)
 	if (shell->env)
 	{
 		ft_free_str_array(shell->env);
+	}
+	if (shell->export_list)
+	{
+		ft_free_str_array(shell->export_list);
 	}
 }
 

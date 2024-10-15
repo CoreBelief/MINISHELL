@@ -13,9 +13,22 @@
 #include "builtins.h"
 #include "minishell.h"
 
+static void	print_export_var(char *var);
 static void	sort_env(char **sorted_env, int size);
 static int	print_sorted_env(t_shell *shell);
 void		builtin_export(char **args, t_shell *shell);
+
+static void	print_export_var(char *var)
+{
+	char	*e_sign;
+
+	e_sign = ft_strchr(var, '=');
+	if (e_sign)
+		printf("declare -x %.*s\"%s\"\n", (int)(e_sign - var + 1),
+			var, e_sign + 1);
+	else
+		printf("declare -x %s\n", var);
+}
 
 static void	sort_env(char **sorted_env, int size)
 {
@@ -39,27 +52,47 @@ static void	sort_env(char **sorted_env, int size)
 	}
 }
 
+// static int	print_sorted_env(t_shell *shell)
+// {
+// 	char	**sorted_env;
+// 	int		i;
+// 	char	*e_sign;
+
+// 	sorted_env = malloc(sizeof(char *) * (shell->env_size + 1));
+// 	if (!sorted_env)
+// 		return (0);
+// 	i = -1;
+// 	while (++i < shell->env_size)
+// 		sorted_env[i] = shell->env[i];
+// 	sorted_env[i] = NULL;
+// 	sort_env(sorted_env, shell->env_size);
+// 	i = -1;
+// 	while (++i < shell->env_size)
+// 	{
+// 		e_sign = ft_strchr(sorted_env[i], '=');
+// 		printf("declare -x %.*s\"%s\"\n", (int)(e_sign - sorted_env[i] + 1),
+// 			sorted_env[i], e_sign + 1);
+// 	}
+// 	free(sorted_env);
+// 	return (1);
+// }
+
 static int	print_sorted_env(t_shell *shell)
 {
 	char	**sorted_env;
 	int		i;
-	char	*e_sign;
 
-	sorted_env = malloc(sizeof(char *) * (shell->env_size + 1));
+	sorted_env = malloc(sizeof(char *) * (shell->export_size + 1));
 	if (!sorted_env)
 		return (0);
 	i = -1;
-	while (++i < shell->env_size)
-		sorted_env[i] = shell->env[i];
+	while (++i < shell->export_size)
+		sorted_env[i] = shell->export_list[i];
 	sorted_env[i] = NULL;
-	sort_env(sorted_env, shell->env_size);
+	sort_env(sorted_env, shell->export_size);
 	i = -1;
-	while (++i < shell->env_size)
-	{
-		e_sign = ft_strchr(sorted_env[i], '=');
-		printf("declare -x %.*s\"%s\"\n", (int)(e_sign - sorted_env[i] + 1),
-			sorted_env[i], e_sign + 1);
-	}
+	while (++i < shell->export_size)
+		print_export_var(sorted_env[i]);
 	free(sorted_env);
 	return (1);
 }
