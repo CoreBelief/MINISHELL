@@ -21,6 +21,10 @@ static int	handle_value_assignment(char *arg, char *equal_sign,
 				t_shell *shell);
 static int	set_environment(char *arg, char *equal_sign, t_shell *shell);
 int			process_identifier(char *arg, char *equal_sign, t_shell *shell);
+static int	is_matching_export(char *export, char *name);
+static int	update_export_list(t_shell *shell, int i, char *var, char *name);
+static char	*create_concatenated_value(char *identifier, char *new_value, t_shell *shell);
+static int	update_env_and_export(char *identifier, char *value, t_shell *shell);
 
 static int	add_to_export_list(char *var, t_shell *shell)
 {
@@ -64,18 +68,28 @@ static int	add_or_update_export_list(char *var, t_shell *shell)
 	i = -1;
 	while (++i < shell->export_size)
 	{
-		if (ft_strncmp(shell->export_list[i], name, ft_strlen(name)) == 0
-			&& (shell->export_list[i][ft_strlen(name)] == '='
-			|| shell->export_list[i][ft_strlen(name)] == '\0'))
+		if (is_matching_export(shell->export_list[i], name))
 		{
-			free(shell->export_list[i]);
-			shell->export_list[i] = ft_strdup(var);
-			free(name);
-			return (shell->export_list[i] != NULL);
+			return (update_export_list(shell, i, var, name));
 		}
 	}
 	free(name);
 	return (add_to_export_list(var, shell));
+}
+
+static int	is_matching_export(char *export, char *name)
+{
+	return (ft_strncmp(export, name, ft_strlen(name)) == 0
+		&& (export[ft_strlen(name)] == '='
+		|| export[ft_strlen(name)] == '\0'));
+}
+
+static int	update_export_list(t_shell *shell, int i, char *var, char *name)
+{
+	free(shell->export_list[i]);
+	shell->export_list[i] = ft_strdup(var);
+	free(name);
+	return (shell->export_list[i] != NULL);
 }
 
 static int	is_in_export_list(char *var, t_shell *shell)
@@ -95,37 +109,52 @@ static int	is_in_export_list(char *var, t_shell *shell)
 	return (0);
 }
 
-static int	handle_append_assignment(char *arg,
-	char *equal_sign, t_shell *shell)
+static int	handle_append_assignment(char *arg, char *equal_sign, t_shell *shell)
 {
 	char	*identifier;
-	char	*new_value;
-	char	*existing_value;
 	char	*concatenated_value;
 	int		result;
 
 	identifier = ft_strndup(arg, (equal_sign - arg) - 1);
 	if (!identifier)
 		return (0);
-	new_value = equal_sign + 1;
-	existing_value = ft_get_env(identifier, shell);
-	concatenated_value = ft_strjoin(existing_value ? existing_value : "", new_value);
+	concatenated_value = create_concatenated_value(identifier, equal_sign + 1, shell);
 	if (!concatenated_value)
 	{
 		free(identifier);
 		return (0);
 	}
-	result = ft_set_env(identifier, concatenated_value, shell);
+	result = update_env_and_export(identifier, concatenated_value, shell);
+	free(concatenated_value);
+	free(identifier);
+	return (result);
+}
+
+static char	*create_concatenated_value(char *identifier, char *new_value, t_shell *shell)
+{
+	char	*existing_value;
+	char	*concatenated_value;
+
+	existing_value = ft_get_env(identifier, shell);
+	concatenated_value = ft_strjoin(existing_value ? existing_value : "", new_value);
+	return (concatenated_value);
+}
+
+static int	update_env_and_export(char *identifier, char *value, t_shell *shell)
+{
+	int		result;
+	char	*new_var;
+	char	*final_var;
+
+	result = ft_set_env(identifier, value, shell);
 	if (result)
 	{
-		char *new_var = ft_strjoin(identifier, "=");
-		char *final_var = ft_strjoin(new_var, concatenated_value);
+		new_var = ft_strjoin(identifier, "=");
+		final_var = ft_strjoin(new_var, value);
 		free(new_var);
 		result = add_or_update_export_list(final_var, shell);
 		free(final_var);
 	}
-	free(concatenated_value);
-	free(identifier);
 	return (result);
 }
 
