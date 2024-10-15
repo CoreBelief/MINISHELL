@@ -6,21 +6,21 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:20:16 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 17:04:22 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:40:04 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_input_redirection(int prev_prd, t_cmd *cmd);
-void	handle_output_redirection(int pfds[2], t_cmd *cmd);
-void	close_pipe_ends(int pfds[2]);
-void	child_proc(t_cmd *cmd, int pipe_fds[2],
-			int prev_pipe_read, t_shell *shell);
-void	parent_proc(t_cmd *cmd, int pipe_fds[2],
-			int *prev_pipe_read);
+static void	handle_input_redirection(int prev_prd, t_cmd *cmd);
+static void	handle_output_redirection(int pfds[2], t_cmd *cmd);
+static void	close_pipe_ends(int pfds[2]);
+void		child_proc(t_cmd *cmd, int pipe_fds[2],
+				int prev_pipe_read, t_shell *shell);
+void		parent_proc(t_cmd *cmd, int pipe_fds[2],
+				int *prev_pipe_read);
 
-void	handle_input_redirection(int prev_prd, t_cmd *cmd)
+static void	handle_input_redirection(int prev_prd, t_cmd *cmd)
 {
 	if (prev_prd != -1 && cmd->input == -1)
 	{
@@ -33,7 +33,7 @@ void	handle_input_redirection(int prev_prd, t_cmd *cmd)
 	}
 }
 
-void	handle_output_redirection(int pfds[2], t_cmd *cmd)
+static void	handle_output_redirection(int pfds[2], t_cmd *cmd)
 {
 	if (cmd->pipe_out == 1 && cmd->output == -1)
 	{
@@ -46,7 +46,7 @@ void	handle_output_redirection(int pfds[2], t_cmd *cmd)
 	}
 }
 
-void	close_pipe_ends(int pfds[2])
+static void	close_pipe_ends(int pfds[2])
 {
 	if (pfds[0] != -1)
 		close(pfds[0]);

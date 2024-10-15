@@ -6,11 +6,16 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/21 11:00:43 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/09/30 19:29:35 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:44:15 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	open_file(char *target, t_token_type type);
+static void	handle_file_opening(int *fd, char *target, t_token_type type);
+static void	redirect_stream(int fd, t_token_type type);
+void		setup_redirections(t_cmd *cmd);
 
 static int	open_file(char *target, t_token_type type)
 {

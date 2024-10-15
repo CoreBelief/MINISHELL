@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:26:45 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 17:31:25 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:33:49 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 # include "../src/finalgnl/get_next_line.h"
 # include "../src/lib_FT/libft.h"
+# include "structs.h"
 # include "builtins.h"
-# include "environ.h"
 # include "error.h"
 # include "executor.h"
 # include "memory.h"
@@ -27,8 +27,8 @@
 # include "redirections.h"
 # include "signal.h"
 # include "signals.h"
-# include "structs.h"
 # include "tokenizer.h"
+# include "environ.h"
 # include "utils.h"
 # include "var_exp.h"
 # include <ctype.h>

@@ -6,19 +6,16 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:31:57 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/08 14:37:11 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 18:28:01 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
 #include "minishell.h"
-// #include <stdlib.h>
-// #include <string.h>
 
-void		builtin_unset(char **args, t_shell *shell);
 static int	is_valid_first_char(char c);
 static int	is_valid_variable_char(char c);
 static int	is_valid_variable_name(const char *name);
+void		builtin_unset(char **args, t_shell *shell);
 
 static int	is_valid_first_char(char c)
 {

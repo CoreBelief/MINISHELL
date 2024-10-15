@@ -2,7 +2,6 @@ NAME = minishell
 CC = cc -g
 CFLAGS = -Wall -Wextra -Werror -Iinclude -Isrc/libft -I/usr/local/opt/readline/include
 LDFLAGS = -L/usr/local/opt/readline/lib -lreadline
-LIBS = -lreadline
 SRCS_DIR = src
 OBJ_DIR = obj
 
@@ -38,7 +37,7 @@ $(LIBFT):
 
 $(NAME): $(OBJS) $(LIBFT)
 	@echo "$(YELLOW)Linking $(NAME)...$(RESET)"
-	@$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $@ $(LIBS) $(LDFLAGS) > /dev/null
+	@$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $@ $(LDFLAGS) > /dev/null
 	@echo "$(GREEN)$(NAME) created successfully!$(RESET)"
 
 # Compile objects with a progress bar
