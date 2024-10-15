@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/14 14:27:43 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 22:30:00 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 21:22:10 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@ static int	set_environment(char *arg, char *equal_sign, t_shell *shell);
 int			process_identifier(char *arg, char *equal_sign, t_shell *shell);
 static int	is_matching_export(char *export, char *name);
 static int	update_export_list(t_shell *shell, int i, char *var, char *name);
-static char	*create_concatenated_value(char *identifier, char *new_value, t_shell *shell);
-static int	update_env_and_export(char *identifier, char *value, t_shell *shell);
+static char	*create_concatenated_value(char *identifier, char *new_value,
+				t_shell *shell);
+static int	update_env_and_export(char *identifier, char *value,
+				t_shell *shell);
 
 static int	add_to_export_list(char *var, t_shell *shell)
 {
@@ -80,8 +82,7 @@ static int	add_or_update_export_list(char *var, t_shell *shell)
 static int	is_matching_export(char *export, char *name)
 {
 	return (ft_strncmp(export, name, ft_strlen(name)) == 0
-		&& (export[ft_strlen(name)] == '='
-		|| export[ft_strlen(name)] == '\0'));
+		&& (export[ft_strlen(name)] == '=' || export[ft_strlen(name)] == '\0'));
 }
 
 static int	update_export_list(t_shell *shell, int i, char *var, char *name)
@@ -109,7 +110,8 @@ static int	is_in_export_list(char *var, t_shell *shell)
 	return (0);
 }
 
-static int	handle_append_assignment(char *arg, char *equal_sign, t_shell *shell)
+static int	handle_append_assignment(char *arg, char *equal_sign,
+		t_shell *shell)
 {
 	char	*identifier;
 	char	*concatenated_value;
@@ -118,7 +120,8 @@ static int	handle_append_assignment(char *arg, char *equal_sign, t_shell *shell)
 	identifier = ft_strndup(arg, (equal_sign - arg) - 1);
 	if (!identifier)
 		return (0);
-	concatenated_value = create_concatenated_value(identifier, equal_sign + 1, shell);
+	concatenated_value = create_concatenated_value(identifier, equal_sign + 1,
+			shell);
 	if (!concatenated_value)
 	{
 		free(identifier);
@@ -131,7 +134,7 @@ static int	handle_append_assignment(char *arg, char *equal_sign, t_shell *shell)
 }
 
 static char	*create_concatenated_value(char *identifier, char *new_value,
-				t_shell *shell)
+		t_shell *shell)
 {
 	char	*existing_value;
 	char	*concatenated_value;
