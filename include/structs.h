@@ -67,6 +67,8 @@ typedef struct s_shell
 	int			last_exit_status;
 	char		**env;
 	int			env_size;
+	char		**export_list;
+	int			export_size;
 }	t_shell;
 
 #endif
