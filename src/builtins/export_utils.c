@@ -130,13 +130,17 @@ static int	handle_append_assignment(char *arg, char *equal_sign, t_shell *shell)
 	return (result);
 }
 
-static char	*create_concatenated_value(char *identifier, char *new_value, t_shell *shell)
+static char	*create_concatenated_value(char *identifier, char *new_value,
+				t_shell *shell)
 {
 	char	*existing_value;
 	char	*concatenated_value;
 
 	existing_value = ft_get_env(identifier, shell);
-	concatenated_value = ft_strjoin(existing_value ? existing_value : "", new_value);
+	if (existing_value)
+		concatenated_value = ft_strjoin(existing_value, new_value);
+	else
+		concatenated_value = ft_strdup(new_value);
 	return (concatenated_value);
 }
 
