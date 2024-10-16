@@ -54,19 +54,42 @@ static void	sort_env(char **sorted_env, int size)
 	}
 }
 
-static int is_in_export_list(char *var, t_shell *shell)
-{
-    int i;
-    char *equal_sign = ft_strchr(var, '=');
-    size_t len = equal_sign ? (size_t)(equal_sign - var) : ft_strlen(var);
+// static int is_in_export_list(char *var, t_shell *shell)
+// {
+//     int i;
+//     char *equal_sign = ft_strchr(var, '=');
+//     size_t len = equal_sign ? (size_t)(equal_sign - var) : ft_strlen(var);
 
-    for (i = 0; i < shell->export_size; i++)
-    {
-        if (ft_strncmp(shell->export_list[i], var, len) == 0
-            && (shell->export_list[i][len] == '=' || shell->export_list[i][len] == '\0'))
-            return (1);
-    }
-    return (0);
+//     for (i = 0; i < shell->export_size; i++)
+//     {
+//         if (ft_strncmp(shell->export_list[i], var, len) == 0
+//             && (shell->export_list[i][len] == '=' || shell->export_list[i][len] == '\0'))
+//             return (1);
+//     }
+//     return (0);
+// }
+
+static int	is_in_export_list(char *var, t_shell *shell)
+{
+	int		i;
+	char	*equal_sign;
+	size_t	len;
+
+	equal_sign = ft_strchr(var, '=');
+	if (equal_sign)
+		len = (size_t)(equal_sign - var);
+	else
+		len = ft_strlen(var);
+	i = 0;
+	while (i < shell->export_size)
+	{
+		if (ft_strncmp(shell->export_list[i], var, len) == 0
+			&& (shell->export_list[i][len] == '='
+				|| shell->export_list[i][len] == '\0'))
+			return (1);
+		i++;
+	}
+	return (0);
 }
 static void	print_and_free_env(char **combined_env, int combined_size)
 {
