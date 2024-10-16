@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/30 19:32:27 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 21:21:58 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 22:37:26 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ static void	print_export_var(char *var)
 
 	e_sign = ft_strchr(var, '=');
 	if (e_sign)
-		printf("declare -x %.*s\"%s\"\n", (int)(e_sign - var + 1),
-			var, e_sign + 1);
+		printf("declare -x %.*s\"%s\"\n", (int)(e_sign - var + 1), var, e_sign
+			+ 1);
 	else
 		printf("declare -x %s\n", var);
 }
@@ -70,6 +70,35 @@ static int	print_sorted_env(t_shell *shell)
 		print_export_var(sorted_env[i]);
 	free(sorted_env);
 	return (1);
+}
+
+int	process_identifier(char *arg, char *equal_sign, t_shell *shell)
+{
+	char	*identifier;
+	int		result;
+
+	if (equal_sign != NULL)
+	{
+		if (!handle_equal_sign(arg, equal_sign, &identifier))
+		{
+			shell->last_exit_status = 1;
+			return (0);
+		}
+	}
+	else
+		handle_no_equal_sign(arg, &identifier);
+	if (!validate_identifier(identifier, arg, shell))
+	{
+		if (equal_sign != NULL)
+			free(identifier);
+		return (0);
+	}
+	result = set_environment(arg, equal_sign, shell);
+	if (!result)
+		shell->last_exit_status = 1;
+	if (equal_sign != NULL)
+		free(identifier);
+	return (result);
 }
 
 void	builtin_export(char **args, t_shell *shell)

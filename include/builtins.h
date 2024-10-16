@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 17:18:28 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 20:19:46 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/15 22:11:01 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,8 @@ int				handle_equal_sign(char *arg, char *equal_sign,
 					char **identifier);
 int				handle_no_equal_sign(char *arg, char **identifier);
 int				process_identifier(char *arg, char *equal_sign, t_shell *shell);
+int				add_or_update_export_list(char *var, t_shell *shell);
+int				is_in_export_list(char *var, t_shell *shell);
+int				set_environment(char *arg, char *equal_sign, t_shell *shell);
 
 #endif
