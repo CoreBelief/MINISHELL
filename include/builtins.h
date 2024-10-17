@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 17:18:28 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/16 17:23:47 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/17 12:26:20 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,19 @@ void			builtin_pwd(char **args, t_shell *shell);
 void			builtin_unset(char **args, t_shell *shell);
 
 // export utils
+int				print_export(t_shell *shell);
+
+// export_utils2
+int				process_environment(char *name, char *value, int append_mode,
+					t_shell *shell);
+
+// export_print
 int				is_valid_identifier(const char *str);
 int				validate_identifier(const char *identifier, char *arg,
 					t_shell *shell);
 int				handle_equal_sign(char *arg, char *equal_sign,
 					char **identifier);
 int				handle_no_equal_sign(char *arg, char **identifier);
-int				process_identifier(char *arg, char *equal_sign, t_shell *shell);
-int				add_or_update_export_list(char *var, t_shell *shell);
-// int				is_in_export_list(char *var, t_shell *shell);
-// int				set_environment(char *arg, char *equal_sign, t_shell *shell);
+void			restore_equal_sign(char *equal_sign, int append_mode);
 
 #endif

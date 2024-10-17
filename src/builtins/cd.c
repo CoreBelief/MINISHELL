@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/09/26 17:29:22 by rdl           #+#    #+#                 */
-/*   Updated: 2024/10/14 14:59:38 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/17 13:04:47 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 static char	*get_cd_path(char **args, t_shell *shell);
 static void	update_pwd(char *old_pwd, t_shell *shell);
+static void	*handle_getcwd_error(t_shell *shell);
 void		*builtin_cd(char **args, t_shell *shell);
 
 static char	*get_cd_path(char **args, t_shell *shell)
@@ -53,6 +54,17 @@ static void	update_pwd(char *old_pwd, t_shell *shell)
 		perror("getcwd");
 }
 
+static void	*handle_getcwd_error(t_shell *shell)
+{
+	handle_syn_errors(1, "Minishell: cd: in unknown territory :O, \
+	resetting to root\n", shell);
+	if (chdir("/") == 0)
+		shell->last_exit_status = 0;
+	else
+		handle_syn_errors(1, "Minishell: cd: Failed to reset to root\n", shell);
+	return (NULL);
+}
+
 void	*builtin_cd(char **args, t_shell *shell)
 {
 	char	*path;
@@ -63,18 +75,19 @@ void	*builtin_cd(char **args, t_shell *shell)
 	while (args[arg_count])
 		arg_count++;
 	if (arg_count > 2)
-	{
-		print_error("cd", ": too many arguments\n");
-		shell->last_exit_status = 1;
-		return (NULL);
-	}
+		return (handle_syn_errors(1, \
+		"Minishell: cd" ": too many arguments\n", shell));
 	if (!getcwd(old_pwd, sizeof(old_pwd)))
-		return (handle_syn_errors(1, "getcwd", shell));
+		return (handle_getcwd_error(shell));
 	path = get_cd_path(args, shell);
 	if (!path)
 		return (NULL);
 	if (chdir(path) != 0)
-		return (handle_syn_errors(1, "cd", shell));
+	{
+		handle_syn_errors(1, "Minishell: cd: ", shell);
+		print_error(path, ": No such file or directory\n");
+		return (NULL);
+	}
 	update_pwd(old_pwd, shell);
 	shell->last_exit_status = 0;
 	return (NULL);
