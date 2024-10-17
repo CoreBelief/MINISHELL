@@ -54,60 +54,22 @@ static void	close_pipe_ends(int pfds[2])
 		close(pfds[1]);
 }
 
-// void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
-// {
-// 	setup_signals_child();
-// 	if (cmd->redirect_count)
-// 		setup_redirections(cmd);
-// 	handle_input_redirection(prev_prd, cmd);
-// 	handle_output_redirection(pfds, cmd);
-// 	close_pipe_ends(pfds);
-// 	// fprintf(stderr, "exe does :: %S", cmd->argv[0]);
-// 	if (is_builtin(cmd->argv[0]))
-// 	{
-// 		execute_builtin(cmd, shell);
-// 		exit(shell->last_exit_status);
-// 	}
-// 	else
-// 		execute_external(cmd, shell);
-// 	exit(EXIT_FAILURE);
-// }
-void child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
+void	child_proc(t_cmd *cmd, int pfds[2], int prev_prd, t_shell *shell)
 {
-    fprintf(stderr, "DEBUG: Entering child process\n");
-    setup_signals_child();
-    
-    if (cmd->redirect_count)
-    {
-        fprintf(stderr, "DEBUG: Setting up redirections\n");
-        setup_redirections(cmd);
-    }
-    
-    handle_input_redirection(prev_prd, cmd);
-    handle_output_redirection(pfds, cmd);
-    close_pipe_ends(pfds);
-    
-    fprintf(stderr, "DEBUG: Executing command: %s\n", cmd->argv[0]);
-    for (int i = 0; cmd->argv[i] != NULL; i++)
-    {
-        fprintf(stderr, "DEBUG: argv[%d] = %s\n", i, cmd->argv[i]);
-    }
-    
-    if (is_builtin(cmd->argv[0]))
-    {
-        fprintf(stderr, "DEBUG: Executing builtin command\n");
-        execute_builtin(cmd, shell);
-        fprintf(stderr, "DEBUG: Builtin execution complete, exit status: %d\n", shell->last_exit_status);
-        exit(shell->last_exit_status);
-    }
-    else
-    {
-        fprintf(stderr, "DEBUG: Executing external command\n");
-        execute_external(cmd, shell);
-    }
-    
-    fprintf(stderr, "DEBUG: Command execution failed\n");
-    exit(EXIT_FAILURE);
+	setup_signals_child();
+	if (cmd->redirect_count)
+		setup_redirections(cmd);
+	handle_input_redirection(prev_prd, cmd);
+	handle_output_redirection(pfds, cmd);
+	close_pipe_ends(pfds);
+	if (is_builtin(cmd->argv[0]))
+	{
+		execute_builtin(cmd, shell);
+		exit(shell->last_exit_status);
+	}
+	else
+		execute_external(cmd, shell);
+	exit(EXIT_FAILURE);
 }
 void	parent_proc(t_cmd *cmd, int pfds[2], int *prev_prd)
 {

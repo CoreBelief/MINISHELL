@@ -1,4 +1,0 @@
-cat << EOF > output.txt
-This is a multi-line
-text block
-EOF

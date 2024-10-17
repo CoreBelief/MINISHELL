@@ -47,6 +47,7 @@ static int	open_hdfile(char *target)
 	}
 	return (hd_fd);
 }
+
 int write_to_hdfd(char *delim, t_shell *shell, int hdfd)
 {
     char *content;
@@ -57,9 +58,7 @@ int write_to_hdfd(char *delim, t_shell *shell, int hdfd)
         if (isatty(STDIN_FILENO)) {
             content = readline("> ");
         } else
-		{
             content = get_next_line(STDIN_FILENO);
-        }
         if (!content)
 		{
             write(STDERR_FILENO, "warning: here-document delimited by EOF\n", 40);
@@ -78,9 +77,7 @@ int write_to_hdfd(char *delim, t_shell *shell, int hdfd)
         }
         write(hdfd, expansion, ft_strlen(expansion));
         if (isatty(STDIN_FILENO))
-		{
             write(hdfd, "\n", 1);
-        }
         free(expansion);
     }
     close(hdfd);
