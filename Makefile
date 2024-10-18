@@ -7,7 +7,7 @@ OBJ_DIR = obj
 
 SRCS = $(addprefix $(SRCS_DIR)/, main.c interaction_mode.c prompt/prompt.c prompt/prompt_utils.c error.c signals.c memory.c minishellception.c tokenizer/tokenizer.c \
 tokenizer/tokenizer_utils.c tokenizer/tokenizer_word.c tokenizer/var_exp.c tokenizer/var_exp_utils.c parsing/parser.c parsing/parser_utils.c \
-parsing/parser_redirects.c parsing/heredoc_parsing.c parsing/heredoc_parsing_utils.c execution/executor.c execution/redirections.c \
+parsing/parser_redirects.c parsing/heredoc_parsing.c parsing/heredoc_parsing_utils.c parsing/heredoc_write.c execution/executor.c execution/redirections.c \
 execution/process.c execution/path.c builtins/echo.c builtins/cd.c builtins/pwd.c builtins/export.c builtins/export_utils.c builtins/export_utils2.c \
 builtins/export_print.c builtins/unset.c builtins/env.c builtins/exit.c builtins/builtins.c environ/environ.c utils/ft_strjoin3.c \
 utils/ft_strcmp.c utils/ft_strcpy.c utils/ft_strncpy.c utils/ft_strndup.c finalgnl/get_next_line.c \

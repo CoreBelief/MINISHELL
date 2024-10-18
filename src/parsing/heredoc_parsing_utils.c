@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/10/10 18:26:23 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 18:50:06 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/18 15:04:42 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,35 +46,6 @@ static int	open_hdfile(char *target)
 		return (-1);
 	}
 	return (hd_fd);
-}
-
-int	write_to_hdfd(char *delim, t_shell *shell, int hdfd)
-{
-	char	*content;
-	char	*expansion;
-
-	while (1)
-	{
-		content = readline("> ");
-		if (!content)
-			break ;
-		if (ft_strcmp(content, delim) == 0)
-		{
-			free(content);
-			break ;
-		}
-		expansion = variable_exp_double(content, shell);
-		free(content);
-		if (!expansion)
-		{
-			return (0);
-		}
-		write(hdfd, expansion, ft_strlen(expansion));
-		write(hdfd, "\n", 1);
-		free(expansion);
-	}
-	close(hdfd);
-	return (1);
 }
 
 int	validate_heredoc_syntax(t_cmd *cmd, t_token **token, t_shell *shell)

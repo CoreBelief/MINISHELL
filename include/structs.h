@@ -57,6 +57,7 @@ typedef struct s_cmd
 	int					pipe_in;
 	int					pipe_out;
 	int					expansion;
+	// int 				is_heredoc_content;
 	struct s_cmd		*next;
 }	t_cmd;
 
