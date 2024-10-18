@@ -6,7 +6,7 @@
 /*   By: eeklund <eeklund@student.42.fr>              +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/08/13 18:15:38 by eeklund       #+#    #+#                 */
-/*   Updated: 2024/10/15 15:46:51 by eeklund       ########   odam.nl         */
+/*   Updated: 2024/10/18 16:10:40 by eeklund       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ static pid_t	execute_single_command(t_cmd *cmd, int *prev_prd,
 	pipe_fds[0] = -1;
 	pipe_fds[1] = -1;
 	if (is_builtin_parent(cmd->argv[0]) && cmd->pipe_out == -1
-		&& cmd->pipe_in == -1)
+		&& cmd->pipe_in == -1 && cmd->redirect_count == 0)
 	{
 		execute_builtin(cmd, shell);
 	}
